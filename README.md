@@ -1,1 +1,1 @@
-# Qui vanno inseriti i sorgenti dei processori
+# Qui vanno inseriti i sorgenti dei processori e del wrapper XML-RPC per lanciarli da remoto
