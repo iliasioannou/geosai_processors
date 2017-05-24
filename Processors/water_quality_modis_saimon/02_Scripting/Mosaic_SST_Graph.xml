@@ -1,0 +1,65 @@
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="Read1">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$filein1</file>
+	  <formatName>GeoTIFF</formatName>
+    </parameters>
+  </node>
+   <node id="Read2">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$filein2</file>
+	  <formatName>GeoTIFF</formatName>
+    </parameters>
+  </node>
+  <node id="Mosaika">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="Read1"/>
+	  <sourceProduct1 refid="Read2"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands>
+        <targetBand>
+          <name>SST</name>
+          <type>float32</type>
+          <expression>if (SST == -11.0) then $sourceProduct1.SST else SST</expression>
+          <description></description>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+        <targetBand>		
+          <name>l2_flags</name>
+          <type>float32</type>
+          <expression>if (SST == -11.0) then $sourceProduct1.l2_flags else l2_flags</expression>
+          <description></description>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+        <targetBand>
+          <name>flags_sst</name>
+          <type>float32</type>
+          <expression>if (SST == -11.0) then $sourceProduct1.flags_sst else flags_sst</expression>
+          <description></description>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>		
+		</targetBands>
+      <variables/>
+    </parameters>
+  </node>
+  <node id="Write">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="Mosaika"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$fileout</file>
+      <formatName>$format</formatName>
+    </parameters>
+  </node>
+</graph>

@@ -1,0 +1,105 @@
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="Read1">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$filein1</file>
+	  <formatName>GeoTIFF</formatName>
+    </parameters>
+  </node>
+   <node id="Read2">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$filein2</file>
+	  <formatName>GeoTIFF</formatName>
+    </parameters>
+  </node>
+  <node id="Mosaika">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="Read1"/>
+	  <sourceProduct1 refid="Read2"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands>
+        <targetBand>
+          <name>Chlorophyll</name>
+          <type>float32</type>
+          <expression>if (Chlorophyll == -11.0) then $sourceProduct1.Chlorophyll else Chlorophyll</expression>
+          <description></description>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+        <targetBand>
+          <name>WaterTransp</name>
+          <type>float32</type>
+          <expression>if (WaterTransp == -11.0) then $sourceProduct1.WaterTransp else WaterTransp</expression>
+          <description></description>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+        <targetBand>
+          <name>Turbidity</name>
+          <type>float32</type>
+          <expression>if (Turbidity == -11.0) then $sourceProduct1.Turbidity else Turbidity</expression>
+          <description></description>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>		
+        <targetBand>
+          <name>RedIndex</name>
+          <type>float32</type>
+          <expression>if (RedIndex == -11.0) then $sourceProduct1.RedIndex else RedIndex</expression>
+          <description></description>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+        <targetBand>
+          <name>Nflh</name>
+          <type>float32</type>
+          <expression>if (Nflh == -11.0) then $sourceProduct1.Nflh else Nflh</expression>
+          <description></description>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+        <targetBand>
+          <name>l2_flags</name>
+          <type>float32</type>
+          <expression>if (Chlorophyll == -11.0) or (Turbidity == -11.0) or (WaterTransp == -11.0) then $sourceProduct1.l2_flags else l2_flags</expression>
+          <description></description>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+        <targetBand>
+          <name>flags_chl</name>
+          <type>float32</type>
+          <expression>if (Chlorophyll == -11.0) then $sourceProduct1.flags_chl else flags_chl</expression>
+          <description></description>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+        <targetBand>
+          <name>flags_others</name>
+          <type>float32</type>
+          <expression>if (Chlorophyll == -11.0) or (Turbidity == -11.0) or (WaterTransp == -11.0) then $sourceProduct1.flags_others else flags_others</expression>
+          <description></description>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>		
+		</targetBands>
+      <variables/>
+    </parameters>
+  </node>
+  <node id="Write">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="Mosaika"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$fileout</file>
+      <formatName>$format</formatName>
+    </parameters>
+  </node>
+</graph>
