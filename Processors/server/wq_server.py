@@ -2,6 +2,7 @@
 import xmlrpclib, json, os, shutil, socket
 import ConfigParser
 from SimpleXMLRPCServer import SimpleXMLRPCServer, SimpleXMLRPCRequestHandler
+from product_downloader_util import download_data
 
 # store clients' IPs and Ports
 monitor = {}
@@ -48,6 +49,7 @@ def execute(productID, scriptName, jsonData):
 
     print "SERVER: call run() from imported module"
     print "- MODULE STDOUT -\n"
+    download_data()
     outDict = proc.run(argsDict)
 
     print "\n- END MODULE STDOUT -"
