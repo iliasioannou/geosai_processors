@@ -1,0 +1,102 @@
+<!-- Version of 02-09-2016 -->
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="Read">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$filein</file>
+    </parameters>
+  </node>
+  <node id="SeaMask">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$maskin</file>
+	  <formatName>GeoTIFF</formatName>
+    </parameters>
+  </node>
+  <node id="Reproject">
+    <operator>Reproject</operator>
+    <sources>
+      <sourceProduct refid="Read"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <wktFile/>
+      <crs>EPSG:4326</crs>
+      <resampling>Nearest</resampling>
+      <referencePixelX>0.5</referencePixelX>
+      <referencePixelY>0.5</referencePixelY>
+      <easting>13.678</easting>
+      <northing>44.000</northing>
+      <orientation>0.0</orientation>
+      <pixelSizeX>0.011</pixelSizeX>
+      <pixelSizeY>0.011</pixelSizeY>
+      <width>510</width>
+      <height>418</height>
+      <tileSizeX/>
+      <tileSizeY/>
+      <orthorectify>false</orthorectify>
+      <elevationModelName/>
+      <noDataValue/>
+      <includeTiePointGrids>true</includeTiePointGrids>
+      <addDeltaBands>false</addDeltaBands>
+    </parameters>
+  </node>
+  <node id="BandMaths">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="Reproject"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands>
+		<targetBand>
+          <name>flagged_Chl</name>
+          <expression>CHL1_flags &amp; 571</expression>
+          <description>Flagged Chl</description>
+          <type>int16</type>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+      </targetBands>
+    </parameters>
+  </node>
+<!-- FLAGGING
+NO_MEASUREMENT: 0 [1]
+INVALID: 1 [2]
+LAND: 3 [8]
+CLOUD1,CLOUD2: 4,5 [16,32]
+ICE: 9 [512]
+Total: 571
+Ignored TROPHIC STATE !
+-->
+  <node id="BandMaths_b">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="BandMaths"/>
+	  <sourceProduct2 refid="Reproject"/>
+	  <sourceProduct3 refid="SeaMask"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands>
+        <targetBand>
+          <name>Chlorophyll</name>
+          <type>float32</type>
+          <expression>if ($sourceProduct3.sea_mask) == 0 then -10 else (if (flagged_Chl >0) then -11.0 else $sourceProduct2.CHL1_mean)</expression>
+          <description/>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+      </targetBands>
+    </parameters>
+  </node>
+  <node id="Write">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="BandMaths_b"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$fileout</file>
+      <formatName>$format</formatName>
+    </parameters>
+  </node>
+</graph>
