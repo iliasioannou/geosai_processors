@@ -1,5 +1,6 @@
 #
-# Version 2.1 of 18-05-2016
+# Version 2.2 of 26-05-2017 (corrected logging of errors
+#         2.1 of 18-05-2016
 #         2.0 of 14-01-2016
 #         1.0 of 07-10-2015
 #
@@ -9,11 +10,6 @@ import numpy as np
 gdal.UseExceptions()
 
 
-## Settings
-##Needs the following variable in globals: ErrorMessage
-if 'ErrorMessage' not in globals():
-    ErrorMessage=[]
-
 ##
 ## Read_Legend
 ## Can read 2 types of textual legend:
@@ -21,11 +17,11 @@ if 'ErrorMessage' not in globals():
 ## Returns a t-uple: value, R, G, B
 ## In case of error returns [0,0,0,0,0]
 ##
-def Read_Legend(legendfile):
+def Read_Legend(legendfile,logtxt):
     "Read a text legend with: value, R, G, B"
 
     if os.path.isfile(legendfile) == False:
-        ErrorMessage.append("Legend file doesn't exist")
+        logtxt.append("Legend file doesn't exist")
         return [0,0,0,0,0]
 
     color_table=[]
@@ -35,20 +31,20 @@ def Read_Legend(legendfile):
         llines=fo.readlines()
         fo.close()
     except IOError as errore:
-        ErrorMessage.append("IOError in opening legend file")
-        ErrorMessage.append(str(errore))
+        logtxt.append("IOError in opening legend file")
+        logtxt.append(str(errore))
         return [0,0,0,0]
 
     for line in llines:
         if line.find('#') == -1 and line.find('/') == -1 and line.find(';') == -1:
             entry = line.split()
             if len(entry) != 4:
-                ErrorMessage.append("Error in legend-table line")
+                logtxt.append("Error in legend-table line")
             else:
                 color_table.extend([[float(entry[0]),int(entry[1]),int(entry[2]),int(entry[3])]])
     
     if len(color_table)<2:
-        ErrorMessage.append("Legend file contains no valid lines")
+        logtxt.append("Legend file contains no valid lines")
         return [0,0,0,0]
                           
     return color_table
@@ -64,16 +60,16 @@ def Read_Legend(legendfile):
 ## Returns a (numpy)t-uple: Red, Green Blue
 ## In case of error returns [[[0]],[[0]],[[0]]]
 ##
-def Apply_Legend(EOMap, band, legendval):
+def Apply_Legend(EOMap, band, legendval,logtxt):
     "Apply to a single band raster a legend (value, R, G, B)"
 
     if os.path.isfile(EOMap) == False:
-        ErrorMessage.append(EOMap+" doesn't exist")
+        logtxt.append(EOMap+" doesn't exist")
         return [[[0]],[[0]],[[0]]]
     try:
         data=gdal.Open(EOMap)
     except RuntimeError, e:
-        ErrorMessage.append("Unable to open "+EOMap)
+        logtxt.append("Unable to open "+EOMap)
         return [[[0]],[[0]],[[0]]]
 
     if (band == -1) or (band <0):
@@ -82,21 +78,21 @@ def Apply_Legend(EOMap, band, legendval):
     try:
         srcband=data.GetRasterBand(band)
         if (srcband == None):
-            ErrorMessage.append("Unable to get band "+str(band)+" from "+EOMap)
+            logtxt.append("Unable to get band "+str(band)+" from "+EOMap)
             return [[[0]],[[0]],[[0]]]
         arr=srcband.ReadAsArray()
     except RuntimeError, e:
-        ErrorMessage.append("Unable to get band "+str(band)+" from "+EOMap)
+        logtxt.append("Unable to get band "+str(band)+" from "+EOMap)
         return [[[0]],[[0]],[[0]]]
 
     data=None
     
     Re=np.uint8(arr)
-    Re.fill(0)
+    Re.fill(255)
     Ge=np.uint8(arr)
-    Ge.fill(0)
+    Ge.fill(255)
     Be=np.uint8(arr)
-    Be.fill(0)
+    Be.fill(255)
 
     for li in range(0,len(legendval)-1):
         ind=(arr>=legendval[li][0]) & (arr<legendval[li+1][0])
@@ -109,10 +105,11 @@ def Apply_Legend(EOMap, band, legendval):
     Ge[ind]=legendval[len(legendval)-1][2]
     Be[ind]=legendval[len(legendval)-1][3]
 
-    ind=(Re == 0) & (Ge == 0) & (Be == 0)
+    ind=(Re == 255) & (Ge == 255) & (Be == 255)
     if (True in ind) == True:
-        ErrorMessage.append("Outlier in geophysical map")
+        logtxt.append("Outlier in geophysical map")
 
+    
     return Re,Ge,Be
 
 ##
@@ -121,7 +118,7 @@ def Apply_Legend(EOMap, band, legendval):
 ## Red, Gre, Blu are the RGB bands to be written
 ## returns 0 if okay
 ##
-def RGB_as_input(origgeofile,Red,Gre,Blu,outgeofile):
+def RGB_as_input(origgeofile,Red,Gre,Blu,outgeofile,logtxt):
     "Saves a RGB raster with the same gridding&geocoding of outgeofile. Red, Gre, Blu are the RGB bands to be written"
     
     # Gather some information from the original file
@@ -152,28 +149,29 @@ def RGB_as_input(origgeofile,Red,Gre,Blu,outgeofile):
 
         outdata=None
     except RuntimeError, e:
-        ErrorMessage.append("Error in writing RGB")
-        ErrorMessage.append(e)
-
+        logtxt.append("Error in writing RGB")
+        logtxt.append(e)
+        return 1
     return 0
 
 ## WHEN TESTING IS NEEDED
 ##if __name__ == '__main__':
 ##
 ##    print "Main body."
+##    loggo=[]
 ##
 ##    ##Testing parameters
 ##    GeoPhys_Map="F:/pke114_WQ/04_TempDir/A2016011122500.L2_LAC_OC.tif"
 ##    Legend_Txt="F:/pke114_WQ/01-Ancillari/Legenda_CHL.txt"
 ##    output_dir="F:/pke114_WQ/04_TempDir/"
 ##
-##    lalegenda=Read_Legend(Legend_Txt)
+##    lalegenda=Read_Legend(Legend_Txt,loggo)
 ##    if lalegenda[0] != 0 or lalegenda[1] != 0:
-##        Re,Ge,Be=Apply_Legend(GeoPhys_Map,3,lalegenda)
+##        Re,Ge,Be=Apply_Legend(GeoPhys_Map,3,lalegenda,loggo)
 ##        if len(Re) > 1:
-##            res=RGB_as_input(GeoPhys_Map,Re,Ge,Be,output_dir+"Test2.tif")
+##            res=RGB_as_input(GeoPhys_Map,Re,Ge,Be,output_dir+"Test2.tif",loggo)
 ##
-##    print ErrorMessage
+##    print loggo
 ##    print "All end."
        
 

@@ -1,4 +1,4 @@
-<!-- Updated 17/06/2016 -->
+<!-- Version of 02-09-2016 -->
 <graph id="Graph">
   <version>1.0</version>
   <node id="Read">
@@ -27,13 +27,13 @@
       <resampling>Nearest</resampling>
       <referencePixelX>0.5</referencePixelX>
       <referencePixelY>0.5</referencePixelY>
-      <easting>19.827</easting>
-      <northing>39.769</northing>
+      <easting>13.678</easting>
+      <northing>44.000</northing>
       <orientation>0.0</orientation>
       <pixelSizeX>0.011</pixelSizeX>
       <pixelSizeY>0.011</pixelSizeY>
-      <width>72</width>
-      <height>56</height>
+      <width>510</width>
+      <height>418</height>
       <tileSizeX/>
       <tileSizeY/>
       <orthorectify>false</orthorectify>
@@ -43,54 +43,45 @@
       <addDeltaBands>false</addDeltaBands>
     </parameters>
   </node>
-  <node id="Intermediate">
+  <node id="BandMaths">
     <operator>BandMaths</operator>
     <sources>
       <sourceProduct refid="Reproject"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
       <targetBands>
-        <targetBand>
-          <name>SST_nan</name>
-          <type>float32</type>
-          <!-- <expression>if (sst &lt; -10) then -11.0 else sst</expression> -->
-		  <expression>if (sst &lt; 2.0) then -11.0 else sst</expression>
-          <description/>
-          <unit/>
+		<targetBand>
+          <name>flagged_Chl</name>
+          <expression>CHL1_flags &amp; 571</expression>
+          <description>Flagged Chl</description>
+          <type>int16</type>
           <noDataValue>NaN</noDataValue>
         </targetBand>
       </targetBands>
     </parameters>
   </node>
-  <node id="BandMaths">
+<!-- FLAGGING
+NO_MEASUREMENT: 0 [1]
+INVALID: 1 [2]
+LAND: 3 [8]
+CLOUD1,CLOUD2: 4,5 [16,32]
+ICE: 9 [512]
+Total: 571
+Ignored TROPHIC STATE !
+-->
+  <node id="BandMaths_b">
     <operator>BandMaths</operator>
     <sources>
-      <sourceProduct refid="Reproject"/>
-	  <sourceProduct1 refid="SeaMask"/>
-	  <sourceProduct2 refid="Intermediate"/>
+      <sourceProduct refid="BandMaths"/>
+	  <sourceProduct2 refid="Reproject"/>
+	  <sourceProduct3 refid="SeaMask"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
       <targetBands>
         <targetBand>
-          <name>SST</name>
+          <name>Chlorophyll</name>
           <type>float32</type>
-          <expression>if ($sourceProduct1.sea_mask == 1) then $sourceProduct2.SST_nan else -10</expression>
-          <description/>
-          <unit/>
-          <noDataValue>NaN</noDataValue>
-        </targetBand>
-        <targetBand>
-          <name>l2_flags</name>
-          <type>float32</type>
-          <expression>l2_flags</expression>
-          <description/>
-          <unit/>
-          <noDataValue>NaN</noDataValue>
-        </targetBand>
-        <targetBand>
-          <name>flags_sst</name>
-          <type>float32</type>
-          <expression>if CLDICE then 1 else 0</expression>
+          <expression>if ($sourceProduct3.sea_mask) == 0 then -10 else (if (flagged_Chl >0) then -11.0 else $sourceProduct2.CHL1_mean)</expression>
           <description/>
           <unit/>
           <noDataValue>NaN</noDataValue>
@@ -101,7 +92,7 @@
   <node id="Write">
     <operator>Write</operator>
     <sources>
-      <sourceProduct refid="BandMaths"/> 
+      <sourceProduct refid="BandMaths_b"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
       <file>$fileout</file>

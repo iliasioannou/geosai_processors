@@ -1,2 +1,0 @@
-01_Ancillari,02_Scripting and 04_TempDir missing folders, are the same folder used for the daily processor.
-You can reuse the ones you find under "water_quality_modis_saimon" processor folder

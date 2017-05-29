@@ -1,0 +1,11 @@
+SST
+'sea_surface_temperature'
+
+CHL
+'CHL'
+
+Geophysical
+'KD490'
+'RRS490'
+'RRS555'
+'RRS670'
