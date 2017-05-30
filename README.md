@@ -39,6 +39,7 @@ EXAMPLE:
 *docker run -v D:\pkz029_CMEMS:/home/CMEMS cmems 3 3 003*
 
 **Input files**
+
 * CHL
 
 dataset-oc-med-chl-multi-l3-chl_1km_daily-rt*.nc
@@ -55,6 +56,7 @@ dataset-oc-med-opt-multi-l3-rrs555_1km_daily-rt*.nc
 dataset-oc-med-opt-multi-l3-rrs670_1km_daily-rt*.nc
 
 **Output files**
+
 The output files should be kept in a defined location in order to allow the procedure which calculates the statistics, to find them.
 Output file naming:
 
