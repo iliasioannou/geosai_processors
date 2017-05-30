@@ -18,6 +18,7 @@ To build the image, launch e.g.
 One host folders needs to be linked (-v option) when running the image to the main folder of the procedure.
 This is the completed expected folder tree with the input, intermediate and final output:
 - 01_Ancillari
+
 -- It contains the files in ancillary folder on git
 - 02_Scripting
 -- It contains the files in the processors folder on git
