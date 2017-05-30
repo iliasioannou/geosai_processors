@@ -19,8 +19,8 @@ One host folders needs to be linked (-v option) when running the image to the ma
 This is the completed expected folder tree with the input, intermediate and final output:
 - 01_Ancillari: It contains the files in ancillary folder on git
 - 02_Scripting: It contains the files in the processors folder on git
-- 03_Input
-- 04_TempDir
+- 03_Input: It will contain the input files (see below)
+- 04_TempDir: It will contain all temporary files, which will be deleted at the end of the process
 - 05_OutputDir: It will contain the output files (see note below about output location)
 
 ### CMEMS Docker image use: daily processor
