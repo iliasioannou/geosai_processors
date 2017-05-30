@@ -50,11 +50,11 @@ dataset-oc-med-chl-multi-l3-chl_1km_daily-rt*.nc
 SST_MED_SST_L3S_NRT_OBSERVATIONS_010_012_b*.nc
 
 * WT & Tur [**non ancora operativi**]
+- dataset-oc-med-opt-multi-l3-kd490_1km_daily-rt*.nc
+- dataset-oc-med-opt-multi-l3-rrs490_1km_daily-rt*.nc
+- dataset-oc-med-opt-multi-l3-rrs555_1km_daily-rt*.nc
+- dataset-oc-med-opt-multi-l3-rrs670_1km_daily-rt*.nc
 
-dataset-oc-med-opt-multi-l3-kd490_1km_daily-rt*.nc
-dataset-oc-med-opt-multi-l3-rrs490_1km_daily-rt*.nc
-dataset-oc-med-opt-multi-l3-rrs555_1km_daily-rt*.nc
-dataset-oc-med-opt-multi-l3-rrs670_1km_daily-rt*.nc
 
 **Output files**
 
