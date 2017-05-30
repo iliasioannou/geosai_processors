@@ -40,19 +40,26 @@ EXAMPLE:
 
 **Input files**
 * CHL
-- dataset-oc-med-chl-multi-l3-chl_1km_daily-rt*.nc
+
+dataset-oc-med-chl-multi-l3-chl_1km_daily-rt*.nc
+
 * SST
+
 SST_MED_SST_L3S_NRT_OBSERVATIONS_010_012_b*.nc
+
 * WT & Tur [**non ancora operativi**]
-- dataset-oc-med-opt-multi-l3-kd490_1km_daily-rt*.nc
-- dataset-oc-med-opt-multi-l3-rrs490_1km_daily-rt*.nc
+
+dataset-oc-med-opt-multi-l3-kd490_1km_daily-rt*.nc
+dataset-oc-med-opt-multi-l3-rrs490_1km_daily-rt*.nc
 dataset-oc-med-opt-multi-l3-rrs555_1km_daily-rt*.nc
 dataset-oc-med-opt-multi-l3-rrs670_1km_daily-rt*.nc
 
 **Output files**
 The output files should be kept in a defined location in order to allow the procedure which calculates the statistics, to find them.
 Output file naming:
+
 RC_aoi_yyyy_mm_dd_prod_type.tif
+
 - aoi = ITA or GRE
 - yyyy = year
 - mm = month (01-12)
