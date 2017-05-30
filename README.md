@@ -22,6 +22,7 @@ This is the completed expected folder tree with the input, intermediate and fina
 - 03_Input
 - 04_TempDir
 - 05_OutputDir: It will contain the output files (see note below about output location)
+
 ### CMEMS Docker image use: daily processor
 **How to launch the CMEMS processor with docker:**
 
