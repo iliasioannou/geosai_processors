@@ -1,8 +1,9 @@
 #
-# Version of 29/05/2017
 #
 # TO DO:
 #       - include Turbidity and Water Transparency
+#       - add the greek area and manage the twos
+#       - change check output existence (?): remove or take into account the real location/structure of the outputs
 #
 # Open issues:
 #        -surface_tempearure or adjusted_surface_temperature
@@ -90,7 +91,11 @@ def SST_Chain(inputlist,overwrite):
         time = nc.netcdf_file(input_dir+filename, 'r').time_min
         t0 = datetime.datetime(1981, 1, 1)
         dt = t0 + datetime.timedelta(seconds=time)
-        dated_filename='RC_'+str(dt.year)+'_'+str(dt.month)+'_'+str(dt.day)
+        me=str(dt.month)
+        da=str(dt.day)
+        if len(me)==1: me='0'+me
+        if len(da)==1: da='0'+da
+        dated_filename='RC_ITA_'+str(dt.year)+'_'+me+'_'+da  
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
         prod_filename_the=dated_filename+"_"+pFilenames[iin]+"_Thematic.tif"
 
@@ -236,7 +241,11 @@ def CHL_Chain(inputlist,overwrite):
         time=timekey.getValue()
         t0 = datetime.datetime(1981, 1, 1)
         dt = t0 + datetime.timedelta(seconds=time)
-        dated_filename='RC_'+str(dt.year)+'_'+str(dt.month)+'_'+str(dt.day)        
+        me=str(dt.month)
+        da=str(dt.day)
+        if len(me)==1: me='0'+me
+        if len(da)==1: da='0'+da
+        dated_filename='RC_ITA_'+str(dt.year)+'_'+me+'_'+da  
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
         prod_filename_the=dated_filename+"_"+pFilenames[iin]+"_Thematic.tif"
 
@@ -368,10 +377,6 @@ def CHL_Chain(inputlist,overwrite):
 ##
 def WQ_CMEMS_Chain(onflag,ovrwflag):
     
-    if os.path.isfile(snap+'.exe') == False:
-        ErrorMessage.append("SNAP executable not found")
-        return -1
-
     ##SST section
     if (onflag & 1)!=0:
         ovrw=0
