@@ -1,20 +1,36 @@
 # rpcServer.py
+import logging
 import xmlrpclib, json, os, shutil, socket
 import ConfigParser
 from SimpleXMLRPCServer import SimpleXMLRPCServer, SimpleXMLRPCRequestHandler
 from product_downloader_util import download_data
+from processor_start_util import run_processing
+from datetime import datetime, timedelta
+
 
 # store clients' IPs and Ports
 monitor = {}
 
-# save original working directory
-startPath = os.getcwd()
 
-# load server config properties
-cp = ConfigParser.ConfigParser()
-cp.read("serverConfig.ini")
-serverConf = dict(cp.items('server'))
-print "Server configuration loaded."
+def init_stuff(log_file="processing.log"):
+    """
+    Init basic stuff
+    :param log_file: the log file where logs need to be saved 
+    """
+    logging.basicConfig(filename=log_file,
+                        filemode='a',
+                        format='[CMEMS] %(asctime)s %(message)s',
+                        datefmt='%H:%M:%S',
+                        level=logging.DEBUG)
+    logging.getLogger().addHandler(logging.StreamHandler())
+    # load server config properties
+    logging.info("[CMEMS_RPC_SERVER] Initializing server instance")
+    cp = ConfigParser.ConfigParser()
+    cp.read("serverConfig.ini")
+    serverConf = dict(cp.items('server'))
+    server = SimpleXMLRPCServer((serverConf["host"], int(serverConf["port"]) ), customXMLRPCHandler)
+    logging.info("[CMEMS_RPC_SERVER] Done initializing server instance")
+    return server
 
 # !!! **** ADD Processors dir to PYTHONPATH **** !!!!      
 
@@ -25,50 +41,30 @@ class customXMLRPCHandler(SimpleXMLRPCRequestHandler):
         SimpleXMLRPCRequestHandler.do_POST(self)
 
 # 
-def execute(productID, scriptName, jsonData):
-    
+def execute(jsonData):
+    logging.info("---------------------------------------------------------------------")
+    logging.info("[CMEMS_RPC_SERVER] Got new request")
     # parse json to dictionary
     argsDict = json.loads(jsonData)
-    print "\n -------------*** SERVER: received new request! ***--------------- \nPayload:"
-    print argsDict
     
-    # import requested module 
-    print "SERVER: Importing module named " + scriptName
-    module = __import__(productID+'.'+scriptName)
-    proc = module.__dict__[scriptName]
-
-    # load an inject config properties
-    config = ConfigParser.ConfigParser()
-    config.read(module.__path__[0]+"\\config.ini")
-    configDict = dict(config.items(scriptName))
-    print "SERVER: Loaded config: " + str(configDict)
-    proc.__dict__.update( configDict )
+    try:
+        def_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+        download_data(argsDict.get('date', def_date), argsDict.get('date', def_date))
+        rslt = run_processing(argsDict.get('products', 3), argsDict.get('overwrite', 3))
+        logging.info("[CMEMS_RPC_SERVER] Result dict: %s" %rslt)
+    except Exception as e:
+        logging.error("[CMEMS_RPC_SERVER] Error in processing data")
+        logging.exception(e)
+        return json.dumps({"status":"e"})
     
-    print proc
-    print dir(proc)
+    logging.info("[CMEMS_RPC_SERVER] Request served")
+    logging.info("---------------------------------------------------------------------")
+    return json.dumps({"s": rslt})
 
-    print "SERVER: call run() from imported module"
-    print "- MODULE STDOUT -\n"
-    download_data()
-    outDict = proc.run(argsDict)
 
-    print "\n- END MODULE STDOUT -"
 
-    
-    print "SERVER: sending back module run() output"
-    print outDict
-    
-    print "MONITOR:",monitor["clientIP"]
-
-    # Restore original working directory
-    os.chdir(startPath)
-    
-    return json.dumps(outDict)
-
-server = SimpleXMLRPCServer((serverConf["host"], int(serverConf["port"]) ), customXMLRPCHandler)
-print "Listening on port "+serverConf["port"]
+server = init_stuff()
 
 server.register_instance(monitor)
-
 server.register_function(execute, "execute")
 server.serve_forever()

@@ -1,12 +1,13 @@
 # client.py
 import xmlrpclib
+import json
+
 
 proxy = xmlrpclib.ServerProxy("http://localhost:9091/")
 print "Calling the server processor ..."
 
-procOut = proxy.execute("water_quality_modis_twq", "processor", '{ "twq": "{}", "date": "201666666"}')
+procOut = proxy.execute(json.dumps({"date":"2017-05-30"}))
 
 print procOut
 
 print "Press Enter to exit"
-raw_input()
