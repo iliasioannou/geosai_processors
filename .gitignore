@@ -1,3 +1,5 @@
 .idea
 *.nc
 *.tif
+*.pyc
+*.log
