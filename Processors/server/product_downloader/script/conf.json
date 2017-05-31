@@ -3,9 +3,9 @@
   "username": "gceriola",
   "password":"19YdJaCD",
   "base_url":"http://cmems-oc.isac.cnr.it/motu-web/Motu",
-  "x": 39.0,
-  "X": 46.0,
-  "y": 12.0,
-  "Y": 19.0,
-  "output_path": "/data/04_Input"
+  "x": 12,
+  "X": 19,
+  "y": 39,
+  "Y": 46,
+  "output_path": "/src/server/processors/03_Input"
 }

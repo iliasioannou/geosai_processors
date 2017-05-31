@@ -1,6 +1,7 @@
 # Qui vanno inseriti i sorgenti dei processori e del wrapper XML-RPC per lanciarli da remoto
 
 ### CMEMS Docker image build&configure
+
 **To create the docker image**
 To create the image with the Dockerfile, the *response.varfile* configuration file is needed. 
 Furthermore in building the image it will download the following installation files:
@@ -9,7 +10,7 @@ a) https://sourceforge.net/projects/saga-gis/files/SAGA%20-%203/SAGA%20-%203.0.0
 
 b) http://step.esa.int/downloads/5.0/installers/esa-snap_all_unix_5_0.sh (460Mb)
 
-c) https://repo.continuum.io/archive/Anaconda2-4.3.0-Linux-x86_64.sh (475Mg)
+c) https://repo.continuum.io/archive/Anaconda2-4.3.0-Linux-x86_64.sh (475Mb)
 
 To build the image, launch e.g.
 *docker build -t cmems .*

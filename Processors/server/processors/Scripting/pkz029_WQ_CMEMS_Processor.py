@@ -23,18 +23,19 @@ import scipy.io.netcdf as nc
 from pke114_Apply_Legend import Read_Legend ##Need to be in the same folder
 from pke114_Apply_Legend import Apply_Legend ##Need to be in the same folder
 from pke114_Apply_Legend import RGB_as_input ##Need to be in the same folder
-
+import logging
 
 ############
 ## Pre-fixed information
 ##
 #General
-main_dir="/home/CMEMS/"
+
+main_dir="/src/server/processors/"
 snap="/opt/snap/bin/gpt"
 
 ##Relative folder tree
 ancil_dir=main_dir+"01_Ancillari/"
-script_dir=main_dir+"02_Scripting/"
+script_dir=main_dir+"Scripting/"
 input_dir=main_dir+"03_Input/"
 temp_dir=main_dir+"04_TempDir/"
 output_dir=main_dir+"05_OutputDir/"
@@ -83,7 +84,7 @@ def SST_Chain(inputlist,overwrite):
         filename=os.path.basename(inputlist[n])
 
         if (len(filename) == 0):
-            ErrorMessage.append("Wrong filename for SST input "+input_dir+filename)
+            logging.debug("[CMEMS_PROCESSORS] Wrong filename for SST input "+input_dir+filename)
             qualcheerrore=qualcheerrore+1
             continue
 
@@ -115,13 +116,13 @@ def SST_Chain(inputlist,overwrite):
                        '-Pmaskin='+Mask_LandSea,
                        '-Pfileout='+temp_dir+filename[:-3]+'.tif',
                        '-Pformat=GeoTIFF+XML']
-        
+        print commando
         try:
             subprocess.check_call(commando)
             a=1
         except subprocess.CalledProcessError as e:
             #If GPT fails report it, but continues to next file
-            ErrorMessage.append("Error in pre-processing "+filename)
+            logging.debug("[CMEMS_PROCESSORS] Error in pre-processing "+filename)
             qualcheerrore=qualcheerrore+1
             continue
        
@@ -131,14 +132,14 @@ def SST_Chain(inputlist,overwrite):
             band=data.GetRasterBand(1)
             arr=band.ReadAsArray()
         except RuntimeError, e:
-            ErrorMessage.append("Error in reading file "+temp_dir+filename[:-3]+".tif")
+            logging.debug("[CMEMS_PROCESSORS] Error in reading file "+temp_dir+filename[:-3]+".tif")
             data=None
             qualcheerrore=qualcheerrore+1
             continue
         if (np.max(arr)<0):
             data=None
             print "No valid pixel in "+filename+". No product generated"
-            ErrorMessage.append("No valid pixel in "+filename+". No product generated")
+            logging.debug("[CMEMS_PROCESSORS] No valid pixel in "+filename+". No product generated")
             os.remove(temp_dir+filename[:-3]+".tif")
             if os.path.isfile(temp_dir+filename[:-3]+".xml") == True:
                 os.remove(temp_dir+filename[:-3]+".xml")
@@ -171,7 +172,7 @@ def SST_Chain(inputlist,overwrite):
             band=None
         except RuntimeError, e:
             #If not generated, still continue
-            ErrorMessage.append("Error in writing geophyisical file "+prod_filename_num)
+            logging.debug("[CMEMS_PROCESSORS] Error in writing geophyisical file "+prod_filename_num)
             qualcheerrore=qualcheerrore+1
         else:
             #Apply the legend to the newly created file
@@ -229,9 +230,8 @@ def CHL_Chain(inputlist,overwrite):
     qualcheerrore=0
     for n in range(0,len(inputlist)):
         filename=os.path.basename(inputlist[n])
-
         if (len(filename) == 0):
-            ErrorMessage.append("Wrong filename for Chl input "+input_dir+filename)
+            logging.debug("[CMEMS_PROCESSORS] Wrong filename for Chl input "+input_dir+filename)
             qualcheerrore=qualcheerrore+1
             continue
 
@@ -270,7 +270,7 @@ def CHL_Chain(inputlist,overwrite):
             a=1
         except subprocess.CalledProcessError as e:
             #If GPT fails report it, but continues to next file
-            ErrorMessage.append("Error in pre-processing "+filename)
+            logging.debug("[CMEMS_PROCESSORS] Error in pre-processing "+filename)
             qualcheerrore=qualcheerrore+1
             continue
        
@@ -280,14 +280,14 @@ def CHL_Chain(inputlist,overwrite):
             band=data.GetRasterBand(1)
             arr=band.ReadAsArray()
         except RuntimeError, e:
-            ErrorMessage.append("Error in reading file "+temp_dir+filename[:-3]+".tif")
+            logging.debug("[CMEMS_PROCESSORS] Error in reading file "+temp_dir+filename[:-3]+".tif")
             data=None
             qualcheerrore=qualcheerrore+1
             continue
         if (np.max(arr)<0):
             data=None
             print "No valid pixel in "+filename+". No product generated"
-            ErrorMessage.append("No valid pixel in "+filename+". No product generated")
+            logging.debug("[CMEMS_PROCESSORS] No valid pixel in "+filename+". No product generated")
             os.remove(temp_dir+filename[:-3]+".tif")
             if os.path.isfile(temp_dir+filename[:-3]+".xml") == True:
                 os.remove(temp_dir+filename[:-3]+".xml")
@@ -320,7 +320,7 @@ def CHL_Chain(inputlist,overwrite):
             band=None
         except RuntimeError, e:
             #If not generated, still continue
-            ErrorMessage.append("Error in writing geophyisical file "+prod_filename_num)
+            logging.debug("[CMEMS_PROCESSORS] Error in writing geophyisical file "+prod_filename_num)
             qualcheerrore=qualcheerrore+1
         else:
             #Apply the legend to the newly created file
@@ -376,16 +376,28 @@ def CHL_Chain(inputlist,overwrite):
 ## Output: 0 okay, 1 any error
 ##
 def WQ_CMEMS_Chain(onflag,ovrwflag):
+<<<<<<< HEAD:Processors/processors/pkz029_WQ_CMEMS_Processor.py
     
+=======
+    #if os.path.isfile(snap+'.exe') == False:
+    #    logging.debug("[CMEMS_PROCESSORS] SNAP executable not found")
+    #    return -1
+
+>>>>>>> c82713a2fb2fb755a178f3ceccc4168e07221c29:Processors/server/processors/Scripting/pkz029_WQ_CMEMS_Processor.py
     ##SST section
     if (onflag & 1)!=0:
         ovrw=0
         if (ovrwflag & 1)!=0: ovrw=1    
         #Search for SST input files
+        logging.debug("SST PATTERN" + input_dir+SST_input_f+'*.nc')
+        
+        #ce = filter(lambda item: "SST_MED_SST_L3S_NRT_OBSERVATIONS_010_012_b" in item, os.listdir(input_dir))
+        
         ce=glob.glob(input_dir+SST_input_f+'*.nc')
         if len(ce)==0:
-            ErrorMessage.append('No SST input files to process')
+            logging.debug('[CMEMS_PROCESSORS] No SST input files to process')
         else:
+            logging.debug('[CMEMS_PROCESSORS] Start processing')
             result1=SST_Chain(ce,ovrw)
 
     ##CHL section
@@ -395,7 +407,7 @@ def WQ_CMEMS_Chain(onflag,ovrwflag):
         #Search for CHL input files
         ce=glob.glob(input_dir+CHL_input_f+'*.nc')
         if len(ce)==0:
-            ErrorMessage.append('No CHL input files to process')
+            logging.debug('[CMEMS_PROCESSORS] No CHL input files to process')
         else:
             result2=CHL_Chain(ce,ovrw)
     
@@ -404,23 +416,23 @@ def WQ_CMEMS_Chain(onflag,ovrwflag):
 
     return 0
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    if len(sys.argv)!=4:
-        print "Wrong number of arguments!"
-    else:
-        param1=int(sys.argv[1])
-        param2=int(sys.argv[2])
-        IDS=sys.argv[3]
+#     if len(sys.argv)!=4:
+#         print "Wrong number of arguments!"
+#     else:
+#         param1=int(sys.argv[1])
+#         param2=int(sys.argv[2])
+#         IDS=sys.argv[3]
 
-        ErrorMessage.append("Start: "+time.ctime())
-        res=WQ_CMEMS_Chain(param1,param2)
-        ErrorMessage.append("End: "+time.ctime())
+#         logging.debug("[CMEMS_PROCESSORS] Start: "+time.ctime())
+#         res=WQ_CMEMS_Chain(param1,param2)
+#         logging.debug("[CMEMS_PROCESSORS] End: "+time.ctime())
         
-        lg=open(output_dir+IDS+'_log.txt','w')
-        for linea in ErrorMessage:
-            lg.write(linea+'\n')
-        lg.close()
+#         lg=open(output_dir+IDS+'_log.txt','w')
+#         for linea in ErrorMessage:
+#             lg.write(linea+'\n')
+#         lg.close()
 
 ##Manual testing
 ##    print "Main body."

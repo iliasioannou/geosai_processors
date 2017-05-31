@@ -1,5 +1,5 @@
 import json
-
+import os
 
 class StringScriptBuilder():
     """
@@ -16,9 +16,10 @@ class StringScriptBuilder():
     """
 
     def build(self):
-        with open(getattr(self, 'conf_path', 'conf.json')) as inp:
-            conf = json.loads(inp)
-        return 'python %s -u %s -p %s -m %s -x %s -X %s -y %s -Y %s -o %s -s %s -d %s -t "%s" -T "%s" -v %s -f %s' % (
+        conf_json_path = getattr(self, 'conf_path', 'conf.json')
+        with open(os.path.join("product_downloader", "script", conf_json_path)) as inp:
+            conf = json.loads(inp.read())
+        return '/home/anaconda/bin/python2.7 %s -u %s -p %s -m %s -x %s -X %s -y %s -Y %s -o %s -s %s -d %s -t "%s" -T "%s" -v %s -f %s' % (
                 getattr(self, 'motu_client_path', conf['motu_client_path']),
                 getattr(self, 'username', conf['username']),
                 getattr(self, 'password', conf['password']),
