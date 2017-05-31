@@ -376,23 +376,12 @@ def CHL_Chain(inputlist,overwrite):
 ## Output: 0 okay, 1 any error
 ##
 def WQ_CMEMS_Chain(onflag,ovrwflag):
-<<<<<<< HEAD:Processors/processors/pkz029_WQ_CMEMS_Processor.py
-    
-=======
-    #if os.path.isfile(snap+'.exe') == False:
-    #    logging.debug("[CMEMS_PROCESSORS] SNAP executable not found")
-    #    return -1
-
->>>>>>> c82713a2fb2fb755a178f3ceccc4168e07221c29:Processors/server/processors/Scripting/pkz029_WQ_CMEMS_Processor.py
     ##SST section
     if (onflag & 1)!=0:
         ovrw=0
         if (ovrwflag & 1)!=0: ovrw=1    
         #Search for SST input files
-        logging.debug("SST PATTERN" + input_dir+SST_input_f+'*.nc')
-        
-        #ce = filter(lambda item: "SST_MED_SST_L3S_NRT_OBSERVATIONS_010_012_b" in item, os.listdir(input_dir))
-        
+        logging.debug("SST PATTERN" + input_dir+SST_input_f+'*.nc')        
         ce=glob.glob(input_dir+SST_input_f+'*.nc')
         if len(ce)==0:
             logging.debug('[CMEMS_PROCESSORS] No SST input files to process')
@@ -415,27 +404,3 @@ def WQ_CMEMS_Chain(onflag,ovrwflag):
         return 1
 
     return 0
-
-# if __name__ == '__main__':
-
-#     if len(sys.argv)!=4:
-#         print "Wrong number of arguments!"
-#     else:
-#         param1=int(sys.argv[1])
-#         param2=int(sys.argv[2])
-#         IDS=sys.argv[3]
-
-#         logging.debug("[CMEMS_PROCESSORS] Start: "+time.ctime())
-#         res=WQ_CMEMS_Chain(param1,param2)
-#         logging.debug("[CMEMS_PROCESSORS] End: "+time.ctime())
-        
-#         lg=open(output_dir+IDS+'_log.txt','w')
-#         for linea in ErrorMessage:
-#             lg.write(linea+'\n')
-#         lg.close()
-
-##Manual testing
-##    print "Main body."
-##
-##    res=WQ_CMEMS_Chain(3,3)
-##    print ret
