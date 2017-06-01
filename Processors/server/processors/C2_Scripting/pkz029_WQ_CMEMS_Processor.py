@@ -599,15 +599,18 @@ def TWT_Chain(inputlist,overwrite,qual,AOI):
 ##           bit 3 -> tur
 ##   ovewflag: same bit order of onflag. When set to 1, it activates overwriting of already existing products
 ## setAOI: 1=ITA, 2=GRE, Any other=BOTH
-##
+## date: output folder subdir
 ## Output: 0 okay, 1 any error
 ##
-def WQ_CMEMS_Chain(onflag,ovrwflag,setAOI=[1,2]):
+def WQ_CMEMS_Chain(onflag,ovrwflag,date,setAOI=[1,2]):
 
     #if setAOI!=1 and setAOI!=2:
     #    setAOI=[1,2]
     #else:
     #    setAOI=[setAOI]
+    
+    output_dir = os.path.join(output_dir, date)
+    os.mkdir(output_dir)
 
     for areaofi in setAOI:
         logging.info("[CMEMS_PROCESSORS] Processing AOI:"+AOI_Name[areaofi-1])

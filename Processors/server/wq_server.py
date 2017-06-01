@@ -48,11 +48,15 @@ def execute(jsonData):
     argsDict = json.loads(jsonData)
     rslt=1
     try:
-        def_date = (datetime.now() - timedelta(days=1))
+        def_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
         gte_date = argsDict.get('gte', def_date) if "gte" in argsDict else def_date
         lte_date = argsDict.get('lte', def_date) if "lte" in argsDict else def_date
         download_data(gte_date, gte_date)
-        rslt = run_processing(argsDict.get('products', 3), argsDict.get('overwrite', 3))
+        rslt = run_processing(
+            argsDict.get('products', 3), 
+            argsDict.get('overwrite', 3),
+            gte_date
+            )
         logging.info("[CMEMS_RPC_SERVER] Result dict: %s" %rslt)
     except Exception as e:
         logging.error("[CMEMS_RPC_SERVER] Error in processing data")
