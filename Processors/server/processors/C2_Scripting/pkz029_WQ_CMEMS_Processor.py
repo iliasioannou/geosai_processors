@@ -606,12 +606,12 @@ def TWT_Chain(inputlist,overwrite,qual,AOI):
 ##
 ## Output: 0 okay, 1 any error
 ##
-def WQ_CMEMS_Chain(onflag,ovrwflag,setAOI):
+def WQ_CMEMS_Chain(onflag,ovrwflag,setAOI=[1,2]):
 
-    if setAOI!=1 and setAOI!=2:
-        setAOI=[1,2]
-    else:
-        setAOI=[setAOI]
+    #if setAOI!=1 and setAOI!=2:
+    #    setAOI=[1,2]
+    #else:
+    #    setAOI=[setAOI]
 
     for areaofi in setAOI:
         logging.info("[CMEMS_PROCESSORS] Processing AOI:"+AOI_Name[areaofi-1])
