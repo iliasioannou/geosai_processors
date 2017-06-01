@@ -46,20 +46,22 @@ def execute(jsonData):
     logging.info("[CMEMS_RPC_SERVER] Got new request")
     # parse json to dictionary
     argsDict = json.loads(jsonData)
-    
+    rslt=1
     try:
-        def_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
-        download_data(argsDict.get('date', def_date), argsDict.get('date', def_date))
+        def_date = (datetime.now() - timedelta(days=1))
+        gte_date = datetime.strptime(argsDict['gte'], "%a %b %d %H:%M:%S %Z %Y").strftime("%Y-%m-%d") if "gte" in argsDict else def_date
+        lte_date = datetime.strptime(argsDict['lte'], "%a %b %d %H:%M:%S %Z %Y").strftime("%Y-%m-%d") if "lte" in argsDict else def_date
+        download_data(gte_date, gte_date)
         rslt = run_processing(argsDict.get('products', 3), argsDict.get('overwrite', 3))
         logging.info("[CMEMS_RPC_SERVER] Result dict: %s" %rslt)
     except Exception as e:
         logging.error("[CMEMS_RPC_SERVER] Error in processing data")
         logging.exception(e)
-        return json.dumps({"status":"e"})
+        return json.dumps({"returnCode":rlst, "message": str(e)})
     
     logging.info("[CMEMS_RPC_SERVER] Request served")
     logging.info("---------------------------------------------------------------------")
-    return json.dumps({"s": rslt})
+    return json.dumps({"returnCode": rslt})
 
 
 
