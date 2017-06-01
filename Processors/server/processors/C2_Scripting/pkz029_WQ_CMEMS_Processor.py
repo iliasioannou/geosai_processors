@@ -608,7 +608,7 @@ def WQ_CMEMS_Chain(onflag,ovrwflag,date,setAOI=[1,2]):
     #    setAOI=[1,2]
     #else:
     #    setAOI=[setAOI]
-    
+    global output_dir
     output_dir = os.path.join(output_dir, date)
     os.mkdir(output_dir)
 
