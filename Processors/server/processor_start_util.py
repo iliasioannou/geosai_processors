@@ -1,4 +1,4 @@
-from processors.Scripting.pkz029_WQ_CMEMS_Processor import WQ_CMEMS_Chain
+from processors.C2_Scripting.pkz029_WQ_CMEMS_Processor import WQ_CMEMS_Chain
 import logging
 
 def run_processing(products, overwrites):
