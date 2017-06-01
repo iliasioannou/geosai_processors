@@ -28,7 +28,7 @@
     <operator>Read</operator>
     <sources/>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <file>$filein678</file>
+      <file>$filein670</file>
     </parameters>
   </node>
   <node id="ReadKD490">
@@ -49,13 +49,13 @@
       <resampling>Nearest</resampling>
       <referencePixelX>0.5</referencePixelX>
       <referencePixelY>0.5</referencePixelY>
-      <easting>13.678</easting>
-      <northing>44.000</northing>
+      <easting>22.30</easting>
+      <northing>41.20</northing>
       <orientation>0.0</orientation>
-      <pixelSizeX>0.011</pixelSizeX>
-      <pixelSizeY>0.011</pixelSizeY>
-      <width>510</width>
-      <height>418</height>
+      <pixelSizeX>0.01</pixelSizeX>
+      <pixelSizeY>0.01</pixelSizeY>
+      <width>470</width>
+      <height>540</height>
       <tileSizeX/>
       <tileSizeY/>
       <orthorectify>false</orthorectify>
@@ -76,13 +76,13 @@
       <resampling>Nearest</resampling>
       <referencePixelX>0.5</referencePixelX>
       <referencePixelY>0.5</referencePixelY>
-      <easting>13.678</easting>
-      <northing>44.000</northing>
+      <easting>22.30</easting>
+      <northing>41.20</northing>
       <orientation>0.0</orientation>
-      <pixelSizeX>0.011</pixelSizeX>
-      <pixelSizeY>0.011</pixelSizeY>
-      <width>510</width>
-      <height>418</height>
+      <pixelSizeX>0.01</pixelSizeX>
+      <pixelSizeY>0.01</pixelSizeY>
+      <width>470</width>
+      <height>540</height>
       <tileSizeX/>
       <tileSizeY/>
       <orthorectify>false</orthorectify>
@@ -103,13 +103,13 @@
       <resampling>Nearest</resampling>
       <referencePixelX>0.5</referencePixelX>
       <referencePixelY>0.5</referencePixelY>
-      <easting>13.678</easting>
-      <northing>44.000</northing>
+      <easting>22.30</easting>
+      <northing>41.20</northing>
       <orientation>0.0</orientation>
-      <pixelSizeX>0.011</pixelSizeX>
-      <pixelSizeY>0.011</pixelSizeY>
-      <width>510</width>
-      <height>418</height>
+      <pixelSizeX>0.01</pixelSizeX>
+      <pixelSizeY>0.01</pixelSizeY>
+      <width>470</width>
+      <height>540</height>
       <tileSizeX/>
       <tileSizeY/>
       <orthorectify>false</orthorectify>
@@ -130,13 +130,40 @@
       <resampling>Nearest</resampling>
       <referencePixelX>0.5</referencePixelX>
       <referencePixelY>0.5</referencePixelY>
-      <easting>13.678</easting>
-      <northing>44.000</northing>
+      <easting>22.30</easting>
+      <northing>41.20</northing>
       <orientation>0.0</orientation>
-      <pixelSizeX>0.011</pixelSizeX>
-      <pixelSizeY>0.011</pixelSizeY>
-      <width>510</width>
-      <height>418</height>
+      <pixelSizeX>0.01</pixelSizeX>
+      <pixelSizeY>0.01</pixelSizeY>
+      <width>470</width>
+      <height>540</height>
+      <tileSizeX/>
+      <tileSizeY/>
+      <orthorectify>false</orthorectify>
+      <elevationModelName/>
+      <noDataValue/>
+      <includeTiePointGrids>true</includeTiePointGrids>
+      <addDeltaBands>false</addDeltaBands>
+    </parameters>
+  </node>
+  <node id="Reproject_seamask">
+    <operator>Reproject</operator>
+    <sources>
+      <sourceProduct refid="SeaMask"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <wktFile/>
+      <crs>EPSG:4326</crs>
+      <resampling>Nearest</resampling>
+      <referencePixelX>0.5</referencePixelX>
+      <referencePixelY>0.5</referencePixelY>
+      <easting>22.30</easting>
+      <northing>41.20</northing>
+      <orientation>0.0</orientation>
+      <pixelSizeX>0.01</pixelSizeX>
+      <pixelSizeY>0.01</pixelSizeY>
+      <width>470</width>
+      <height>540</height>
       <tileSizeX/>
       <tileSizeY/>
       <orthorectify>false</orthorectify>
@@ -159,16 +186,57 @@
       <geographicError>1.0E-5</geographicError>
     </parameters>
   </node>
-  <node id="WFlaggedPix">
+  <node id="Single_QI">
     <operator>BandMaths</operator>
     <sources>
-      <sourceProduct refid="BandMerge"/>
-    </sources>
+      <sourceProduct refid="Reproject490"/>
+      <sourceProduct1 refid="Reproject555"/>
+      <sourceProduct2 refid="Reproject678"/>
+	  <sourceProduct3 refid="ReprojectKD490"/>
+    </sources>>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
       <targetBands>
 	  <targetBand>
+          <name>QI_nrrs490</name>
+          <expression>if QI &lt; -1.9 or QI &gt; 1.9 then 1 else 0</expression>
+          <description>rss490nm low quality pixels</description>
+          <type>int16</type>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+	  <targetBand>
+          <name>QI_nrrs555</name>
+          <expression>if $sourceProduct1.QI &lt; -1.9 or $sourceProduct1.QI &gt; 1.9 then 1 else 0</expression>
+          <description>rss555nm low quality pixels</description>
+          <type>int16</type>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+	  <targetBand>
+          <name>QI_nrrs678</name>
+          <expression>if $sourceProduct2.QI &lt; -1.9 or $sourceProduct2.QI &gt; 1.9 then 1 else 0</expression>
+          <description>rss678nm low quality pixels</description>
+          <type>int16</type>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+	  <targetBand>
+          <name>QI_KD490</name>
+          <expression>if $sourceProduct3.QI &lt; -1.9 or $sourceProduct3.QI &gt; 1.9 then 1 else 0</expression>
+          <description>KD490 low quality pixels</description>
+          <type>int16</type>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+      </targetBands>
+    </parameters>
+  </node>  
+  <node id="WFlaggedPix">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="Single_QI"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands>
+	    <targetBand>
           <name>flagged_band</name>
-          <expression>NRRS490_flags &amp; 571</expression>
+          <expression>if (QI_nrrs490+QI_nrrs555+QI_nrrs678+QI_KD490) &gt;= 1 then 1 else 0</expression>
           <description>Flagged pixels</description>
           <type>int16</type>
           <noDataValue>NaN</noDataValue>
@@ -176,15 +244,6 @@
       </targetBands>
     </parameters>
   </node>
-<!-- FLAGGING
-NO_MEASUREMENT: 0 [1]
-INVALID: 1 [2]
-LAND: 3 [8]
-CLOUD1,CLOUD2: 4,5 [16,32]
-ICE: 9 [512]
-Total: 571
-Ignored TROPHIC STATE !
--->
   <node id="Rename_Flag">
     <operator>BandMaths</operator>
     <sources>
@@ -195,28 +254,28 @@ Ignored TROPHIC STATE !
       <targetBands>
 	    <targetBand>
           <name>Rrs_488</name>
-          <expression>if ($sourceProduct2.flagged_band == 0) then NRRS490_mean else NaN</expression>
+          <expression>if ($sourceProduct2.flagged_band == 0) then RRS490 else NaN</expression>
           <description>Flagged 490</description>
           <type>float32</type>
           <noDataValue>NaN</noDataValue>
         </targetBand>
 	    <targetBand>
           <name>Rrs_555</name>
-          <expression>if ($sourceProduct2.flagged_band == 0) then NRRS555_mean else NaN</expression>
+          <expression>if ($sourceProduct2.flagged_band == 0) then RRS555 else NaN</expression>
           <description>Flagged 555</description>
           <type>float32</type>
           <noDataValue>NaN</noDataValue>
         </targetBand>
 	    <targetBand>
           <name>Rrs_678</name>
-          <expression>if ($sourceProduct2.flagged_band == 0) then NRRS678_mean else NaN</expression>
+          <expression>if ($sourceProduct2.flagged_band == 0) then RRS670 else NaN</expression>
           <description>Flagged 678</description>
           <type>float32</type>
           <noDataValue>NaN</noDataValue>
         </targetBand>
 	    <targetBand>
           <name>Kd_490</name>
-          <expression>if ($sourceProduct2.flagged_band == 0) then 'KD490_mean' else NaN</expression>
+          <expression>if ($sourceProduct2.flagged_band == 0) then KD490 else NaN</expression>
           <description>Flagged KD490</description>
           <type>float32</type>
           <noDataValue>NaN</noDataValue>
@@ -392,14 +451,14 @@ Ignored TROPHIC STATE !
     <operator>BandMaths</operator>
     <sources>
 	  <sourceProduct1 refid="BandMaths(4)"/>
-	  <sourceProduct4 refid="SeaMask"/>
+	  <sourceProduct4 refid="Reproject_seamask"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
       <targetBands>
         <targetBand>
           <name>WaterTransp</name>
           <type>float32</type>
-          <expression>if ($sourceProduct4.sea_mask) == 0 then -10.0 else (if ($sourceProduct1.WaterTransparency >0) then $sourceProduct1.WaterTransparency else -11.0)</expression>
+          <expression>if ($sourceProduct4.band_1) == 0 then -10.0 else (if ($sourceProduct1.WaterTransparency >0) then $sourceProduct1.WaterTransparency else -11.0)</expression>
           <description/>
           <unit/>
           <noDataValue>NaN</noDataValue>
@@ -411,14 +470,14 @@ Ignored TROPHIC STATE !
     <operator>BandMaths</operator>
     <sources>
 	  <sourceProduct3 refid="BandMaths(2)"/>
-	  <sourceProduct4 refid="SeaMask"/>
+	  <sourceProduct4 refid="Reproject_seamask"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
       <targetBands>
 		<targetBand>
           <name>Turbidity</name>
           <type>float32</type>
-          <expression>if ($sourceProduct4.sea_mask) == 0 then -10.0 else (if ($sourceProduct3.Turbidity >0) then $sourceProduct3.Turbidity else -11.0)</expression>
+          <expression>if ($sourceProduct4.band_1) == 0 then -10.0 else (if ($sourceProduct3.Turbidity >0) then $sourceProduct3.Turbidity else -11.0)</expression>
           <description/>
           <unit/>
           <noDataValue>NaN</noDataValue>

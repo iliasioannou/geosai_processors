@@ -1,0 +1,133 @@
+<!-- Updated 17/06/2016 -->
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="Read">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$filein</file>
+    </parameters>
+  </node>
+  <node id="SeaMask">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$maskin</file>
+	  <formatName>GeoTIFF</formatName>
+    </parameters>
+  </node>
+  <node id="Reproject">
+    <operator>Reproject</operator>
+    <sources>
+      <sourceProduct refid="Read"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <wktFile/>
+      <crs>EPSG:4326</crs>
+      <resampling>Nearest</resampling>
+      <referencePixelX>0.5</referencePixelX>
+      <referencePixelY>0.5</referencePixelY>
+      <easting>22.30</easting>
+      <northing>41.20</northing>
+      <orientation>0.0</orientation>
+      <pixelSizeX>0.01</pixelSizeX>
+      <pixelSizeY>0.01</pixelSizeY>
+      <width>470</width>
+      <height>540</height>
+      <tileSizeX/>
+      <tileSizeY/>
+      <orthorectify>false</orthorectify>
+      <elevationModelName/>
+      <noDataValue/>
+      <includeTiePointGrids>true</includeTiePointGrids>
+      <addDeltaBands>false</addDeltaBands>
+    </parameters>
+  </node>
+  <node id="Reproject_SM">
+    <operator>Reproject</operator>
+    <sources>
+      <sourceProduct refid="SeaMask"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <wktFile/>
+      <crs>EPSG:4326</crs>
+      <resampling>Nearest</resampling>
+      <referencePixelX>0.5</referencePixelX>
+      <referencePixelY>0.5</referencePixelY>
+      <easting>22.30</easting>
+      <northing>41.20</northing>
+      <orientation>0.0</orientation>
+      <pixelSizeX>0.01</pixelSizeX>
+      <pixelSizeY>0.01</pixelSizeY>
+      <width>470</width>
+      <height>540</height>
+      <tileSizeX/>
+      <tileSizeY/>
+      <orthorectify>false</orthorectify>
+      <elevationModelName/>
+      <noDataValue/>
+      <includeTiePointGrids>true</includeTiePointGrids>
+      <addDeltaBands>false</addDeltaBands>
+    </parameters>
+  </node>
+<!-- FLAGGING
+quality_level  between 0 (bad) and 5 (good)
+-->
+  <node id="Intermediate">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="Reproject"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands>
+        <targetBand>
+          <name>SST_nan</name>
+          <type>float32</type>
+          <!-- <expression>if (sst &lt; -10) then -11.0 else sst</expression> -->
+		  <expression>if ((sea_surface_temperature - 273.15) &lt; 2.0) then -11.0 else (sea_surface_temperature - 273.15)</expression>
+          <description/>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+      </targetBands>
+    </parameters>
+  </node>
+  <node id="BandMaths">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="Reproject"/>
+	  <sourceProduct1 refid="Reproject_SM"/>
+	  <sourceProduct2 refid="Intermediate"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands>
+        <targetBand>
+          <name>SST</name>
+          <type>float32</type>
+          <expression>if ($sourceProduct1.band_1 == 1) then $sourceProduct2.SST_nan else -10</expression>
+          <description/>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+        <targetBand>
+          <name>flags_sst</name>
+          <type>float32</type>
+          <expression>if quality_level &lt; 2 then 1 else 0</expression>
+          <description/>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+      </targetBands>
+    </parameters>
+  </node>
+  <node id="Write">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="BandMaths"/> 
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$fileout</file>
+      <formatName>$format</formatName>
+    </parameters>
+  </node>
+</graph>

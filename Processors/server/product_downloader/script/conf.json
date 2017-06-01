@@ -4,8 +4,8 @@
   "password":"19YdJaCD",
   "base_url":"http://cmems-oc.isac.cnr.it/motu-web/Motu",
   "x": 12,
-  "X": 19,
-  "y": 39,
+  "X": 28,
+  "y": 35,
   "Y": 46,
-  "output_path": "/src/server/processors/03_Input"
+  "output_path": "/src/server/processors/C3_Input"
 }
