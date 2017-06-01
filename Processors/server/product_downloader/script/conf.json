@@ -7,5 +7,5 @@
   "X": 28,
   "y": 35,
   "Y": 46,
-  "output_path": "/src/server/processors/C3_Input"
+  "output_path": "/src/Processors/server/processors/C3_Input"
 }
