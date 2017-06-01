@@ -24,7 +24,7 @@ RUN export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 #Installation set to /opt/snap.
 RUN wget http://step.esa.int/downloads/5.0/installers/esa-snap_all_unix_5_0.sh -O /home/esa-snap_all_unix_5_0.sh
 RUN chmod 777 /home/esa-snap_all_unix_5_0.sh
-ADD /installers/response.varfile /home
+ADD installers/response.varfile /home
 
 RUN ./esa-snap_all_unix_5_0.sh -q -varfile response.varfile && snap --nosplash --nogui --modules --update-all
 
