@@ -9,7 +9,7 @@ def run_processing(products, overwrites):
     #IDS=sys.argv[3]
 
     logging.info("[CMES_PROCESSORS] Starting processing data")
-    res=WQ_CMEMS_Chain(products, overwrites,3)
+    res=WQ_CMEMS_Chain(products, overwrites)
     logging.info("[CMES_PROCESSORS] End processing data")
     return res
     # lg=open(output_dir+IDS+'_log.txt','w')
