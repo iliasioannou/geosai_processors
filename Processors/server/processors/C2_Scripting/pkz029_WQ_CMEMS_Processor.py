@@ -28,7 +28,7 @@ from pke114_Apply_Legend import RGB_as_input ##Need to be in the same folder
 ## Pre-fixed information
 ##
 #General
-main_dir="/src/server/processors/"
+main_dir="/home/CMEMS/"
 snap="/opt/snap/bin/gpt"
 
 ##Relative folder tree
@@ -59,10 +59,6 @@ AOI_Name=['ITA','GRE']
 
 ###Others
 GDAL_TIFF_Options_list=['COMPRESS=LZW','TILED=YES']
-
-##Only for testing in Windows
-logging.basicConfig(filename=output_dir+'thisismy.log',filemode='w',format='[CMEMS] %(asctime)s %(message)s',datefmt='%H:%M:%S',level=logging.DEBUG)
-logging.getLogger().addHandler(logging.StreamHandler())
 
 
 ###---------------------------------------------------------------------------
