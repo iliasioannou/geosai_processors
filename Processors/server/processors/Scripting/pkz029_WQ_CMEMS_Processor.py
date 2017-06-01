@@ -1,8 +1,9 @@
 #
-# Version of 29/05/2017
 #
 # TO DO:
 #       - include Turbidity and Water Transparency
+#       - add the greek area and manage the twos
+#       - change check output existence (?): remove or take into account the real location/structure of the outputs
 #
 # Open issues:
 #        -surface_tempearure or adjusted_surface_temperature
@@ -91,7 +92,11 @@ def SST_Chain(inputlist,overwrite):
         time = nc.netcdf_file(input_dir+filename, 'r').time_min
         t0 = datetime.datetime(1981, 1, 1)
         dt = t0 + datetime.timedelta(seconds=time)
-        dated_filename='RC_'+str(dt.year)+'_'+str(dt.month)+'_'+str(dt.day)
+        me=str(dt.month)
+        da=str(dt.day)
+        if len(me)==1: me='0'+me
+        if len(da)==1: da='0'+da
+        dated_filename='RC_ITA_'+str(dt.year)+'_'+me+'_'+da  
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
         prod_filename_the=dated_filename+"_"+pFilenames[iin]+"_Thematic.tif"
 
@@ -236,7 +241,11 @@ def CHL_Chain(inputlist,overwrite):
         time=timekey.getValue()
         t0 = datetime.datetime(1981, 1, 1)
         dt = t0 + datetime.timedelta(seconds=time)
-        dated_filename='RC_'+str(dt.year)+'_'+str(dt.month)+'_'+str(dt.day)        
+        me=str(dt.month)
+        da=str(dt.day)
+        if len(me)==1: me='0'+me
+        if len(da)==1: da='0'+da
+        dated_filename='RC_ITA_'+str(dt.year)+'_'+me+'_'+da  
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
         prod_filename_the=dated_filename+"_"+pFilenames[iin]+"_Thematic.tif"
 
@@ -367,19 +376,12 @@ def CHL_Chain(inputlist,overwrite):
 ## Output: 0 okay, 1 any error
 ##
 def WQ_CMEMS_Chain(onflag,ovrwflag):
-    #if os.path.isfile(snap+'.exe') == False:
-    #    logging.debug("[CMEMS_PROCESSORS] SNAP executable not found")
-    #    return -1
-
     ##SST section
     if (onflag & 1)!=0:
         ovrw=0
         if (ovrwflag & 1)!=0: ovrw=1    
         #Search for SST input files
-        logging.debug("SST PATTERN" + input_dir+SST_input_f+'*.nc')
-        
-        #ce = filter(lambda item: "SST_MED_SST_L3S_NRT_OBSERVATIONS_010_012_b" in item, os.listdir(input_dir))
-        
+        logging.debug("SST PATTERN" + input_dir+SST_input_f+'*.nc')        
         ce=glob.glob(input_dir+SST_input_f+'*.nc')
         if len(ce)==0:
             logging.debug('[CMEMS_PROCESSORS] No SST input files to process')
@@ -402,27 +404,3 @@ def WQ_CMEMS_Chain(onflag,ovrwflag):
         return 1
 
     return 0
-
-# if __name__ == '__main__':
-
-#     if len(sys.argv)!=4:
-#         print "Wrong number of arguments!"
-#     else:
-#         param1=int(sys.argv[1])
-#         param2=int(sys.argv[2])
-#         IDS=sys.argv[3]
-
-#         logging.debug("[CMEMS_PROCESSORS] Start: "+time.ctime())
-#         res=WQ_CMEMS_Chain(param1,param2)
-#         logging.debug("[CMEMS_PROCESSORS] End: "+time.ctime())
-        
-#         lg=open(output_dir+IDS+'_log.txt','w')
-#         for linea in ErrorMessage:
-#             lg.write(linea+'\n')
-#         lg.close()
-
-##Manual testing
-##    print "Main body."
-##
-##    res=WQ_CMEMS_Chain(3,3)
-##    print ret
