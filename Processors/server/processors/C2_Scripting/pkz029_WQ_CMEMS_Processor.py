@@ -28,7 +28,7 @@ from pke114_Apply_Legend import RGB_as_input ##Need to be in the same folder
 ## Pre-fixed information
 ##
 #General
-main_dir="/home/CMEMS/"
+main_dir="/src/Processors/server/processors/"
 snap="/opt/snap/bin/gpt"
 
 ##Relative folder tree
