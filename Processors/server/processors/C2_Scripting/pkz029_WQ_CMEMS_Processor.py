@@ -610,6 +610,8 @@ def WQ_CMEMS_Chain(onflag,ovrwflag,date,setAOI=[1,2]):
     #else:
     #    setAOI=[setAOI]
     #global output_dir
+
+    
     dest_dir = "%s/" %os.path.join(global_output_dir, date)
     os.mkdir(dest_dir)
 
@@ -691,6 +693,6 @@ def WQ_CMEMS_Chain(onflag,ovrwflag,date,setAOI=[1,2]):
                 if result4==1: eerr=1
             
     if eerr==1:
-        return 1
+        return 1,dest_dir
 
-    return 0
+    return 0,dest_dir

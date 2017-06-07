@@ -52,7 +52,7 @@ def execute(jsonData):
         gte_date = argsDict.get('gte', def_date) if "gte" in argsDict else def_date
         lte_date = argsDict.get('lte', def_date) if "lte" in argsDict else def_date
         download_data(gte_date, gte_date)
-        rslt = run_processing(
+        rslt, outPath = run_processing(
             argsDict.get('products', 3), 
             argsDict.get('overwrite', 3),
             gte_date
@@ -65,7 +65,7 @@ def execute(jsonData):
     
     logging.info("[CMEMS_RPC_SERVER] Request served")
     logging.info("---------------------------------------------------------------------")
-    return json.dumps({"returnCode": rslt})
+    return json.dumps({"returnCode": rslt, "outPath": outPath })
 
 
 
