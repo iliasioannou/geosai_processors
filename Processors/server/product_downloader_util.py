@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import logging
 
-from product_downloader.downloader.downloader import Downloader
+from product_downloader.downloader.downloader import Runner
 from product_downloader.script.script import StringScriptBuilder
 
 data_map = [
@@ -96,7 +96,7 @@ def download_data(start_date, end_date):
     :param endDate: the end date whose products need to be downloaded to
     """
     logging.info("[CMEMS_DOWNLOADER] Start downloading product")
-    downloader = Downloader()
+    downloader = Runner()
 
     for element in data_map:
         logging.info("[CMEMS_DOWNLOADER] Processing %s" %element['product'])
@@ -110,7 +110,7 @@ def download_data(start_date, end_date):
                 .set_base_url(element['base_url'])\
                 .set_out_name("%s_%s.nc" %(ds['name'], start_date))\
                 .build()
-            result = downloader.download(script)
+            result = downloader.run_script(script, assert_result_function=lambda item: True if "Done" in item[0] and item[1].returncode == 0 else False)
             if not result:
                 logging.info("[CMEMS_DOWNLOADER] %s (%s) Not completed" %(ds['name'], start_date))
             else:
