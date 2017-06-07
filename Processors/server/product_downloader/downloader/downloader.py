@@ -9,7 +9,6 @@ class Downloader():
         :param scriptString: the script string to be launched
         :return: a boolean value to check if downloaded has been correctly performed
         """
-        print(scriptString)
         p = subprocess.Popen(
         	scriptString, 
         	stdin=subprocess.PIPE, 
@@ -19,5 +18,4 @@ class Downloader():
         	universal_newlines=True
         	)
         output, err = p.communicate()
-        print(output)
         return True if "Done" in output and p.returncode == 0 else False
