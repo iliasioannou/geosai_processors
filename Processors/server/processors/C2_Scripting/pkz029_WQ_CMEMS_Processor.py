@@ -36,7 +36,7 @@ ancil_dir=main_dir+"C1_Ancillari/"
 script_dir=main_dir+"C2_Scripting/"
 input_dir=main_dir+"C3_Input/"
 temp_dir=main_dir+"C4_TempDir/"
-output_dir=main_dir+"C5_OutputDir/"
+global_output_dir=main_dir+"C5_OutputDir/"
 
 ###CMEMS related 
 SST_input_f='SST_MED_SST_L3S_NRT_OBSERVATIONS_010_012_b_'
@@ -74,7 +74,7 @@ GDAL_TIFF_Options_list=['COMPRESS=LZW','TILED=YES']
 ## overwrite: 1 = overwrite products if already existing
 ## AOI: 1=Italy/Adriatic 2=Greece (any other == Italy)
 ## 
-def SST_Chain(inputlist,overwrite,AOI):
+def SST_Chain(inputlist,overwrite,AOI, output_dir):
     
     #SST product internal index
     iin=3
@@ -172,6 +172,7 @@ def SST_Chain(inputlist,overwrite,AOI):
         # Create the output files
         try:
             outdriver = gdal.GetDriverByName("GTiff")
+            print(output_dir+prod_filename_num)
             outdata   = outdriver.Create(output_dir+prod_filename_num, rows, cols, 1, gdal.GDT_Float32,GDAL_TIFF_Options_list)
 
             band=data.GetRasterBand(1)
@@ -236,7 +237,7 @@ def SST_Chain(inputlist,overwrite,AOI):
 ## overwrite: 1 = overwrite products if already existing
 ## AOI: 1=Italy/Adriatic 2=Greece (any other == Italy)
 ## 
-def CHL_Chain(inputlist,overwrite,AOI):
+def CHL_Chain(inputlist,overwrite,AOI, output_dir):
     
     #CHL product internal index
     iin=0
@@ -404,7 +405,7 @@ def CHL_Chain(inputlist,overwrite,AOI):
 ## AOI: 1=Italy/Adriatic 2=Greece (any other == Italy)
 ##
 ## 
-def TWT_Chain(inputlist,overwrite,qual,AOI):
+def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
     
 
     #product internal index
@@ -608,9 +609,9 @@ def WQ_CMEMS_Chain(onflag,ovrwflag,date,setAOI=[1,2]):
     #    setAOI=[1,2]
     #else:
     #    setAOI=[setAOI]
-    global output_dir
-    output_dir = os.path.join(output_dir, date)
-    os.mkdir(output_dir)
+    #global output_dir
+    dest_dir = os.path.join(global_output_dir, date)
+    os.mkdir(dest_dir)
 
     for areaofi in setAOI:
         logging.info("[CMEMS_PROCESSORS] Processing AOI:"+AOI_Name[areaofi-1])
@@ -625,7 +626,7 @@ def WQ_CMEMS_Chain(onflag,ovrwflag,date,setAOI=[1,2]):
             if len(ce)==0:
                 logging.debug("[CMEMS_PROCESSORS] "+'No SST input files to process')
             else:
-                result1=SST_Chain(ce,ovrw,areaofi)
+                result1=SST_Chain(ce,ovrw,areaofi, dest_dir)
                 if result1==1: eerr=1
 
         ###CHL section
@@ -637,7 +638,7 @@ def WQ_CMEMS_Chain(onflag,ovrwflag,date,setAOI=[1,2]):
             if len(ce)==0:
                 logging.debug("[CMEMS_PROCESSORS] "+'No CHL input files to process')
             else:
-                result2=CHL_Chain(ce,ovrw,areaofi)
+                result2=CHL_Chain(ce,ovrw,areaofi, dest_dir)
                 if result2==1: eerr=1
        
         ###WT&Tur common section
@@ -677,7 +678,7 @@ def WQ_CMEMS_Chain(onflag,ovrwflag,date,setAOI=[1,2]):
             ovrw=0
             if (ovrwflag & 4)!=0: ovrw=1
             if len(findtable)!=0:
-                result3=TWT_Chain(findtable,ovrw,2,areaofi)
+                result3=TWT_Chain(findtable,ovrw,2,areaofi, dest_dir)
                 if result3==1: eerr=1
                 
 
@@ -686,7 +687,7 @@ def WQ_CMEMS_Chain(onflag,ovrwflag,date,setAOI=[1,2]):
             ovrw=0
             if (ovrwflag & 8)!=0: ovrw=1
             if len(findtable)!=0:
-                result4=TWT_Chain(findtable,ovrw,1,areaofi)
+                result4=TWT_Chain(findtable,ovrw,1,areaofi, dest_dir)
                 if result4==1: eerr=1
             
     if eerr==1:
