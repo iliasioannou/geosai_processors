@@ -589,7 +589,7 @@ def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
 
     return 0
 
-############--------MAIN PROCEDURE ------------------
+############ --------MAIN PROCEDURE ------------------
 ##########
 ## WQ_CMEMS_Chain
 ##
@@ -613,7 +613,8 @@ def WQ_CMEMS_Chain(onflag,ovrwflag,date,setAOI=[1,2]):
 
     
     dest_dir = "%s/" %os.path.join(global_output_dir, date)
-    os.mkdir(dest_dir)
+    if not os.path.exists(dest_dir):
+        os.mkdir(dest_dir)
 
     for areaofi in setAOI:
         logging.info("[CMEMS_PROCESSORS] Processing AOI:"+AOI_Name[areaofi-1])
