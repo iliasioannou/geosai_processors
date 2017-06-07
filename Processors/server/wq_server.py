@@ -65,7 +65,7 @@ def execute(jsonData):
     
     logging.info("[CMEMS_RPC_SERVER] Request served")
     logging.info("---------------------------------------------------------------------")
-    return json.dumps({"returnCode": rslt, "outPath": os.path.join(outPath.split("/")[-3:]) })
+    return json.dumps({"returnCode": rslt, "outPath": "/".join(outPath.split("/")[-3:]) })
 
 
 
