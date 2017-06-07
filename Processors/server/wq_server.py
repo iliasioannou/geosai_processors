@@ -4,7 +4,7 @@ import xmlrpclib, json, os, shutil, socket
 import ConfigParser
 from SimpleXMLRPCServer import SimpleXMLRPCServer, SimpleXMLRPCRequestHandler
 from product_downloader_util import download_data
-from processor_start_util import run_processing
+from processor_util import run_processing
 from datetime import datetime, timedelta
 
 
@@ -40,19 +40,18 @@ class customXMLRPCHandler(SimpleXMLRPCRequestHandler):
         monitor["clientIP"], monitor["clientPort"] = self.client_address
         SimpleXMLRPCRequestHandler.do_POST(self)
 
-# 
-def execute(jsonData):
+
+def execute(data):
     logging.info("---------------------------------------------------------------------")
     logging.info("[CMEMS_RPC_SERVER] Got new request")
     # parse json to dictionary
-    argsDict = json.loads(jsonData)
-    rslt=1
+    argsDict = json.loads(data)
     try:
         def_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
         gte_date = argsDict.get('gte', def_date) if "gte" in argsDict else def_date
-        lte_date = argsDict.get('lte', def_date) if "lte" in argsDict else def_date
+        # lte_date = argsDict.get('lte', def_date) if "lte" in argsDict else def_date
         download_data(gte_date, gte_date)
-        rslt, outPath = run_processing(
+        rslt, out_path = run_processing(
             argsDict.get('products', 3), 
             argsDict.get('overwrite', 3),
             gte_date
@@ -61,11 +60,11 @@ def execute(jsonData):
     except Exception as e:
         logging.error("[CMEMS_RPC_SERVER] Error in processing data")
         logging.exception(e)
-        return json.dumps({"returnCode":rlst, "message": str(e)})
+        return json.dumps({"returnCode":1, "message": str(e)})
     
     logging.info("[CMEMS_RPC_SERVER] Request served")
     logging.info("---------------------------------------------------------------------")
-    return json.dumps({"returnCode": rslt, "outPath": "/".join(outPath.split("/")[-3:]) })
+    return json.dumps({"returnCode": rslt, "outPath": "/".join(out_path.split("/")[-3:]) })
 
 
 

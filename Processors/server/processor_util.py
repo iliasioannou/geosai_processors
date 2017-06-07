@@ -2,6 +2,7 @@ from processors.C2_Scripting.pkz029_WQ_CMEMS_Processor import WQ_CMEMS_Chain
 import logging
 from datetime import datetime
 
+
 def run_processing(products, overwrites, date=datetime.now().strftime("%Y-%m-%d")):
     """
     Run processing calling processors
@@ -14,4 +15,3 @@ def run_processing(products, overwrites, date=datetime.now().strftime("%Y-%m-%d"
     res=WQ_CMEMS_Chain(products, overwrites,date)
     logging.info("[CMES_PROCESSORS] End processing data")
     return res
-    
