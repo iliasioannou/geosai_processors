@@ -21,4 +21,4 @@ class Runner():
             universal_newlines=True
         )
         output, err = p.communicate()
-        return assert_result_function(output, p)
+        return assert_result_function([output, p])
