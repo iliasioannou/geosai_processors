@@ -1,7 +1,6 @@
 #
 #
 # TO DO:
-#       - change check output existence (?): remove or take into account the real location/structure of the outputs
 #
 # Open issues:
 #        -surface_tempearure or adjusted_surface_temperature
