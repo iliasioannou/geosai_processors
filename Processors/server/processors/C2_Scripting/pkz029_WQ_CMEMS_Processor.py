@@ -731,12 +731,12 @@ def WQ_CMEMS_Chain(onflag,ovrwflag,date,setAOI=[1,2]):
 
     return 0,dest_dir
 
-if __name__ == '__main__':
-
-##Manual testing
-    logging.info("Main body.")
-
-    res=WQ_CMEMS_Chain(15,0,'2017-05-30')
-    print res
-
-    logging.info("Ended.")						  
+##if __name__ == '__main__':
+##
+####Manual testing
+##    logging.info("Main body.")
+##
+##    res=WQ_CMEMS_Chain(15,0,'2017-05-30')
+##    print res
+##
+##    logging.info("Ended.")						  
