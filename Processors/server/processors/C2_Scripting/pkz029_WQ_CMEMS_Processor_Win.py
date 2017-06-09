@@ -18,6 +18,7 @@ import numpy as np
 import datetime
 import scipy.io.netcdf as nc
 import logging
+from sys import platform as _platform
 
 from pke114_Apply_Legend import Read_Legend ##Need to be in the same folder
 from pke114_Apply_Legend import Apply_Legend ##Need to be in the same folder
@@ -36,7 +37,7 @@ ancil_dir=main_dir+"C1_Ancillari/"
 script_dir=main_dir+"C2_Scripting/"
 input_dir=main_dir+"C3_Input/"
 temp_dir=main_dir+"C4_TempDir/"
-output_dir=main_dir+"C5_OutputDir/"
+global_output_dir=main_dir+"C5_OutputDir/"
 
 ###CMEMS related 
 SST_input_f='SST_MED_SST_L3S_NRT_OBSERVATIONS_010_012_b_'
@@ -60,11 +61,12 @@ AOI_Name=['ITA','GRE']
 ###Others
 GDAL_TIFF_Options_list=['COMPRESS=LZW','TILED=YES']
 
-##Only for testing in Windows
-logging.basicConfig(filename=output_dir+'thisismy.log',filemode='w',format='[CMEMS] %(asctime)s %(message)s',datefmt='%H:%M:%S',level=logging.DEBUG)
-logging.getLogger().addHandler(logging.StreamHandler())
-
-
+if _platform == "linux" or _platform == "linux2":
+    a=1
+else:
+    ##Only for testing in Windows
+    logging.basicConfig(filename=global_output_dir+'thisismy.log',filemode='w',format='[CMEMS] %(asctime)s %(message)s',datefmt='%H:%M:%S',level=logging.DEBUG)
+    logging.getLogger().addHandler(logging.StreamHandler())
 ###---------------------------------------------------------------------------
 
    
@@ -77,8 +79,9 @@ logging.getLogger().addHandler(logging.StreamHandler())
 ## inputlist: list of files to (singularly) process
 ## overwrite: 1 = overwrite products if already existing
 ## AOI: 1=Italy/Adriatic 2=Greece (any other == Italy)
+## output_dir: it must contain a date and it will be compared with the one inside the input product
 ## 
-def SST_Chain(inputlist,overwrite,AOI):
+def SST_Chain(inputlist,overwrite,AOI, output_dir):
     
     #SST product internal index
     iin=3
@@ -88,9 +91,10 @@ def SST_Chain(inputlist,overwrite,AOI):
         logging.debug("[CMEMS_PROCESSORS] Wrong AOI parameter, set to Adriatic")
         AOI=1
     AOI=AOI-1
-    
+
+    logging.info("[CMEMS_PROCESSORS] Selected parameter: SST")
     #
-    #GPT Processing of each single data
+    #GPT Processing of each single data (in CMEMS it will be always a single one)
     #
     qualcheerrore=0
     for n in range(0,len(inputlist)):
@@ -109,6 +113,11 @@ def SST_Chain(inputlist,overwrite,AOI):
         da=str(dt.day)
         if len(me)==1: me='0'+me
         if len(da)==1: da='0'+da
+        verifdate=str(dt.year)+'-'+me+'-'+da
+        if output_dir.find(verifdate)== -1:
+            logging.debug("[CMEMS_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
+            logging.debug("[CMEMS_PROCESSORS] Product not generated !!")
+            continue
         dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+'_'+me+'_'+da
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
         prod_filename_the=dated_filename+"_"+pFilenames[iin]+"_Thematic.tif"
@@ -176,6 +185,7 @@ def SST_Chain(inputlist,overwrite,AOI):
         # Create the output files
         try:
             outdriver = gdal.GetDriverByName("GTiff")
+            print(output_dir+prod_filename_num)
             outdata   = outdriver.Create(output_dir+prod_filename_num, rows, cols, 1, gdal.GDT_Float32,GDAL_TIFF_Options_list)
 
             band=data.GetRasterBand(1)
@@ -239,8 +249,9 @@ def SST_Chain(inputlist,overwrite,AOI):
 ## inputlist: list of files to (singularly) process
 ## overwrite: 1 = overwrite products if already existing
 ## AOI: 1=Italy/Adriatic 2=Greece (any other == Italy)
+## output_dir: it must contain a date and it will be compared with the one inside the input product
 ## 
-def CHL_Chain(inputlist,overwrite,AOI):
+def CHL_Chain(inputlist,overwrite,AOI, output_dir):
     
     #CHL product internal index
     iin=0
@@ -250,9 +261,10 @@ def CHL_Chain(inputlist,overwrite,AOI):
         logging.debug("[CMEMS_PROCESSORS] Wrong AOI parameter, set to Adriatic")
         AOI=1
     AOI=AOI-1
-    
+
+    logging.info("[CMEMS_PROCESSORS] Selected parameter: Chlorophyll")
     #
-    #GPT Processing of each single data
+    #GPT Processing of each single dataset (in CMEMS it will be always a single one)
     #
     qualcheerrore=0
     for n in range(0,len(inputlist)):
@@ -273,6 +285,11 @@ def CHL_Chain(inputlist,overwrite,AOI):
         da=str(dt.day)
         if len(me)==1: me='0'+me
         if len(da)==1: da='0'+da
+        verifdate=str(dt.year)+'-'+me+'-'+da
+        if output_dir.find(verifdate)== -1:
+            logging.debug("[CMEMS_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
+            logging.debug("[CMEMS_PROCESSORS] Product not generated !!")
+            continue
         dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+'_'+me+'_'+da
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
         prod_filename_the=dated_filename+"_"+pFilenames[iin]+"_Thematic.tif"
@@ -406,9 +423,10 @@ def CHL_Chain(inputlist,overwrite,AOI):
 ## qual: 1==Turbidity
 ##       2==Water Transparency
 ## AOI: 1=Italy/Adriatic 2=Greece (any other == Italy)
+## output_dir: it must contain a date and it will be compared with the one inside the input product
 ##
 ## 
-def TWT_Chain(inputlist,overwrite,qual,AOI):
+def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
     
 
     #product internal index
@@ -426,8 +444,13 @@ def TWT_Chain(inputlist,overwrite,qual,AOI):
         AOI=1
     AOI=AOI-1
 
+    if qual==1:
+        logging.info("[CMEMS_PROCESSORS] Selected parameter: Turbidity")
+    else:
+        logging.info("[CMEMS_PROCESSORS] Selected parameter: Water Transparency")
+        
     #
-    #GPT Processing of each single data
+    #GPT Processing of each single data (in CMEMS it will be always a single one)
     #
     qualcheerrore=0
     for n in range(0,len(inputlist)):
@@ -450,6 +473,11 @@ def TWT_Chain(inputlist,overwrite,qual,AOI):
         da=str(dt.day)
         if len(me)==1: me='0'+me
         if len(da)==1: da='0'+da
+        verifdate=str(dt.year)+'-'+me+'-'+da
+        if output_dir.find(verifdate)== -1:
+            logging.debug("[CMEMS_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
+            logging.debug("[CMEMS_PROCESSORS] Product not generated !!")
+            continue
         dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+'_'+me+'_'+da
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
         prod_filename_the=dated_filename+"_"+pFilenames[iin]+"_Thematic.tif"
@@ -592,7 +620,7 @@ def TWT_Chain(inputlist,overwrite,qual,AOI):
 
     return 0
 
-############--------MAIN PROCEDURE ------------------
+############ --------MAIN PROCEDURE ------------------
 ##########
 ## WQ_CMEMS_Chain
 ##
@@ -602,19 +630,28 @@ def TWT_Chain(inputlist,overwrite,qual,AOI):
 ##           bit 2 -> wt
 ##           bit 3 -> tur
 ##   ovewflag: same bit order of onflag. When set to 1, it activates overwriting of already existing products
-## setAOI: 1=ITA, 2=GRE, Any other=BOTH
+##   date: date to be processed, which will be the output folder subdir
+##   setAOI: 1=ITA, 2=GRE, Any other=BOTH
+##   
 ##
 ## Output: 0 okay, 1 any error
 ##
-def WQ_CMEMS_Chain(onflag,ovrwflag,setAOI):
+def WQ_CMEMS_Chain(onflag,ovrwflag,date,setAOI=[1,2]):
 
-    if setAOI!=1 and setAOI!=2:
-        setAOI=[1,2]
-    else:
-        setAOI=[setAOI]
+    # Not useful when setAOI is set and not passed as argument
+	#if setAOI!=1 and setAOI!=2:
+    #    setAOI=[1,2]
+    #else:
+    #    setAOI=[setAOI]
+    #global output_dir
 
+    
+    dest_dir = "%s/" %os.path.join(global_output_dir, date)
+    if not os.path.exists(dest_dir):
+        os.mkdir(dest_dir)
+    
     for areaofi in setAOI:
-        logging.info("[CMEMS_PROCESSORS] Processing AOI:"+AOI_Name[areaofi-1])
+        logging.info("[CMEMS_PROCESSORS] Processing AOI: "+AOI_Name[areaofi-1])
         
         eerr=0
         ###SST section
@@ -622,11 +659,11 @@ def WQ_CMEMS_Chain(onflag,ovrwflag,setAOI):
             ovrw=0
             if (ovrwflag & 1)!=0: ovrw=1    
             #Search for SST input files
-            ce=glob.glob(input_dir+SST_input_f+'*.nc')
+            ce=glob.glob(input_dir+SST_input_f+'*'+date+'.nc')
             if len(ce)==0:
-                logging.debug("[CMEMS_PROCESSORS] "+'No SST input files to process')
+                logging.debug("[CMEMS_PROCESSORS] "+'No SST input files to process with specified date: '+date)
             else:
-                result1=SST_Chain(ce,ovrw,areaofi)
+                result1=SST_Chain(ce,ovrw,areaofi, dest_dir)
                 if result1==1: eerr=1
 
         ###CHL section
@@ -634,11 +671,11 @@ def WQ_CMEMS_Chain(onflag,ovrwflag,setAOI):
             ovrw=0
             if (ovrwflag & 2)!=0: ovrw=1
             #Search for CHL input files
-            ce=glob.glob(input_dir+CHL_input_f+'*.nc')
+            ce=glob.glob(input_dir+CHL_input_f+'*'+date+'.nc')
             if len(ce)==0:
-                logging.debug("[CMEMS_PROCESSORS] "+'No CHL input files to process')
+                logging.debug("[CMEMS_PROCESSORS] "+'No CHL input files to process with specified date: '+date)
             else:
-                result2=CHL_Chain(ce,ovrw,areaofi)
+                result2=CHL_Chain(ce,ovrw,areaofi, dest_dir)
                 if result2==1: eerr=1
        
         ###WT&Tur common section
@@ -649,9 +686,9 @@ def WQ_CMEMS_Chain(onflag,ovrwflag,setAOI):
             #Search for WT/TUR input files
             for en in range(len(OC_input_f)):
                 tipi=OC_input_f[en]
-                ce=glob.glob(input_dir+tipi+'*.nc')
+                ce=glob.glob(input_dir+tipi+'*'+date+'.nc')
                 if len(ce)==0:
-                     logging.debug("[CMEMS_PROCESSORS] No >"+tipi+"< input files to process")
+                     logging.debug("[CMEMS_PROCESSORS] No >"+tipi+"< input files to process with specified date: "+date)
                      badlist=1
                      break
                 glifile.append(ce)
@@ -678,7 +715,7 @@ def WQ_CMEMS_Chain(onflag,ovrwflag,setAOI):
             ovrw=0
             if (ovrwflag & 4)!=0: ovrw=1
             if len(findtable)!=0:
-                result3=TWT_Chain(findtable,ovrw,2,areaofi)
+                result3=TWT_Chain(findtable,ovrw,2,areaofi, dest_dir)
                 if result3==1: eerr=1
                 
 
@@ -687,30 +724,20 @@ def WQ_CMEMS_Chain(onflag,ovrwflag,setAOI):
             ovrw=0
             if (ovrwflag & 8)!=0: ovrw=1
             if len(findtable)!=0:
-                result4=TWT_Chain(findtable,ovrw,1,areaofi)
+                result4=TWT_Chain(findtable,ovrw,1,areaofi, dest_dir)
                 if result4==1: eerr=1
             
     if eerr==1:
-        return 1
+        return 1,dest_dir
 
-    return 0
+    return 0,dest_dir
 
 if __name__ == '__main__':
-###From command line testing    
-##    if len(sys.argv)!=3:
-##        logging.debug("[CMEMS_PROCESSORS] Wrong number of arguments!")
-##    else:
-##        param1=int(sys.argv[1])
-##        param2=int(sys.argv[2])
-##
-##        logging.debug("[CMEMS_PROCESSORS] Start: "+time.ctime())
-##        res=WQ_CMEMS_Chain(param1,param2)
-##        logging.debug("[CMEMS_PROCESSORS] End: "+time.ctime())
 
 ##Manual testing
     logging.info("Main body.")
 
-    res=WQ_CMEMS_Chain(1+2+4+8,0,3)
+    res=WQ_CMEMS_Chain(15,0,'2017-05-31')
     print res
 
-    logging.info("Ended.")
+    logging.info("Ended.")						  
