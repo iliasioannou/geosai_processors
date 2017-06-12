@@ -96,7 +96,6 @@ def download_data(start_date, end_date):
     :param endDate: the end date whose products need to be downloaded to
     """
     logging.info("[CMEMS_DOWNLOADER] Start downloading product")
-    downloader = Runner()
 
     for element in data_map:
         logging.info("[CMEMS_DOWNLOADER] Processing %s" %element['product'])
