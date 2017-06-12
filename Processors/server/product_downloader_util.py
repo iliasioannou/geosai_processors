@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import logging
 
-from product_downloader.downloader.downloader import Runner, run_script
+from product_downloader.downloader.downloader import run_script
 from product_downloader.script.script import StringScriptBuilder
 
 data_map = [
