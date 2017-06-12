@@ -52,8 +52,8 @@ def execute(data):
         # lte_date = argsDict.get('lte', def_date) if "lte" in argsDict else def_date
         download_data(gte_date, gte_date)
         rslt, out_path = run_processing(
-            argsDict.get('products', 3), 
-            argsDict.get('overwrite', 3),
+            argsDict.get('products', 15), 
+            argsDict.get('overwrite', 15),
             gte_date
             )
         logging.info("[CMEMS_RPC_SERVER] Result dict: %s" %rslt)
