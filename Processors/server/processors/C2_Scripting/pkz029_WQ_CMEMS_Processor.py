@@ -119,7 +119,8 @@ def SST_Chain(inputlist,overwrite,AOI, output_dir):
             logging.debug("[CMEMS_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
             logging.debug("[CMEMS_PROCESSORS] Product not generated !!")
             continue
-        dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+'_'+me+'_'+da
+        #dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+'_'+me+'_'+da
+        dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+me+da
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
         prod_filename_the=dated_filename+"_"+pFilenames[iin]+"_Thematic.tif"
 
@@ -290,7 +291,7 @@ def CHL_Chain(inputlist,overwrite,AOI, output_dir):
             logging.debug("[CMEMS_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
             logging.debug("[CMEMS_PROCESSORS] Product not generated !!")
             continue
-        dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+'_'+me+'_'+da
+        dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+me+da
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
         prod_filename_the=dated_filename+"_"+pFilenames[iin]+"_Thematic.tif"
 
@@ -478,7 +479,7 @@ def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
             logging.debug("[CMEMS_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
             logging.debug("[CMEMS_PROCESSORS] Product not generated !!")
             continue
-        dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+'_'+me+'_'+da
+        dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+me+da
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
         prod_filename_the=dated_filename+"_"+pFilenames[iin]+"_Thematic.tif"
 
