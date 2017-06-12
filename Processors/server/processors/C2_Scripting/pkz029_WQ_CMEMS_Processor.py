@@ -1,7 +1,6 @@
 #
 #
 # TO DO:
-#       
 #
 # Open issues:
 #        -surface_tempearure or adjusted_surface_temperature

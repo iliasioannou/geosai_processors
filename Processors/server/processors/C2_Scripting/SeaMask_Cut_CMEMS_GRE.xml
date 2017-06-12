@@ -1,0 +1,48 @@
+<!-- Version of 02-09-2016 -->
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="SeaMask">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$seamask</file>
+    </parameters>
+  </node>
+  <node id="Reproject_GRE">
+    <operator>Reproject</operator>
+    <sources>
+      <sourceProduct refid="SeaMask"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <wktFile/>
+      <crs>EPSG:4326</crs>
+      <resampling>Nearest</resampling>
+      <referencePixelX>0.5</referencePixelX>
+      <referencePixelY>0.5</referencePixelY>
+      <easting>22.30</easting>
+      <northing>41.20</northing>
+      <orientation>0.0</orientation>
+      <pixelSizeX>0.01</pixelSizeX>
+      <pixelSizeY>0.01</pixelSizeY>
+      <width>470</width>
+      <height>540</height>
+      <tileSizeX/>
+      <tileSizeY/>
+      <orthorectify>false</orthorectify>
+      <elevationModelName/>
+      <noDataValue>1</noDataValue>
+      <includeTiePointGrids>true</includeTiePointGrids>
+      <addDeltaBands>false</addDeltaBands>
+    </parameters>
+  </node>
+  <node id="Write">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="Reproject_GRE"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$outseamask</file>
+      <formatName>$format</formatName>
+    </parameters>
+  </node>
+</graph>
