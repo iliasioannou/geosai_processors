@@ -53,10 +53,10 @@ def execute(data):
         if argsDict.get('procType', 'day') == 'day':
             download_data(gte_date, gte_date)
         rslt, out_path = run_processing(
-            argsDict.get('procType', 'day'),
-            argsDict.get('products', 15),
-            argsDict.get('overwrite', 15),
-            gte_date
+            processing_type=argsDict.get('procType', 'day'),
+            products=argsDict.get('products', 15),
+            overwrites=argsDict.get('overwrite', 15),
+            date=gte_date
         )
         logging.info("[CMEMS_RPC_SERVER] Result dict: %s" % rslt)
     except Exception as e:
