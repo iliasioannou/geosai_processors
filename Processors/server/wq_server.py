@@ -7,7 +7,6 @@ from product_downloader_util import download_data
 from processor_util import run_processing
 from datetime import datetime, timedelta
 
-
 # store clients' IPs and Ports
 monitor = {}
 
@@ -28,11 +27,12 @@ def init_stuff(log_file="processing.log"):
     cp = ConfigParser.ConfigParser()
     cp.read("serverConfig.ini")
     serverConf = dict(cp.items('server'))
-    server = SimpleXMLRPCServer((serverConf["host"], int(serverConf["port"]) ), customXMLRPCHandler)
+    server = SimpleXMLRPCServer((serverConf["host"], int(serverConf["port"])), customXMLRPCHandler)
     logging.info("[CMEMS_RPC_SERVER] Done initializing server instance")
     return server
 
-# !!! **** ADD Processors dir to PYTHONPATH **** !!!!      
+
+# !!! **** ADD Processors dir to PYTHONPATH **** !!!!
 
 class customXMLRPCHandler(SimpleXMLRPCRequestHandler):
     def do_POST(self):
@@ -52,20 +52,20 @@ def execute(data):
         # lte_date = argsDict.get('lte', def_date) if "lte" in argsDict else def_date
         download_data(gte_date, gte_date)
         rslt, out_path = run_processing(
-            argsDict.get('products', 15), 
+            argsDict.get('procType', 'day'),
+            argsDict.get('products', 15),
             argsDict.get('overwrite', 15),
             gte_date
-            )
-        logging.info("[CMEMS_RPC_SERVER] Result dict: %s" %rslt)
+        )
+        logging.info("[CMEMS_RPC_SERVER] Result dict: %s" % rslt)
     except Exception as e:
         logging.error("[CMEMS_RPC_SERVER] Error in processing data")
         logging.exception(e)
-        return json.dumps({"returnCode":1, "message": str(e)})
-    
+        return json.dumps({"returnCode": 1, "message": str(e)})
+
     logging.info("[CMEMS_RPC_SERVER] Request served")
     logging.info("---------------------------------------------------------------------")
-    return json.dumps({"returnCode": rslt, "outPath": "/".join(out_path.split("/")[-3:]) })
-
+    return json.dumps({"returnCode": rslt, "outPath": "/".join(out_path.split("/")[-3:])})
 
 
 server = init_stuff()
