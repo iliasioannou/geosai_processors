@@ -53,6 +53,7 @@ def execute(data):
         if argsDict.get('procType', 'day') == 'day':
             download_data(gte_date, gte_date)
         rslt, out_path = run_processing(
+            argsDict.get('procType', 'day'),
             argsDict.get('products', 15),
             argsDict.get('overwrite', 15),
             gte_date
