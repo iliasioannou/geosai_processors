@@ -437,7 +437,7 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
                     #                         int(filename[prefixlen + 5:prefixlen + 7]),
                     #                         int(filename[prefixlen + 8:prefixlen + 10]))
 
-                    filedate = datetime.datetime.strptime(filename.split("_")[2], "%Y%m%d")
+                    filedate = datetime.datetime.strptime(filename.split("_")[2], "%Y%m%d").date()
 
                     if (filedate <= stopdate) and (filedate >= startdate):
                         matches.append(os.path.join(root, filename))
@@ -522,7 +522,7 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
                 matches = []
                 for root, dirnames, filenames in os.walk(prods_dir):
                     for filename in fnmatch.filter(filenames, 'RC_' + AOI_Name[AOI] + '*' + el + '_Num.tif'):
-                        filedate = datetime.datetime.strptime(filename.split("_")[2], "%Y%m%d")
+                        filedate = datetime.datetime.strptime(filename.split("_")[2], "%Y%m%d").date()
                         if (filedate <= stopdate) and (filedate >= startdate):
                             matches.append(os.path.join(root, filename))
 
