@@ -636,7 +636,11 @@ def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
 ##
 ## Output: 0 okay, 1 any error
 ##
-def WQ_CMEMS_Chain(onflag,ovrwflag,date,setAOI=[1,2]):
+def WQ_CMEMS_Chain(
+        onflag,
+        ovrwflag,
+        date,
+        setAOI=[1,2]):
 
     # Not useful when setAOI is set and not passed as argument
 	#if setAOI!=1 and setAOI!=2:

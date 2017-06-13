@@ -641,8 +641,12 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
 ##
 ## Output: 0 okay, 1 any error
 ##
-def WQ_Stats_CMEMS_Chain(WkDate, TodoStats, setAOI=[1, 2]):
-    dest_dir = "%s/" % os.path.join(global_output_dir, "%s-%s" % ("-".join(WkDate), TodoStats))
+def WQ_Stats_CMEMS_Chain(
+        onflag,
+        ovrwflag,
+        date,
+        setAOI=[1, 2]):
+    dest_dir = "%s/" % os.path.join(global_output_dir, "%s-%s" % ("-".join(date), onflag))
     if not os.path.exists(dest_dir):
         os.mkdir(dest_dir)
 
@@ -655,7 +659,7 @@ def WQ_Stats_CMEMS_Chain(WkDate, TodoStats, setAOI=[1, 2]):
     for areaofi in setAOI:
         logging.info("[CMEMS_PROCESSORS] Processing AOI: " + AOI_Name[areaofi - 1])
 
-        resproc, dest_dir = WQ_Stats_CMEMS(WkDate, TodoStats, areaofi)
+        resproc, dest_dir = WQ_Stats_CMEMS(date, onflag, areaofi)
         res = res + resproc
 
     return (1, dest_dir) if not res else (0, dest_dir)

@@ -20,6 +20,6 @@ def run_processing(products, overwrites, processing_type, date=datetime.now().st
         'month': WQ_Stats_CMEMS_Chain
     }
     logging.info("[CMES_PROCESSORS] Starting processing data")
-    res=processor_entrypoint[processing_type](products, overwrites,date)
+    res=processor_entrypoint[processing_type](products, overwrites, date)
     logging.info("[CMES_PROCESSORS] End processing data")
     return res

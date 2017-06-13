@@ -50,9 +50,9 @@ def execute(data):
         def_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
         gte_date = argsDict.get('gte', def_date) if "gte" in argsDict else def_date
         # lte_date = argsDict.get('lte', def_date) if "lte" in argsDict else def_date
-        download_data(gte_date, gte_date)
+        if argsDict.get('procType', 'day') == 'day':
+            download_data(gte_date, gte_date)
         rslt, out_path = run_processing(
-            argsDict.get('procType', 'day'),
             argsDict.get('products', 15),
             argsDict.get('overwrite', 15),
             gte_date
