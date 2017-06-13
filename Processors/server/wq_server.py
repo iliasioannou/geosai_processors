@@ -56,8 +56,8 @@ def execute(data):
         logging.info("[CMEMS_RPC_SERVER] Got params: %s" %data)
         rslt, out_path = run_processing(
             processing_type=argsDict.get('procType', 'day'),
-            products=argsDict.get('products', 15),
-            overwrites=argsDict.get('overwrite', 15),
+            products=int(argsDict.get('products', 15)),
+            overwrites=int(argsDict.get('overwrite', 15)),
             date=gte_date
         )
         logging.info("[CMEMS_RPC_SERVER] Result dict: %s" % rslt)
