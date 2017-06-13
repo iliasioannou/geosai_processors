@@ -374,7 +374,7 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
 ##        0 = all okay, 1 = something went wrong
 #
 def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
-    WorkingDate = WorkingDate.split("-")
+    WorkingDate = map(int, WorkingDate.split("-"))
     dest_dir = ''
     if (stat_type != 0) and (stat_type != 1):
         logging.debug("[CMEMS_PROCESSORS] Unknown satistics requested")
