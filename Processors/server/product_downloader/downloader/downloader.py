@@ -1,5 +1,4 @@
 import subprocess
-import logging
 
 
 def run_script(script_string, assert_result_function):
