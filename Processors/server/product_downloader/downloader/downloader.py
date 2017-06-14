@@ -20,5 +20,5 @@ def run_script(script_string, assert_result_function):
         universal_newlines=True
     )
     output, err = p.communicate()
-    print(output)
+    logging.debug(output)
     return assert_result_function([output, p])
