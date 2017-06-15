@@ -17,7 +17,6 @@ import glob
 import subprocess
 from sys import platform as _platform
 import fnmatch
-from datetime import datetime
 
 from pke114_Apply_Legend import Read_Legend  ##Need to be in the same folder
 from pke114_Apply_Legend import Apply_Legend  ##Need to be in the same folder
