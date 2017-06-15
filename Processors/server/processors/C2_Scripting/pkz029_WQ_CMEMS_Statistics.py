@@ -17,6 +17,7 @@ import glob
 import subprocess
 from sys import platform as _platform
 import fnmatch
+from datetime import datetime
 
 from pke114_Apply_Legend import Read_Legend  ##Need to be in the same folder
 from pke114_Apply_Legend import Apply_Legend  ##Need to be in the same folder
@@ -431,9 +432,9 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
             matches = []
             for root, dirnames, filenames in os.walk(prods_dir):
                 for filename in fnmatch.filter(filenames, 'RC_' + AOI_Name[AOI] + '*' + el + '_Num.tif'):
-
-                    #prefixlen = len('RC_' + AOI_Name[AOI] + '_')
-                    #filedate = datetime.date(int(filename[prefixlen:prefixlen + 4]),
+                    logging.debug("[------------------------] %s" % filename)
+                    # prefixlen = len('RC_' + AOI_Name[AOI] + '_')
+                    # filedate = datetime.date(int(filename[prefixlen:prefixlen + 4]),
                     #                         int(filename[prefixlen + 5:prefixlen + 7]),
                     #                         int(filename[prefixlen + 8:prefixlen + 10]))
 
@@ -457,8 +458,6 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
                 logging.debug("[CMEMS_PROCESSORS] " + "Not enough products (" + str(
                     len(matches)) + ") to generate 10-days stats for " + el)
                 erro = erro + 1
-                if not os.path.exists(dest_dir):
-                    os.rmdir(dest_dir)
                 continue
 
             if len(res[0]) > 0:
@@ -648,10 +647,6 @@ def WQ_Stats_CMEMS_Chain(
         ovrwflag,
         date,
         setAOI=[1, 2]):
-    dest_dir = "%s/" % os.path.join(global_output_dir, "%s-%s" % ("-".join(date), onflag))
-    if not os.path.exists(dest_dir):
-        os.mkdir(dest_dir)
-
     if setAOI != 1 and setAOI != 2:
         setAOI = [1, 2]
     else:
@@ -669,13 +664,14 @@ def WQ_Stats_CMEMS_Chain(
 
 # -------------------------------
 
-##if __name__ == '__main__':
-##
-##    print "Main body."
-##
-##    #Month
-##    WkingDate=[2017,06,2] #Year, month, day
-##    res=WQ_Stats_CMEMS_Chain(WkingDate,0)
-##    print res
+if __name__ == '__main__':
+    ##
+    ##    print "Main body."
+    ##
+    ##    #Month
+    datetime.now().replace(day=2, month=6, year=2017)
+    WkingDate = [2017, 06, 2]  # Year, month, day
+    res = WQ_Stats_CMEMS_Chain(0, 0, datetime.now().replace(day=2, month=6, year=2017).strftime("%Y-%m-%d"))
+    print res
 ##    res=WQ_Stats_CMEMS_Chain(WkingDate,1)
 ##    print res
