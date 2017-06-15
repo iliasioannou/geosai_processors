@@ -431,6 +431,7 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
         for el in pProds:
             matches = []
             for root, dirnames, filenames in os.walk(prods_dir):
+                logging.debug(filenames)
                 for filename in fnmatch.filter(filenames, 'RC_' + AOI_Name[AOI] + '*' + el + '_Num.tif'):
                     logging.debug("[------------------------] %s" % filename)
                     # prefixlen = len('RC_' + AOI_Name[AOI] + '_')
