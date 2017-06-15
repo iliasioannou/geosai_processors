@@ -6,14 +6,11 @@
 #
 #
 import os
-import sys
-from osgeo import ogr, osr
 import gdal
 from gdalconst import *
 import numpy as np
 import datetime
 import logging
-import glob
 import subprocess
 from sys import platform as _platform
 import fnmatch
@@ -432,7 +429,6 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
             for root, dirnames, filenames in os.walk(prods_dir):
                 logging.debug(filenames)
                 for filename in fnmatch.filter(filenames, 'RC_' + AOI_Name[AOI] + '*' + el + '_Num.tif'):
-                    logging.debug("[------------------------] %s" % filename)
                     # prefixlen = len('RC_' + AOI_Name[AOI] + '_')
                     # filedate = datetime.date(int(filename[prefixlen:prefixlen + 4]),
                     #                         int(filename[prefixlen + 5:prefixlen + 7]),
@@ -664,14 +660,14 @@ def WQ_Stats_CMEMS_Chain(
 
 # -------------------------------
 
-if __name__ == '__main__':
+##if __name__ == '__main__':
     ##
     ##    print "Main body."
     ##
     ##    #Month
-    datetime.now().replace(day=2, month=6, year=2017)
-    WkingDate = [2017, 06, 2]  # Year, month, day
-    res = WQ_Stats_CMEMS_Chain(0, 0, datetime.now().replace(day=2, month=6, year=2017).strftime("%Y-%m-%d"))
-    print res
+    ##    datetime.now().replace(day=2, month=6, year=2017)
+    ##  WkingDate = [2017, 06, 2]  # Year, month, day
+    ##    res = WQ_Stats_CMEMS_Chain(0, 0, datetime.now().replace(day=2, month=6, year=2017).strftime("%Y-%m-%d"))
+##    print res
 ##    res=WQ_Stats_CMEMS_Chain(WkingDate,1)
 ##    print res
