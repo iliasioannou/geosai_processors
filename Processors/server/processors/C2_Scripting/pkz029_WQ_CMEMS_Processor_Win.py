@@ -117,7 +117,8 @@ def SST_Chain(inputlist,overwrite,AOI, output_dir):
             logging.debug("[CMEMS_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
             logging.debug("[CMEMS_PROCESSORS] Product not generated !!")
             continue
-        dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+'_'+me+'_'+da
+        #dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+'_'+me+'_'+da
+        dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+me+da
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
         prod_filename_the=dated_filename+"_"+pFilenames[iin]+"_Thematic.tif"
 
@@ -184,7 +185,6 @@ def SST_Chain(inputlist,overwrite,AOI, output_dir):
         # Create the output files
         try:
             outdriver = gdal.GetDriverByName("GTiff")
-            print(output_dir+prod_filename_num)
             outdata   = outdriver.Create(output_dir+prod_filename_num, rows, cols, 1, gdal.GDT_Float32,GDAL_TIFF_Options_list)
 
             band=data.GetRasterBand(1)
@@ -289,7 +289,7 @@ def CHL_Chain(inputlist,overwrite,AOI, output_dir):
             logging.debug("[CMEMS_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
             logging.debug("[CMEMS_PROCESSORS] Product not generated !!")
             continue
-        dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+'_'+me+'_'+da
+        dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+me+da
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
         prod_filename_the=dated_filename+"_"+pFilenames[iin]+"_Thematic.tif"
 
@@ -477,7 +477,7 @@ def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
             logging.debug("[CMEMS_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
             logging.debug("[CMEMS_PROCESSORS] Product not generated !!")
             continue
-        dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+'_'+me+'_'+da
+        dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+me+da
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
         prod_filename_the=dated_filename+"_"+pFilenames[iin]+"_Thematic.tif"
 
@@ -635,7 +635,11 @@ def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
 ##
 ## Output: 0 okay, 1 any error
 ##
-def WQ_CMEMS_Chain(onflag,ovrwflag,date,setAOI=[1,2]):
+def WQ_CMEMS_Chain(
+        onflag,
+        ovrwflag,
+        date,
+        setAOI=[1,2]):
 
     # Not useful when setAOI is set and not passed as argument
 	#if setAOI!=1 and setAOI!=2:
@@ -736,7 +740,7 @@ if __name__ == '__main__':
 ##Manual testing
     logging.info("Main body.")
 
-    res=WQ_CMEMS_Chain(15,0,'2017-05-31')
+    res=WQ_CMEMS_Chain(15,0,'2017-05-30')
     print res
 
     logging.info("Ended.")						  
