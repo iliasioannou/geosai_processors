@@ -48,7 +48,10 @@ def execute(data):
     argsDict = json.loads(data)
     try:
         def_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
-        gte_date = argsDict.get('gte', def_date) if "gte" in argsDict else def_date
+        if 'runDate' in argsDict:
+            gte_date = argsDict['runDate']
+        else:
+            gte_date = argsDict.get('gte', def_date) if "gte" in argsDict else def_date
         # lte_date = argsDict.get('lte', def_date) if "lte" in argsDict else def_date
         if argsDict.get('procType', 'day') == 'day':
             download_data(gte_date, gte_date)
