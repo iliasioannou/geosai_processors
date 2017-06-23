@@ -61,7 +61,7 @@ if _platform == "linux" or _platform == "linux2":
     a = 1
 else:
     ##Only for testing in Windows
-    logging.basicConfig(filename=global_output_dir + 'thisismystat.log', filemode='w',
+    logging.basicConfig(filename=global_output_dir + 'thisismyODstat.log', filemode='w',
                         format='[CMEMS] %(asctime)s %(message)s', datefmt='%H:%M:%S', level=logging.DEBUG)
     logging.getLogger().addHandler(logging.StreamHandler())
 
@@ -361,34 +361,45 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
 
 
 ##############################
-## WQ_Stats_CMEMS
+## WQ_ODStats_CMEMS
 ##
-## Execution of the 10-days or monthly statistics procedures
+## Execution of the on demand statistics procedures
 ##
 ##
 ## The daily products for calculating the stats, must be located in prods_dir or any of its subdirectories
 ##
 ## Input:
-##        WorkingDate: a string yyyy-mm-dd. Day must be: 2, 12 or 22
-##        stat_type: 0=10-days, 1=monthly
+##        WorkingDate: a list of strings yyyy-mm-dd, for startdate and enddate
+##        prodflag: bit 0 -> sst
+##                  bit 1 -> chl
+##                  bit 2 -> wt
+##                  bit 3 -> tur 
 ##        AOI: 1=ITA, 2=GRE, Any other==ITALY
 ## Output:
 ##        0 = all okay, 1 = something went wrong
 #
-def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
-    logging.debug("[CMEMS_PROCESSORS] Date is %s" %WorkingDate)
-    WorkingDate = map(int, WorkingDate.split("-"))
-
+def WQ_ODStats_CMEMS(WorkingDates, prodflag, AOI):
+    WorkingDate1 = map(int, WorkingDates[0].split("-"))
+    WorkingDate2 = map(int, WorkingDates[1].split("-"))
     dest_dir = ''
-    if (stat_type != 0) and (stat_type != 1):
-        logging.debug("[CMEMS_PROCESSORS] Unknown satistics requested")
-        return 1, dest_dir
 
-    # Checks AOI
+    # Check AOI
     if (AOI != 1) and (AOI != 2):
         logging.debug("[CMEMS_PROCESSORS] Wrong AOI parameter, set to Adriatic")
         AOI = 1
     AOI = AOI - 1
+
+    # Select requested products
+    sel_pProds=[]
+    if (prodflag & 1)!=0: sel_pProds.append(pProds[3])
+    if (prodflag & 2)!=0: sel_pProds.append(pProds[0])
+    if (prodflag & 4)!=0: sel_pProds.append(pProds[1])
+    if (prodflag & 8)!=0: sel_pProds.append(pProds[2])
+
+    if len(sel_pProds)==0:
+        logging.debug("[CMEMS_PROCESSORS] No specific products requestes among the ones allowed")
+        return 1, dest_dir
+    logging.info("[CMEMS_PROCESSORS] Processing products: " + ', '.join(sel_pProds))
 
     # Cut the sea mask over the AOI
     SMask_LandSea = temp_dir + 'seamask.tif'
@@ -407,82 +418,120 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
         SMask_LandSea = ''
 
     if os.path.exists(SMask_LandSea[:-4] + '.xml'): os.remove(SMask_LandSea[:-4] + '.xml')
+    
+    #
+    # Procedure to generate the mean and P90
+    #
+    tile_size = 256
+    startdate = datetime.date(WorkingDate1[0], WorkingDate1[1], WorkingDate1[2])
+    stopdate = datetime.date(WorkingDate2[0], WorkingDate2[1], WorkingDate2[2])
 
-    if (stat_type == 0):
-        #
-        # Procedure to generate the 10-days mean
-        #
-        logging.info("[CMEMS_PROCESSORS] Calculate decade mean")
-        tile_size = 256
-        # Identification of the 10-days period
-        stopdate = datetime.date(WorkingDate[0], WorkingDate[1], WorkingDate[2]) - datetime.timedelta(days=2)
-        if (WorkingDate[2] == 2):
-            startdate = datetime.date(stopdate.year, stopdate.month, 21)
-            card = '3rd'
+    if startdate >= stopdate:
+        logging.debug("[CMEMS_PROCESSORS] Wrong input time period")
+        if os.path.exists(SMask_LandSea): os.remove(SMask_LandSea)
+        return 1, dest_dir
+        
+    erro = 0
+
+    ye1 = str(startdate.year)
+    me1 = str(startdate.month)
+    gi1 = str(startdate.day)
+    if len(me1) == 1: me1 = '0' + me1
+    if len(gi1) == 1: gi1 = '0' + gi1
+    prefix = 'RC_' + AOI_Name[AOI] + '_' + ye1 + me1 + gi1+'-'
+    ye2 = str(stopdate.year)
+    me2 = str(stopdate.month)
+    gi2 = str(stopdate.day)
+    if len(me2) == 1: me2 = '0' + me2
+    if len(gi2) == 1: gi2 = '0' + gi2
+    prefix = prefix + ye2 + me2 + gi2 + '_'
+    
+    # Searches for the corresponding product files
+    for el in sel_pProds:
+        matches = []
+        for root, dirnames, filenames in os.walk(prods_dir):
+            for filename in fnmatch.filter(filenames, 'RC_' + AOI_Name[AOI] + '*' + el + '_Num.tif'):
+                filedate = datetime.datetime.strptime(filename.split("_")[2], "%Y%m%d").date()
+                if (filedate <= stopdate) and (filedate >= startdate):
+                    matches.append(os.path.join(root, filename))
+        
+        # Process it only if at least 3 products are present
+        if len(matches) > 2:
+            logging.info("[CMEMS_PROCESSORS] Found "+str(len(matches))+" products for "+el)
+            # Creates an ad-hoc destination directory
+            destprefix = ye1 + '-' + me1 + '-' + gi1 + 'to' + ye2 + '-' + me2 + '-' + gi2
+            dest_dir = "%s/" % os.path.join(global_output_dir, destprefix)
+            if not os.path.exists(dest_dir):
+                os.mkdir(dest_dir)
+            P90_out_name = dest_dir + prefix + el + '_P90_Num.tif'
+            Mean_out_name = dest_dir + prefix + el + '_Mean_Num.tif'
+            res = P90_Mean_multiplefiles(matches, tile_size, P90_out_name, Mean_out_name, SMask_LandSea,
+                                         LandVal, NoDataVal)
         else:
-            startdate = stopdate - datetime.timedelta(days=9)
-            card = '1st'
-            if (startdate.day == 11):
-                card = '2nd'
-        ye = str(startdate.year)
-        me = str(startdate.month)
-        if len(me) == 1: me = '0' + me
-        prefix = 'RC_' + AOI_Name[AOI] + '_' + ye + me + '_' + card + '_decade_'
+            logging.debug("[CMEMS_PROCESSORS] " + "Not enough products (" + str(
+                len(matches)) + ") to generate stats for " + el)
+            erro = erro + 1
+            if os.path.exists(dest_dir):
+                os.rmdir(dest_dir)
+            continue
 
-        erro = 0
-        # Searches for the corresponding product files
-        for el in pProds:
-            matches = []
-            for root, dirnames, filenames in os.walk(prods_dir):
-                ##logging.debug(filenames)
-                for filename in fnmatch.filter(filenames, 'RC_' + AOI_Name[AOI] + '*' + el + '_Num.tif'):
-                    # prefixlen = len('RC_' + AOI_Name[AOI] + '_')
-                    # filedate = datetime.date(int(filename[prefixlen:prefixlen + 4]),
-                    #                         int(filename[prefixlen + 5:prefixlen + 7]),
-                    #                         int(filename[prefixlen + 8:prefixlen + 10]))
-
-                    filedate = datetime.datetime.strptime(filename.split("_")[2], "%Y%m%d").date()
-
-                    if (filedate <= stopdate) and (filedate >= startdate):
-                        matches.append(os.path.join(root, filename))
-
-            # Process it only if at least 3 products are present
-            if len(matches) > 2:
-                # Creates an ad-hoc destination directory
-                destprefix = ye + '-' + me + '_' + card + '_decade'
-                dest_dir = "%s/" % os.path.join(global_output_dir, destprefix)
-                if not os.path.exists(dest_dir):
-                    os.mkdir(dest_dir)
-                P90_out_name = dest_dir + prefix + el + '_P90_Num.tif'
-                Mean_out_name = dest_dir + prefix + el + '_Mean_Num.tif'
-                res = P90_Mean_multiplefiles(matches, tile_size, P90_out_name, Mean_out_name, SMask_LandSea, LandVal,
-                                             NoDataVal)
-            else:
-                logging.debug("[CMEMS_PROCESSORS] " + "Not enough products (" + str(
-                    len(matches)) + ") to generate 10-days stats for " + el)
+        if len(res[0]) == 0 and len(res[1]) == 0:
+            logging.debug("[CMEMS_PROCESSORS] " + "Stats for " + el + " not generated!")
+            erro = erro + 1
+            continue
+        else:
+            # Applies the legends
+            loggio = []
+            lalegenda = Read_Legend(SLegends[pProds.index(el)], loggio)
+            for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
+            if len(res[0]) == 0:
+                logging.debug("[CMEMS_PROCESSORS] " + "P90 for " + el + " not generated!")
                 erro = erro + 1
-                continue
-
-            if len(res[0]) > 0:
-                os.remove(res[0])
+            else:
+                # If not chlorophyll, delete it
+                if el == 'Chl':
+                    # Applies the legend to P90
+                    if lalegenda[0] != 0 or lalegenda[1] != 0:
+                        loggio = []
+                        Re, Ge, Be = Apply_Legend(res[0], -1, lalegenda, loggio)
+                        for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
+                        if (len(Re[0]) > 1):
+                            loggio = []
+                            lres = RGB_as_input(res[0], Re, Ge, Be,
+                                                dest_dir + prefix + el + '_P90_Thematic.tif', loggio)
+                            for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
+                            Re = None
+                            Ge = None
+                            Be = None
+                            if lres == 1:
+                                # Error message is already set
+                                # logging.debug("[CMEMS_PROCESSORS] "+"Error in creaing thematic RGB for "+res[0])
+                                erro = erro + 1
+                        else:
+                            # Error message is already set
+                            # logging.debug("[CMEMS_PROCESSORS] "+"Error in applying legend to "+res[0])
+                            erro = erro + 1
+                    else:
+                        # Error message is already set
+                        # logging.debug("[CMEMS_PROCESSORS] "+"Error in loading legend for "+res[0]+" ("+el+")")
+                        erro = erro + 1
+                else:
+                    os.remove(res[0])
 
             if len(res[1]) == 0:
-                logging.debug("[CMEMS_PROCESSORS] " + "10-days stats for " + el + " not generated!")
+                logging.debug("[CMEMS_PROCESSORS] " + "Mean for " + el + " not generated!")
                 erro = erro + 1
                 continue
             else:
-                # Applies the legend
-                loggio = []
-                lalegenda = Read_Legend(SLegends[pProds.index(el)], loggio)
-                for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
+                # Applies the legend to Mean
                 if lalegenda[0] != 0 or lalegenda[1] != 0:
                     loggio = []
                     Re, Ge, Be = Apply_Legend(res[1], -1, lalegenda, loggio)
                     for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
-                    lalegenda = None
                     if (len(Re[0]) > 1):
                         loggio = []
-                        lres = RGB_as_input(res[1], Re, Ge, Be, dest_dir + prefix + el + '_Mean_Thematic.tif', loggio)
+                        lres = RGB_as_input(res[1], Re, Ge, Be, dest_dir + prefix + el + '_Mean_Thematic.tif',
+                                            loggio)
                         for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
                         Re = None
                         Ge = None
@@ -500,136 +549,11 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
                     # logging.debug("[CMEMS_PROCESSORS] "+"Error in loading legend for "+res[1]+" ("+el+")")
                     erro = erro + 1
 
-        if os.path.exists(SMask_LandSea): os.remove(SMask_LandSea)
-        if (erro > 0):
-            return 1, dest_dir
+            lalegenda = None
 
-    if (stat_type == 1):
-        #
-        # Procedure to generate the monthly mean and P90
-        #
-        logging.info("[CMEMS_PROCESSORS] Calculate monthly P90 and Mean")
-        tile_size = 256
-        stopdate = datetime.date(WorkingDate[0], WorkingDate[1], WorkingDate[2]) - datetime.timedelta(days=2)
-        erro = 0
-        if (WorkingDate[2] == 2):
-            startdate = datetime.date(stopdate.year, stopdate.month, 1)
-            ye = str(startdate.year)
-            me = str(startdate.month)
-            if len(me) == 1: me = '0' + me
-            prefix = 'RC_' + AOI_Name[AOI] + '_' + ye + me + '_monthly_'
-
-            # Searches for the corresponding product files
-            for el in pProds:
-                matches = []
-                for root, dirnames, filenames in os.walk(prods_dir):
-                    for filename in fnmatch.filter(filenames, 'RC_' + AOI_Name[AOI] + '*' + el + '_Num.tif'):
-                        filedate = datetime.datetime.strptime(filename.split("_")[2], "%Y%m%d").date()
-                        if (filedate <= stopdate) and (filedate >= startdate):
-                            matches.append(os.path.join(root, filename))
-
-                # Process it only if at least 3 products are present
-                if len(matches) > 2:
-                    # Creates an ad-hoc destination directory
-                    destprefix = ye + '-' + me + '_month'
-                    dest_dir = "%s/" % os.path.join(global_output_dir, destprefix)
-                    if not os.path.exists(dest_dir):
-                        os.mkdir(dest_dir)
-                    P90_out_name = dest_dir + prefix + el + '_P90_Num.tif'
-                    Mean_out_name = dest_dir + prefix + el + '_Mean_Num.tif'
-                    res = P90_Mean_multiplefiles(matches, tile_size, P90_out_name, Mean_out_name, SMask_LandSea,
-                                                 LandVal, NoDataVal)
-                else:
-                    logging.debug("[CMEMS_PROCESSORS] " + "Not enough products (" + str(
-                        len(matches)) + ") to generate monthly stats for " + el)
-                    erro = erro + 1
-                    continue
-
-                if len(res[0]) == 0 and len(res[1]) == 0:
-                    logging.debug("[CMEMS_PROCESSORS] " + "Monthly stats for " + el + " not generated!")
-                    if not os.path.exists(dest_dir):
-                        os.rmdir(dest_dir)
-                    erro = erro + 1
-                    continue
-                else:
-                    # Applies the legends
-                    loggio = []
-                    lalegenda = Read_Legend(SLegends[pProds.index(el)], loggio)
-                    for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
-                    if len(res[0]) == 0:
-                        logging.debug("[CMEMS_PROCESSORS] " + "Monthly P90 for " + el + " not generated!")
-                        erro = erro + 1
-                    else:
-                        # If not chlorophyll, delete it
-                        if el == 'Chl':
-                            # Applies the legend to P90
-                            if lalegenda[0] != 0 or lalegenda[1] != 0:
-                                loggio = []
-                                Re, Ge, Be = Apply_Legend(res[0], -1, lalegenda, loggio)
-                                for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
-                                if (len(Re[0]) > 1):
-                                    loggio = []
-                                    lres = RGB_as_input(res[0], Re, Ge, Be,
-                                                        dest_dir + prefix + el + '_P90_Thematic.tif', loggio)
-                                    for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
-                                    Re = None
-                                    Ge = None
-                                    Be = None
-                                    if lres == 1:
-                                        # Error message is already set
-                                        # logging.debug("[CMEMS_PROCESSORS] "+"Error in creaing thematic RGB for "+res[0])
-                                        erro = erro + 1
-                                else:
-                                    # Error message is already set
-                                    # logging.debug("[CMEMS_PROCESSORS] "+"Error in applying legend to "+res[0])
-                                    erro = erro + 1
-                            else:
-                                # Error message is already set
-                                # logging.debug("[CMEMS_PROCESSORS] "+"Error in loading legend for "+res[0]+" ("+el+")")
-                                erro = erro + 1
-                        else:
-                            os.remove(res[0])
-
-                    if len(res[1]) == 0:
-                        logging.debug("[CMEMS_PROCESSORS] " + "Monthly mean for " + el + " not generated!")
-                        erro = erro + 1
-                        continue
-                    else:
-                        # Applies the legend to Mean
-                        if lalegenda[0] != 0 or lalegenda[1] != 0:
-                            loggio = []
-                            Re, Ge, Be = Apply_Legend(res[1], -1, lalegenda, loggio)
-                            for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
-                            if (len(Re[0]) > 1):
-                                loggio = []
-                                lres = RGB_as_input(res[1], Re, Ge, Be, dest_dir + prefix + el + '_Mean_Thematic.tif',
-                                                    loggio)
-                                for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
-                                Re = None
-                                Ge = None
-                                Be = None
-                                if lres == 1:
-                                    # Error message is already set
-                                    # logging.debug("[CMEMS_PROCESSORS] "+"Error in creaing thematic RGB for "+res[1])
-                                    erro = erro + 1
-                            else:
-                                # Error message is already set
-                                # logging.debug("[CMEMS_PROCESSORS] "+"Error in applying legend to "+res[1])
-                                erro = erro + 1
-                        else:
-                            # Error message is already set
-                            # logging.debug("[CMEMS_PROCESSORS] "+"Error in loading legend for "+res[1]+" ("+el+")")
-                            erro = erro + 1
-
-                    lalegenda = None
-        else:
-            logging.debug(
-                "[CMEMS_PROCESSORS] " + "The provided working date is not compatible with the monthly product")
-            erro = erro + 1
-
-        if os.path.exists(SMask_LandSea): os.remove(SMask_LandSea)
-        if (erro > 0):
-            return 1, dest_dir
+    if os.path.exists(SMask_LandSea): os.remove(SMask_LandSea)
+    if (erro > 0):
+        return 1, dest_dir
 
     return 0, dest_dir
 
@@ -639,17 +563,22 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
 ## WQ_Stats_CMEMS_Chain
 ##
 ## Input:
-##        WorkingDate: a integer list [year,month,day]. Day must be: 2, 12 or 22
-##        TodoStats: 0=10-days, 1=monthly
+##        onflag: bit 0 -> sst
+##                bit 1 -> chl
+##                bit 2 -> wt
+##                bit 3 -> tur 
+##        ovrwflag: not used
+##        dates: a list with two strings: start date, end date ["yyyy-mm-dd"]. 
 ##        setAOI: 1=ITA, 2=GRE, Any other=BOTH
 ##
 ## Output: 0 okay, 1 any error
 ##
-def WQ_Stats_CMEMS_Chain(
+def WQ_OnDemandStats_CMEMS_Chain(
         onflag,
         ovrwflag,
-        date,
+        dates,
         setAOI=[1, 2]):
+
     if setAOI != 1 and setAOI != 2:
         setAOI = [1, 2]
     else:
@@ -659,7 +588,7 @@ def WQ_Stats_CMEMS_Chain(
     for areaofi in setAOI:
         logging.info("[CMEMS_PROCESSORS] Processing AOI: " + AOI_Name[areaofi - 1])
 
-        resproc, dest_dir = WQ_Stats_CMEMS(date, onflag, areaofi)
+        resproc, dest_dir = WQ_ODStats_CMEMS(dates, onflag, areaofi)
         res = res + resproc
 
     return (1, dest_dir) if not res else (0, dest_dir)
@@ -668,10 +597,10 @@ def WQ_Stats_CMEMS_Chain(
 # -------------------------------
 
 if __name__ == '__main__':
+
     print "Main body."
     
-    WkingDate = [2017, 06, 2]  # Year, month, day
-    res = WQ_Stats_CMEMS_Chain(0, 0,
-                               datetime.datetime.now().replace(day=2, month=6, year=2017).strftime("%Y-%m-%d"))
-
+    WkingDates=["2017-05-22","2017-05-31"]
+    res=WQ_OnDemandStats_CMEMS_Chain(15,0,WkingDates)
+    print res
 
