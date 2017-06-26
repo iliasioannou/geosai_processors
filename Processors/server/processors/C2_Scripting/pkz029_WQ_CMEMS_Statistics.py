@@ -511,9 +511,11 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
         logging.info("[CMEMS_PROCESSORS] Calculate monthly P90 and Mean")
         tile_size = 256
         stopdate = datetime.date(WorkingDate[0], WorkingDate[1], WorkingDate[2]) - datetime.timedelta(days=2)
+        logging.debug("[CMEMS DEBUG] Stopdata is %s" %stopdate)
         erro = 0
         if (WorkingDate[2] == 2):
             startdate = datetime.date(stopdate.year, stopdate.month, 1)
+            logging.debug("[CMEMS DEBUG] Stopdata is %s" %startdate)
             ye = str(startdate.year)
             me = str(startdate.month)
             if len(me) == 1: me = '0' + me
@@ -524,6 +526,7 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
                 matches = []
                 for root, dirnames, filenames in os.walk(prods_dir):
                     for filename in fnmatch.filter(filenames, 'RC_' + AOI_Name[AOI] + '*' + el + '_Num.tif'):
+                        logging.debug("[CMEMS_DEBUG] %s" %filename)
                         filedate = datetime.datetime.strptime(filename.split("_")[2], "%Y%m%d").date()
                         if (filedate <= stopdate) and (filedate >= startdate):
                             matches.append(os.path.join(root, filename))
