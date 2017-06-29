@@ -457,6 +457,7 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
                 Mean_out_name = dest_dir + prefix + el + '_Mean_Num.tif'
                 res = P90_Mean_multiplefiles(matches, tile_size, P90_out_name, Mean_out_name, SMask_LandSea, LandVal,
                                              NoDataVal)
+                print("here", res)
             else:
                 logging.info("[CMEMS_PROCESSORS] " + "Not enough products (" + str(
                     len(matches)) + ") to generate 10-days stats for " + el)
