@@ -62,7 +62,7 @@ if _platform == "linux" or _platform == "linux2":
 else:
     ##Only for testing in Windows
     logging.basicConfig(filename=global_output_dir + 'thisismystat.log', filemode='w',
-                        format='[CMEMS] %(asctime)s %(message)s', datefmt='%H:%M:%S', level=logging.DEBUG)
+                        format='[CMEMS] %(asctime)s %(message)s', datefmt='%H:%M:%S', level=logging.info)
     logging.getLogger().addHandler(logging.StreamHandler())
 
 
@@ -148,33 +148,33 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
             ds = gdal.Open(ilfile, GA_ReadOnly)
             geotrasf = ds.GetGeoTransform()
         except RuntimeError, e:
-            logging.debug("[CMEMS_PROCESSORS] " + os.path.basename(ilfile) + " cannot be read (" + e + ")")
+            logging.info("[CMEMS_PROCESSORS] " + os.path.basename(ilfile) + " cannot be read (" + e + ")")
             filelista[filelista.index(ilfile)] = ''
-            logging.debug("[CMEMS_PROCESSORS] " + "Removed !")
+            logging.info("[CMEMS_PROCESSORS] " + "Removed !")
             ds = None
             continue
         except AttributeError, e:
-            logging.debug("[CMEMS_PROCESSORS] " + os.path.basename(ilfile) + " cannot be read (" + e + ") (removed)")
+            logging.info("[CMEMS_PROCESSORS] " + os.path.basename(ilfile) + " cannot be read (" + e + ") (removed)")
             filelista[filelista.index(ilfile)] = ''
             ds = None
             continue
 
         if np.abs(ULx - geotrasf[0]) > 0.0000001 or np.abs(ULy - geotrasf[3]) > 0.0000001:
-            logging.debug("[CMEMS_PROCESSORS] " + os.path.basename(
+            logging.info("[CMEMS_PROCESSORS] " + os.path.basename(
                 ilfile) + " has different UL corner coordinates w.r.t. reference file " + os.path.basename(
                 filelista[0]) + " (removed)")
             filelista[filelista.index(ilfile)] = ''
             ds = None
             continue
         if np.abs(PXx - geotrasf[1]) > 0.00001 or np.abs(PXy - geotrasf[5]) > 0.00001:
-            logging.debug("[CMEMS_PROCESSORS] " + os.path.basename(
+            logging.info("[CMEMS_PROCESSORS] " + os.path.basename(
                 ilfile) + " has different pixel size w.r.t. reference file " + os.path.basename(
                 filelista[0]) + " (removed)")
             filelista[filelista.index(ilfile)] = ''
             ds = None
             continue
         if (SIZx != ds.RasterXSize) or (SIZy != ds.RasterYSize):
-            logging.debug("[CMEMS_PROCESSORS] " + os.path.basename(
+            logging.info("[CMEMS_PROCESSORS] " + os.path.basename(
                 ilfile) + " has different pixels w.r.t. reference file " + os.path.basename(
                 filelista[0]) + " (removed)")
             filelista[filelista.index(ilfile)] = ''
@@ -184,7 +184,7 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
 
     filelista_ind = [s for s in range(len(filelista)) if filelista[s] != '']
     if len(filelista_ind) < 2:
-        logging.debug("[CMEMS_PROCESSORS] " + "Not enough EO maps to process (" + str(len(filelista_ind)) + ")")
+        logging.info("[CMEMS_PROCESSORS] " + "Not enough EO maps to process (" + str(len(filelista_ind)) + ")")
         return '', ''
     filelistok = []
     for s in filelista_ind:
@@ -216,11 +216,11 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
                     band = ds.GetRasterBand(1)
                     tile_arr = band.ReadAsArray(j, i, endx, endy).astype(np.float)
                 except RuntimeError, e:
-                    logging.debug(
+                    logging.info(
                         "[CMEMS_PROCESSORS] " + "Cannot read tile of" + os.path.basename(ilfile) + "(" + e + ")")
                     ds = None
                 except AttributeError, e:
-                    logging.debug(
+                    logging.info(
                         "[CMEMS_PROCESSORS] " + "Cannot read tile of" + os.path.basename(ilfile) + "(" + e + ")")
                     ds = None
                 else:
@@ -243,7 +243,7 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
     landmask_read = 0
     if len(seamask) > 0:
         if os.path.exists(seamask) == False:
-            logging.debug("[CMEMS_PROCESSORS] " + "Land mask not found: " + seamask)
+            logging.info("[CMEMS_PROCESSORS] " + "Land mask not found: " + seamask)
         else:
             try:
                 ds = gdal.Open(seamask, GA_ReadOnly)
@@ -251,10 +251,10 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
                 landarr = landband.ReadAsArray()
                 [landcols, landrows] = landarr.shape
             except RuntimeError, e:
-                logging.debug("[CMEMS_PROCESSORS] " + "Error in reading land mask: " + seamask)
+                logging.info("[CMEMS_PROCESSORS] " + "Error in reading land mask: " + seamask)
             else:
                 if (landcols != SIZy) or (landrows != SIZx):
-                    logging.debug(
+                    logging.info(
                         "[CMEMS_PROCESSORS] " + "Land mask (" + seamask + ") raster size not compatible with products")
                 else:
                     terra = np.where(landarr == 0)
@@ -264,7 +264,7 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
             ds = None
 
     if np.max(P90_matrix) == 0:
-        ##logging.debug("[CMEMS_PROCESSORS] "+"For all pixels no P90 was calculated!")
+        ##logging.info("[CMEMS_PROCESSORS] "+"For all pixels no P90 was calculated!")
         P90_file = ''
     else:
         # Apply nodata_value
@@ -307,12 +307,12 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
 
             outdata = None
         except RuntimeError, e:
-            logging.debug("[CMEMS_PROCESSORS] " + "Error in writing P90 GeoTIFF")
+            logging.info("[CMEMS_PROCESSORS] " + "Error in writing P90 GeoTIFF")
             logging.error(e)
             P90_file = ''
 
     if np.max(Mean_matrix) == 0:
-        logging.debug("[CMEMS_PROCESSORS] " + "For all pixels no Mean was calculated!")  ## BUG FIX 23/06/2016
+        logging.info("[CMEMS_PROCESSORS] " + "For all pixels no Mean was calculated!")  ## BUG FIX 23/06/2016
         Mean_file = ''
     else:
         # Apply nodata_value
@@ -353,8 +353,8 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
 
             outdata = None
         except RuntimeError, e:
-            logging.debug("[CMEMS_PROCESSORS] " + "Error in writing P90 GeoTIFF")
-            logging.debug("[CMEMS_PROCESSORS] " + e)
+            logging.info("[CMEMS_PROCESSORS] " + "Error in writing P90 GeoTIFF")
+            logging.info("[CMEMS_PROCESSORS] " + e)
             Mean_file = ''
 
     return P90_file, Mean_file
@@ -376,17 +376,17 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
 ##        0 = all okay, 1 = something went wrong
 #
 def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
-    logging.debug("[CMEMS_PROCESSORS] Date is %s" %WorkingDate)
+    logging.info("[CMEMS_PROCESSORS] Date is %s" %WorkingDate)
     WorkingDate = map(int, WorkingDate.split("-"))
 
     dest_dir = ''
     if (stat_type != 0) and (stat_type != 1):
-        logging.debug("[CMEMS_PROCESSORS] Unknown satistics requested")
+        logging.info("[CMEMS_PROCESSORS] Unknown satistics requested")
         return 1, dest_dir
 
     # Checks AOI
     if (AOI != 1) and (AOI != 2):
-        logging.debug("[CMEMS_PROCESSORS] Wrong AOI parameter, set to Adriatic")
+        logging.info("[CMEMS_PROCESSORS] Wrong AOI parameter, set to Adriatic")
         AOI = 1
     AOI = AOI - 1
 
@@ -402,7 +402,7 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
         erro = 1
 
     if (erro == 1) or os.path.exists(SMask_LandSea) == None:
-        logging.debug(
+        logging.info(
             "[CMEMS_PROCESSORS] Error in cutting sea mask " + Mask_LandSea[AOI] + " ! Sea mask will be not applied.")
         SMask_LandSea = ''
 
@@ -434,7 +434,7 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
         for el in pProds:
             matches = []
             for root, dirnames, filenames in os.walk(prods_dir):
-                ##logging.debug(filenames)
+                ##logging.info(filenames)
                 for filename in fnmatch.filter(filenames, 'RC_' + AOI_Name[AOI] + '*' + el + '_Num.tif'):
                     # prefixlen = len('RC_' + AOI_Name[AOI] + '_')
                     # filedate = datetime.date(int(filename[prefixlen:prefixlen + 4]),
@@ -458,7 +458,7 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
                 res = P90_Mean_multiplefiles(matches, tile_size, P90_out_name, Mean_out_name, SMask_LandSea, LandVal,
                                              NoDataVal)
             else:
-                logging.debug("[CMEMS_PROCESSORS] " + "Not enough products (" + str(
+                logging.info("[CMEMS_PROCESSORS] " + "Not enough products (" + str(
                     len(matches)) + ") to generate 10-days stats for " + el)
                 erro = erro + 1
                 continue
@@ -467,37 +467,37 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
                 os.remove(res[0])
 
             if len(res[1]) == 0:
-                logging.debug("[CMEMS_PROCESSORS] " + "10-days stats for " + el + " not generated!")
+                logging.info("[CMEMS_PROCESSORS] " + "10-days stats for " + el + " not generated!")
                 erro = erro + 1
                 continue
             else:
                 # Applies the legend
                 loggio = []
                 lalegenda = Read_Legend(SLegends[pProds.index(el)], loggio)
-                for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
+                for lili in loggio: logging.info("[CMEMS_PROCESSORS] " + lili)
                 if lalegenda[0] != 0 or lalegenda[1] != 0:
                     loggio = []
                     Re, Ge, Be = Apply_Legend(res[1], -1, lalegenda, loggio)
-                    for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
+                    for lili in loggio: logging.info("[CMEMS_PROCESSORS] " + lili)
                     lalegenda = None
                     if (len(Re[0]) > 1):
                         loggio = []
                         lres = RGB_as_input(res[1], Re, Ge, Be, dest_dir + prefix + el + '_Mean_Thematic.tif', loggio)
-                        for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
+                        for lili in loggio: logging.info("[CMEMS_PROCESSORS] " + lili)
                         Re = None
                         Ge = None
                         Be = None
                         if lres == 1:
                             # Error message is already set
-                            logging.debug("[CMEMS_PROCESSORS]"+"Error in creaing thematic RGB for "+res[1])
+                            logging.info("[CMEMS_PROCESSORS]"+"Error in creaing thematic RGB for "+res[1])
                             erro = erro + 1
                     else:
                         # Error message is already set
-                        logging.debug("[CMEMS_PROCESSORS]"+"Error in applying legend to "+res[1])
+                        logging.info("[CMEMS_PROCESSORS]"+"Error in applying legend to "+res[1])
                         erro = erro + 1
                 else:
                     # Error message is already set
-                    logging.debug("[CMEMS_PROCESSORS]"+"Error in loading legend for "+res[1]+" ("+el+")")
+                    logging.info("[CMEMS_PROCESSORS]"+"Error in loading legend for "+res[1]+" ("+el+")")
                     erro = erro + 1
 
         if os.path.exists(SMask_LandSea): os.remove(SMask_LandSea)
@@ -511,11 +511,11 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
         logging.info("[CMEMS_PROCESSORS] Calculate monthly P90 and Mean")
         tile_size = 256
         stopdate = datetime.date(WorkingDate[0], WorkingDate[1], WorkingDate[2]) - datetime.timedelta(days=2)
-        logging.debug("[CMEMS DEBUG] Stopdata is %s" %stopdate)
+        logging.info("[CMEMS DEBUG] Stopdata is %s" %stopdate)
         erro = 0
         if (WorkingDate[2] == 2):
             startdate = datetime.date(stopdate.year, stopdate.month, 1)
-            logging.debug("[CMEMS DEBUG] Stopdata is %s" %startdate)
+            logging.info("[CMEMS DEBUG] Stopdata is %s" %startdate)
             ye = str(startdate.year)
             me = str(startdate.month)
             if len(me) == 1: me = '0' + me
@@ -542,13 +542,13 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
                     res = P90_Mean_multiplefiles(matches, tile_size, P90_out_name, Mean_out_name, SMask_LandSea,
                                                  LandVal, NoDataVal)
                 else:
-                    logging.debug("[CMEMS_PROCESSORS] " + "Not enough products (" + str(
+                    logging.info("[CMEMS_PROCESSORS] " + "Not enough products (" + str(
                         len(matches)) + ") to generate monthly stats for " + el)
                     erro = erro + 1
                     continue
 
                 if len(res[0]) == 0 and len(res[1]) == 0:
-                    logging.debug("[CMEMS_PROCESSORS] " + "Monthly stats for " + el + " not generated!")
+                    logging.info("[CMEMS_PROCESSORS] " + "Monthly stats for " + el + " not generated!")
                     if not os.path.exists(dest_dir):
                         os.rmdir(dest_dir)
                     erro = erro + 1
@@ -557,9 +557,9 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
                     # Applies the legends
                     loggio = []
                     lalegenda = Read_Legend(SLegends[pProds.index(el)], loggio)
-                    for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
+                    for lili in loggio: logging.info("[CMEMS_PROCESSORS] " + lili)
                     if len(res[0]) == 0:
-                        logging.debug("[CMEMS_PROCESSORS] " + "Monthly P90 for " + el + " not generated!")
+                        logging.info("[CMEMS_PROCESSORS] " + "Monthly P90 for " + el + " not generated!")
                         erro = erro + 1
                     else:
                         # If not chlorophyll, delete it
@@ -568,32 +568,32 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
                             if lalegenda[0] != 0 or lalegenda[1] != 0:
                                 loggio = []
                                 Re, Ge, Be = Apply_Legend(res[0], -1, lalegenda, loggio)
-                                for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
+                                for lili in loggio: logging.info("[CMEMS_PROCESSORS] " + lili)
                                 if (len(Re[0]) > 1):
                                     loggio = []
                                     lres = RGB_as_input(res[0], Re, Ge, Be,
                                                         dest_dir + prefix + el + '_P90_Thematic.tif', loggio)
-                                    for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
+                                    for lili in loggio: logging.info("[CMEMS_PROCESSORS] " + lili)
                                     Re = None
                                     Ge = None
                                     Be = None
                                     if lres == 1:
                                         # Error message is already set
-                                        logging.debug("[CMEMS_PROCESSORS]"+"Error in creaing thematic RGB for "+res[0])
+                                        logging.info("[CMEMS_PROCESSORS]"+"Error in creaing thematic RGB for "+res[0])
                                         erro = erro + 1
                                 else:
                                     # Error message is already set
-                                    logging.debug("[CMEMS_PROCESSORS]"+"Error in applying legend to "+res[0])
+                                    logging.info("[CMEMS_PROCESSORS]"+"Error in applying legend to "+res[0])
                                     erro = erro + 1
                             else:
                                 # Error message is already set
-                                logging.debug("[CMEMS_PROCESSORS]"+"Error in loading legend for "+res[0]+" ("+el+")")
+                                logging.info("[CMEMS_PROCESSORS]"+"Error in loading legend for "+res[0]+" ("+el+")")
                                 erro = erro + 1
                         else:
                             os.remove(res[0])
 
                     if len(res[1]) == 0:
-                        logging.debug("[CMEMS_PROCESSORS] " + "Monthly mean for " + el + " not generated!")
+                        logging.info("[CMEMS_PROCESSORS] " + "Monthly mean for " + el + " not generated!")
                         erro = erro + 1
                         continue
                     else:
@@ -601,31 +601,31 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
                         if lalegenda[0] != 0 or lalegenda[1] != 0:
                             loggio = []
                             Re, Ge, Be = Apply_Legend(res[1], -1, lalegenda, loggio)
-                            for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
+                            for lili in loggio: logging.info("[CMEMS_PROCESSORS] " + lili)
                             if (len(Re[0]) > 1):
                                 loggio = []
                                 lres = RGB_as_input(res[1], Re, Ge, Be, dest_dir + prefix + el + '_Mean_Thematic.tif',
                                                     loggio)
-                                for lili in loggio: logging.debug("[CMEMS_PROCESSORS] " + lili)
+                                for lili in loggio: logging.info("[CMEMS_PROCESSORS] " + lili)
                                 Re = None
                                 Ge = None
                                 Be = None
                                 if lres == 1:
                                     # Error message is already set
-                                    logging.debug("[CMEMS_PROCESSORS]"+"Error in creaing thematic RGB for "+res[1])
+                                    logging.info("[CMEMS_PROCESSORS]"+"Error in creaing thematic RGB for "+res[1])
                                     erro = erro + 1
                             else:
                                 # Error message is already set
-                                logging.debug("[CMEMS_PROCESSORS]"+"Error in applying legend to "+res[1])
+                                logging.info("[CMEMS_PROCESSORS]"+"Error in applying legend to "+res[1])
                                 erro = erro + 1
                         else:
                             # Error message is already set
-                            logging.debug("[CMEMS_PROCESSORS]"+"Error in loading legend for "+res[1]+" ("+el+")")
+                            logging.info("[CMEMS_PROCESSORS]"+"Error in loading legend for "+res[1]+" ("+el+")")
                             erro = erro + 1
 
                     lalegenda = None
         else:
-            logging.debug(
+            logging.info(
                 "[CMEMS_PROCESSORS] " + "The provided working date is not compatible with the monthly product")
             erro = erro + 1
 
