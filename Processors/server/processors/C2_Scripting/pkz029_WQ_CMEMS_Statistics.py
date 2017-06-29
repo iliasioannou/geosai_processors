@@ -308,7 +308,7 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
             outdata = None
         except RuntimeError, e:
             logging.debug("[CMEMS_PROCESSORS] " + "Error in writing P90 GeoTIFF")
-            logging.debug("[CMEMS_PROCESSORS] " + e)
+            logging.error(e)
             P90_file = ''
 
     if np.max(Mean_matrix) == 0:
@@ -489,15 +489,15 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
                         Be = None
                         if lres == 1:
                             # Error message is already set
-                            # logging.debug("[CMEMS_PROCESSORS] "+"Error in creaing thematic RGB for "+res[1])
+                            logging.debug("[CMEMS_PROCESSORS]"+"Error in creaing thematic RGB for "+res[1])
                             erro = erro + 1
                     else:
                         # Error message is already set
-                        # logging.debug("[CMEMS_PROCESSORS] "+"Error in applying legend to "+res[1])
+                        logging.debug("[CMEMS_PROCESSORS]"+"Error in applying legend to "+res[1])
                         erro = erro + 1
                 else:
                     # Error message is already set
-                    # logging.debug("[CMEMS_PROCESSORS] "+"Error in loading legend for "+res[1]+" ("+el+")")
+                    logging.debug("[CMEMS_PROCESSORS]"+"Error in loading legend for "+res[1]+" ("+el+")")
                     erro = erro + 1
 
         if os.path.exists(SMask_LandSea): os.remove(SMask_LandSea)
@@ -579,15 +579,15 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
                                     Be = None
                                     if lres == 1:
                                         # Error message is already set
-                                        # logging.debug("[CMEMS_PROCESSORS] "+"Error in creaing thematic RGB for "+res[0])
+                                        logging.debug("[CMEMS_PROCESSORS]"+"Error in creaing thematic RGB for "+res[0])
                                         erro = erro + 1
                                 else:
                                     # Error message is already set
-                                    # logging.debug("[CMEMS_PROCESSORS] "+"Error in applying legend to "+res[0])
+                                    logging.debug("[CMEMS_PROCESSORS]"+"Error in applying legend to "+res[0])
                                     erro = erro + 1
                             else:
                                 # Error message is already set
-                                # logging.debug("[CMEMS_PROCESSORS] "+"Error in loading legend for "+res[0]+" ("+el+")")
+                                logging.debug("[CMEMS_PROCESSORS]"+"Error in loading legend for "+res[0]+" ("+el+")")
                                 erro = erro + 1
                         else:
                             os.remove(res[0])
@@ -612,15 +612,15 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
                                 Be = None
                                 if lres == 1:
                                     # Error message is already set
-                                    # logging.debug("[CMEMS_PROCESSORS] "+"Error in creaing thematic RGB for "+res[1])
+                                    logging.debug("[CMEMS_PROCESSORS]"+"Error in creaing thematic RGB for "+res[1])
                                     erro = erro + 1
                             else:
                                 # Error message is already set
-                                # logging.debug("[CMEMS_PROCESSORS] "+"Error in applying legend to "+res[1])
+                                logging.debug("[CMEMS_PROCESSORS]"+"Error in applying legend to "+res[1])
                                 erro = erro + 1
                         else:
                             # Error message is already set
-                            # logging.debug("[CMEMS_PROCESSORS] "+"Error in loading legend for "+res[1]+" ("+el+")")
+                            logging.debug("[CMEMS_PROCESSORS]"+"Error in loading legend for "+res[1]+" ("+el+")")
                             erro = erro + 1
 
                     lalegenda = None
