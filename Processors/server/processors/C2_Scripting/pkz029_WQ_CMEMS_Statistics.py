@@ -663,10 +663,9 @@ def WQ_Stats_CMEMS_Chain(
         logging.info("[CMEMS_PROCESSORS] Processing AOI: " + AOI_Name[areaofi - 1])
 
         resproc, dest_dir = WQ_Stats_CMEMS(date, onflag, areaofi)
-        logging.info(resproc)
         res = res + resproc
 
-    return (1, dest_dir) if not res else (0, dest_dir)
+    return (0, dest_dir) if not res else (1, dest_dir)
 
 
 # -------------------------------
