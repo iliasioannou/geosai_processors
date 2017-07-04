@@ -1,3 +1,4 @@
+from Processors.server.processors.C2_Scripting.pkz029_WQ_CMEMS_OnDemandStatistics import WQ_OnDemandStats_CMEMS_Chain
 from processors.C2_Scripting.pkz029_WQ_CMEMS_Processor import WQ_CMEMS_Chain
 from processors.C2_Scripting.pkz029_WQ_CMEMS_Statistics import WQ_Stats_CMEMS_Chain
 import logging
@@ -17,7 +18,8 @@ def run_processing(products, overwrites, processing_type, date=datetime.now().st
     processor_entrypoint = {
         'day': WQ_CMEMS_Chain,
         'ten': WQ_Stats_CMEMS_Chain,
-        'month': WQ_Stats_CMEMS_Chain
+        'month': WQ_Stats_CMEMS_Chain,
+        'custom': WQ_OnDemandStats_CMEMS_Chain
     }
     logging.info("[CMES_PROCESSORS] Starting processing data")
     res=processor_entrypoint[processing_type](products, overwrites, date)
