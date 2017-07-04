@@ -591,7 +591,7 @@ def WQ_OnDemandStats_CMEMS_Chain(
         resproc, dest_dir = WQ_ODStats_CMEMS(dates, onflag, areaofi)
         res = res + resproc
 
-    return (1, dest_dir) if not res else (0, dest_dir)
+    return (0, dest_dir) if not res else (1, dest_dir)
 
 
 # -------------------------------
