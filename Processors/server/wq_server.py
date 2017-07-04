@@ -61,7 +61,7 @@ def execute(data):
             processing_type=argsDict.get('procType', 'day'),
             products=int(argsDict.get('products', 15)),
             overwrites=int(argsDict.get('overwrite', 15)),
-            date=gte_date
+            date=gte_date if not "dates" in argsDict else argsDict['dates']
         )
         logging.info("[CMEMS_RPC_SERVER] Result dict: %s" % rslt)
     except Exception as e:
