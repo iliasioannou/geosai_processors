@@ -1,4 +1,4 @@
-from Processors.server.processors.C2_Scripting.pkz029_WQ_CMEMS_OnDemandStatistics import WQ_OnDemandStats_CMEMS_Chain
+from processors.C2_Scripting.pkz029_WQ_CMEMS_OnDemandStatistics import WQ_OnDemandStats_CMEMS_Chain
 from processors.C2_Scripting.pkz029_WQ_CMEMS_Processor import WQ_CMEMS_Chain
 from processors.C2_Scripting.pkz029_WQ_CMEMS_Statistics import WQ_Stats_CMEMS_Chain
 import logging
