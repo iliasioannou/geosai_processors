@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 
-def run_processing(products, overwrites, processing_type, date=datetime.now().strftime("%Y-%m-%d")):
+def run_processing(products, overwrites, processing_type, setAoi, date=datetime.now().strftime("%Y-%m-%d")):
     """
     Run processing calling processors
 
