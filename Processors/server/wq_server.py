@@ -65,6 +65,7 @@ def execute(data):
             date=gte_date if not "dates" in argsDict else argsDict['dates']
         )
         logging.info("[CMEMS_RPC_SERVER] Result dict: %s" % rslt)
+        logging.info("[CMEMS_RPC_SERVER] Out path : %s" % out_path)
     except Exception as e:
         logging.error("[CMEMS_RPC_SERVER] Error in processing data")
         logging.exception(e)
