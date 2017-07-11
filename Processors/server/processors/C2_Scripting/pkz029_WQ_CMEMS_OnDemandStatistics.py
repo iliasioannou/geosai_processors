@@ -14,6 +14,8 @@ import logging
 import subprocess
 from sys import platform as _platform
 import fnmatch
+import string
+import random
 
 from pke114_Apply_Legend import Read_Legend  ##Need to be in the same folder
 from pke114_Apply_Legend import Apply_Legend  ##Need to be in the same folder
@@ -375,10 +377,16 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
 ##                  bit 2 -> wt
 ##                  bit 3 -> tur 
 ##        AOI: 1=ITA, 2=GRE, Any other==ITALY
+##        randomchars: chars to be appended to the name of the output folder
 ## Output:
 ##        0 = all okay, 1 = something went wrong
 #
-def WQ_ODStats_CMEMS(WorkingDates, prodflag, AOI):
+def WQ_ODStats_CMEMS(
+    WorkingDates,
+    prodflag,
+    AOI,
+    randomchars):
+    
     WorkingDate1 = map(int, WorkingDates[0].split("-"))
     WorkingDate2 = map(int, WorkingDates[1].split("-"))
     dest_dir = ''
@@ -445,7 +453,7 @@ def WQ_ODStats_CMEMS(WorkingDates, prodflag, AOI):
     if len(me2) == 1: me2 = '0' + me2
     if len(gi2) == 1: gi2 = '0' + gi2
     prefix = prefix + ye2 + me2 + gi2 + '_'
-    
+
     # Searches for the corresponding product files
     for el in sel_pProds:
         matches = []
@@ -460,6 +468,7 @@ def WQ_ODStats_CMEMS(WorkingDates, prodflag, AOI):
             logging.info("[CMEMS_PROCESSORS] Found "+str(len(matches))+" products for "+el)
             # Creates an ad-hoc destination directory
             destprefix = ye1 + '-' + me1 + '-' + gi1 + 'to' + ye2 + '-' + me2 + '-' + gi2
+            destprefix = destprefix + '_' + randomchars
             dest_dir = "%s/" % os.path.join(global_output_dir, destprefix)
             if not os.path.exists(dest_dir):
                 os.mkdir(dest_dir)
@@ -585,10 +594,11 @@ def WQ_OnDemandStats_CMEMS_Chain(
         setAOI = [setAOI]
 
     res = 0
+    rnd_chars = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
     for areaofi in setAOI:
         logging.info("[CMEMS_PROCESSORS] Processing AOI: " + AOI_Name[areaofi - 1])
 
-        resproc, dest_dir = WQ_ODStats_CMEMS(dates, onflag, areaofi)
+        resproc, dest_dir = WQ_ODStats_CMEMS(dates, onflag, areaofi, rnd_chars)
         res = res + resproc
 
     return (0, dest_dir) if not res else (1, dest_dir)

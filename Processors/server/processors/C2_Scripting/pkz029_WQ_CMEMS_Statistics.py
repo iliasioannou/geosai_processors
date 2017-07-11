@@ -62,7 +62,7 @@ if _platform == "linux" or _platform == "linux2":
 else:
     ##Only for testing in Windows
     logging.basicConfig(filename=global_output_dir + 'thisismystat.log', filemode='w',
-                        format='[CMEMS] %(asctime)s %(message)s', datefmt='%H:%M:%S', level=logging.info)
+                        format='[CMEMS] %(asctime)s %(message)s', datefmt='%H:%M:%S', level=logging.DEBUG)
     logging.getLogger().addHandler(logging.StreamHandler())
 
 
@@ -372,7 +372,7 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
 ##        WorkingDate: a string yyyy-mm-dd. Day must be: 2, 12 or 22
 ##        stat_type: 0=10-days, 1=monthly
 ##        AOI: 1=ITA, 2=GRE, Any other==ITALY
-## Output:
+## Output: [0|1], created destination dir of the products ('' in case of error)
 ##        0 = all okay, 1 = something went wrong
 #
 def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
@@ -418,16 +418,16 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
         stopdate = datetime.date(WorkingDate[0], WorkingDate[1], WorkingDate[2]) - datetime.timedelta(days=2)
         if (WorkingDate[2] == 2):
             startdate = datetime.date(stopdate.year, stopdate.month, 21)
-            card = '3rd'
+            card = '21'
         else:
             startdate = stopdate - datetime.timedelta(days=9)
-            card = '1st'
+            card = '01'
             if (startdate.day == 11):
-                card = '2nd'
+                card = '11'
         ye = str(startdate.year)
         me = str(startdate.month)
         if len(me) == 1: me = '0' + me
-        prefix = 'RC_' + AOI_Name[AOI] + '_' + ye + me + '_' + card + '_decade_'
+        prefix = 'RC_' + AOI_Name[AOI] + '_' + ye + me + card +'_d_'
 
         erro = 0
         # Searches for the corresponding product files
@@ -512,15 +512,15 @@ def WQ_Stats_CMEMS(WorkingDate, stat_type, AOI):
         logging.info("[CMEMS_PROCESSORS] Calculate monthly P90 and Mean")
         tile_size = 256
         stopdate = datetime.date(WorkingDate[0], WorkingDate[1], WorkingDate[2]) - datetime.timedelta(days=2)
-        logging.info("[CMEMS DEBUG] Stopdata is %s" %stopdate)
+        logging.info("[CMEMS DEBUG] Stopdate is %s" %stopdate)
         erro = 0
         if (WorkingDate[2] == 2):
             startdate = datetime.date(stopdate.year, stopdate.month, 1)
-            logging.info("[CMEMS DEBUG] Stopdata is %s" %startdate)
+            logging.info("[CMEMS DEBUG] Startdate is %s" %startdate)
             ye = str(startdate.year)
             me = str(startdate.month)
             if len(me) == 1: me = '0' + me
-            prefix = 'RC_' + AOI_Name[AOI] + '_' + ye + me + '_monthly_'
+            prefix = 'RC_' + AOI_Name[AOI] + '_' + ye + me +'01_m_'
 
             # Searches for the corresponding product files
             for el in pProds:
@@ -673,7 +673,9 @@ def WQ_Stats_CMEMS_Chain(
 if __name__ == '__main__':
     print "Main body."
     
-    WkingDate = [2017, 06, 2]  # Year, month, day
+##    WkingDate = '2017-06-02'
+##    res = WQ_Stats_CMEMS_Chain(1, 0, WkingDate)
+    
     res = WQ_Stats_CMEMS_Chain(0, 0,
                                datetime.datetime.now().replace(day=2, month=6, year=2017).strftime("%Y-%m-%d"))
 
