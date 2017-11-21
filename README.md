@@ -1,6 +1,6 @@
 # Qui vanno inseriti i sorgenti dei processori e del wrapper XML-RPC per lanciarli da remoto
 
-### CMEMS Docker image build&configure
+### EOSAI Docker image build&configure
 
 **To create the docker image**
 To create the image with the Dockerfile, the *response.varfile* configuration file is needed. 
@@ -24,7 +24,7 @@ This is the completed expected folder tree with the input, intermediate and fina
 - 04_TempDir: It will contain all temporary files, which will be deleted at the end of the process
 - 05_OutputDir: It will contain the output files (see note below about output location)
 
-### CMEMS Docker image use: daily processor
+### EOSAI Docker image use: daily processor
 **How to launch the CMEMS processor with docker:**
 
 docker run -v <host path to main folder>:/home/CMEMS cmems first_argument second_argument process_ID
