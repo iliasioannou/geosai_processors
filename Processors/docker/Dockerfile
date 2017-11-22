@@ -1,4 +1,4 @@
-FROM planetek/cmems_processors:base
+FROM planetek/eosai_processors:base
 
 ARG branch
 
