@@ -95,12 +95,12 @@ def download_data(start_date, end_date):
     :param startDate: the start date whose products need to be downloaded from
     :param endDate: the end date whose products need to be downloaded to
     """
-    logging.info("[CMEMS_DOWNLOADER] Start downloading product")
+    logging.info("[EOSAI_DOWNLOADER] Start downloading product")
 
     for element in data_map:
-        logging.info("[CMEMS_DOWNLOADER] Processing %s" %element['product'])
+        logging.info("[EOSAI_DOWNLOADER] Processing %s" %element['product'])
         for ds in element['dataset']:
-            logging.info("[CMEMS_DOWNLOADER] Downloading %s" % ds['name'])
+            logging.info("[EOSAI_DOWNLOADER] Downloading %s" % ds['name'])
             script = StringScriptBuilder()\
                 .set_product(element['product'])\
                 .set_dataset(ds['name'])\
@@ -111,7 +111,7 @@ def download_data(start_date, end_date):
                 .build()
             result = run_script(script, assert_result_function=lambda item: True if "Done" in item[0] and item[1].returncode == 0 else False)
             if not result:
-                logging.info("[CMEMS_DOWNLOADER] %s (%s) Not completed" %(ds['name'], start_date))
+                logging.info("[EOSAI_DOWNLOADER] %s (%s) Not completed" %(ds['name'], start_date))
             else:
-                logging.info("[CMEMS_DOWNLOADER] %s (%s) Completed" %(ds['name'], start_date))
-        logging.info("[CMEMS_DOWNLOADER] Finished downloading product")
+                logging.info("[EOSAI_DOWNLOADER] %s (%s) Completed" %(ds['name'], start_date))
+        logging.info("[EOSAI_DOWNLOADER] Finished downloading product")
