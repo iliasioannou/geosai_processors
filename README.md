@@ -13,7 +13,7 @@ b) http://step.esa.int/downloads/5.0/installers/esa-snap_all_unix_5_0.sh (460Mb)
 c) https://repo.continuum.io/archive/Anaconda2-4.3.0-Linux-x86_64.sh (475Mb)
 
 To build the image, launch e.g.
-*docker build -t cmems .*
+*docker build -t eosai .*
 
 **Configuration**
 One host folders needs to be linked (-v option) when running the image to the main folder of the procedure.
@@ -25,9 +25,9 @@ This is the completed expected folder tree with the input, intermediate and fina
 - 05_OutputDir: It will contain the output files (see note below about output location)
 
 ### EOSAI Docker image use: daily processor
-**How to launch the CMEMS processor with docker:**
+**How to launch the EOSAI processor with docker:**
 
-docker run -v <host path to main folder>:/home/CMEMS cmems first_argument second_argument process_ID
+docker run -v <host path to main folder>:/home/EOSAI eosai first_argument second_argument process_ID
 
 * first_argument: bit coded intereg (4 bits) to define the products to be generated
     - bit 0 -> sst
@@ -38,7 +38,7 @@ docker run -v <host path to main folder>:/home/CMEMS cmems first_argument second
 * process_ID: string appended to the logfile name
 
 EXAMPLE:
-*docker run -v D:\pkz029_CMEMS:/home/CMEMS cmems 3 3 003*
+*docker run -v D:\pkh111_EOSAI:/home/OSAI eosai 3 3 003*
 
 **Input files**
 
