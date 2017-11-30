@@ -38,8 +38,8 @@ RUN export PATH="/home/anaconda/bin:$PATH" && conda update -y conda && conda ins
 RUN export PATH="/home/anaconda/bin:$PATH" && conda update -y numpy && conda update -y gdal
 RUN ln -s /usr/lib/python2.7/plat-*/_sysconfigdata_nd.py /usr/lib/python2.7/
 
-VOLUME /home/CMEMS
+VOLUME /home/EOSAI
 
 #### READY
 
-#ENTRYPOINT ["/home/anaconda/bin/python2.7","/home/CMEMS/02_Scripting/pkz029_WQ_CMEMS_Processor.py"]
+#ENTRYPOINT ["/home/anaconda/bin/python2.7","/home/EOSAI/02_Scripting/pkh111_WQ_EOSAI_Processor.py"]
