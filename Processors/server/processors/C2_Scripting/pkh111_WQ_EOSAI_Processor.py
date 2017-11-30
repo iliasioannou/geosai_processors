@@ -32,6 +32,11 @@ main_dir="/src/Processors/server/processors/"
 ##main_dir="/home/EOSAI/"
 snap="/opt/snap/bin/gpt"
 
+#FOR DEBUGGING ON WINDOWS
+if _platform == "win32":
+    sagagis=['C:/Programmis/saga_3.0.0_x64/saga_cmd','-f=s']
+    snap="C:/Programmis/snap5/bin/gpt.exe"
+    main_dir="D:/pkz029_EOSAI/"
 ##Relative folder tree
 ancil_dir=main_dir+"C1_Ancillari/"
 script_dir=main_dir+"C2_Scripting/"
@@ -106,20 +111,29 @@ def SST_Chain(inputlist,overwrite,AOI, output_dir):
             continue
 
         # Definition of final filename taking acquisition date from .nc metadata
-        time = nc.netcdf_file(input_dir+filename, 'r').time_min
-        t0 = datetime.datetime(1981, 1, 1)
-        dt = t0 + datetime.timedelta(seconds=time)
-        me=str(dt.month)
-        da=str(dt.day)
-        if len(me)==1: me='0'+me
-        if len(da)==1: da='0'+da
-        verifdate=str(dt.year)+'-'+me+'-'+da
+        try:
+            time = nc.netcdf_file(input_dir+filename, 'r').time_min
+            t0 = datetime.datetime(1981, 1, 1)
+            dt = t0 + datetime.timedelta(seconds=time)
+            me=str(dt.month)
+            da=str(dt.day)
+            if len(me)==1: me='0'+me
+            if len(da)==1: da='0'+da
+            verifdate=str(dt.year)+'-'+me+'-'+da
+            year=dt.year
+        except AttributeError:
+            #Correction for new format
+            time = nc.netcdf_file(input_dir+filename, 'r').start_time
+            verifdate=time[0:4]+'-'+time[4:6]+'-'+time[6:8]
+            year=long(time[0:4])
+            me=time[4:6]
+            da=time[6:8]
         if output_dir.find(verifdate)== -1:
             logging.debug("[EOSAI_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
             logging.debug("[EOSAI_PROCESSORS] Product not generated !!")
             continue
-        #dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+'_'+me+'_'+da
-        dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+me+da
+
+        dated_filename='RC_'+AOI_Name[AOI]+'_'+str(year)+me+da
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
         prod_filename_the=dated_filename+"_"+pFilenames[iin]+"_Thematic.tif"
 
