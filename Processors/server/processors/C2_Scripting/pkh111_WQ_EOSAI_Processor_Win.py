@@ -28,7 +28,7 @@ from pke114_Apply_Legend import RGB_as_input ##Need to be in the same folder
 ## Pre-fixed information
 ##
 #General
-main_dir="D:/pkz029_CMEMS/"
+main_dir="D:/pkz029_EOSAI/"
 snap="C:/Programmis/snap5/bin/gpt"
 
 ##Relative folder tree
@@ -38,16 +38,16 @@ input_dir=main_dir+"C3_Input/"
 temp_dir=main_dir+"C4_TempDir/"
 global_output_dir=main_dir+"C5_OutputDir/"
 
-###CMEMS related 
+###EOSAI related 
 SST_input_f='SST_MED_SST_L3S_NRT_OBSERVATIONS_010_012_b_'
 CHL_input_f='dataset-oc-med-chl-multi-l3-chl_1km_daily-rt'
 OC_input_f=['dataset-oc-med-opt-multi-l3-rrs490_1km_daily-rt',
             'dataset-oc-med-opt-multi-l3-rrs555_1km_daily-rt',
             'dataset-oc-med-opt-multi-l3-rrs670_1km_daily-rt',
             'dataset-oc-med-opt-multi-l3-kd490_1km_daily-rt']
-GPT_Chl_Graph=[script_dir+"Chl_Graph_CMEMS.xml",script_dir+"Chl_Graph_CMEMS_GRE.xml"]
-GPT_SST_Graph=[script_dir+"SST_Graph_CMEMS.xml",script_dir+"SST_Graph_CMEMS_GRE.xml"]
-GPT_TWT_Graph=[script_dir+"TWT_Graph_CMEMS.xml",script_dir+"TWT_Graph_CMEMS_GRE.xml"]
+GPT_Chl_Graph=[script_dir+"Chl_Graph_EOSAI.xml",script_dir+"Chl_Graph_EOSAI_GRE.xml"]
+GPT_SST_Graph=[script_dir+"SST_Graph_EOSAI.xml",script_dir+"SST_Graph_EOSAI_GRE.xml"]
+GPT_TWT_Graph=[script_dir+"TWT_Graph_EOSAI.xml",script_dir+"TWT_Graph_EOSAI_GRE.xml"]
 
 pFilenames=['Chl','WT','Tur','SST']
 Legends=[ancil_dir+'Legenda_CHL.txt',
@@ -64,7 +64,7 @@ if _platform == "linux" or _platform == "linux2":
     a=1
 else:
     ##Only for testing in Windows
-    logging.basicConfig(filename=global_output_dir+'thisismy.log',filemode='w',format='[CMEMS] %(asctime)s %(message)s',datefmt='%H:%M:%S',level=logging.DEBUG)
+    logging.basicConfig(filename=global_output_dir+'thisismy.log',filemode='w',format='[EOSAI] %(asctime)s %(message)s',datefmt='%H:%M:%S',level=logging.DEBUG)
     logging.getLogger().addHandler(logging.StreamHandler())
 ###---------------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ else:
 ########
 ## SST_Processing
 ##
-## Processing of SST CMEMS SST_MED_SST_L3S_NRT_OBSERVATIONS_010_012_b
+## Processing of SST EOSAI SST_MED_SST_L3S_NRT_OBSERVATIONS_010_012_b
 ##
 ## inputlist: list of files to (singularly) process
 ## overwrite: 1 = overwrite products if already existing
@@ -87,20 +87,20 @@ def SST_Chain(inputlist,overwrite,AOI, output_dir):
 
     #Checks AOI
     if (AOI!=1) and (AOI!=2):
-        logging.debug("[CMEMS_PROCESSORS] Wrong AOI parameter, set to Adriatic")
+        logging.debug("[EOSAI_PROCESSORS] Wrong AOI parameter, set to Adriatic")
         AOI=1
     AOI=AOI-1
 
-    logging.info("[CMEMS_PROCESSORS] Selected parameter: SST")
+    logging.info("[EOSAI_PROCESSORS] Selected parameter: SST")
     #
-    #GPT Processing of each single data (in CMEMS it will be always a single one)
+    #GPT Processing of each single data (in EOSAI it will be always a single one)
     #
     qualcheerrore=0
     for n in range(0,len(inputlist)):
         filename=os.path.basename(inputlist[n])
 
         if (len(filename) == 0):
-            logging.debug("[CMEMS_PROCESSORS] Wrong filename for SST input "+input_dir+filename)
+            logging.debug("[EOSAI_PROCESSORS] Wrong filename for SST input "+input_dir+filename)
             qualcheerrore=qualcheerrore+1
             continue
 
@@ -114,8 +114,8 @@ def SST_Chain(inputlist,overwrite,AOI, output_dir):
         if len(da)==1: da='0'+da
         verifdate=str(dt.year)+'-'+me+'-'+da
         if output_dir.find(verifdate)== -1:
-            logging.debug("[CMEMS_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
-            logging.debug("[CMEMS_PROCESSORS] Product not generated !!")
+            logging.debug("[EOSAI_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
+            logging.debug("[EOSAI_PROCESSORS] Product not generated !!")
             continue
         #dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+'_'+me+'_'+da
         dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+me+da
@@ -125,7 +125,7 @@ def SST_Chain(inputlist,overwrite,AOI, output_dir):
         #Check if the corresponding output has been already generated
         if overwrite==0:
             if os.path.exists(output_dir+prod_filename_num) and os.path.exists(output_dir+prod_filename_the):
-                logging.debug("[CMEMS_PROCESSORS] "+filename+" already processed !")
+                logging.debug("[EOSAI_PROCESSORS] "+filename+" already processed !")
                 continue
         
 
@@ -148,7 +148,7 @@ def SST_Chain(inputlist,overwrite,AOI, output_dir):
             if os.path.isfile(temp_dir+filename[:-3]+'.tif') == True: os.remove(temp_dir+filename[:-3]+'.tif')
             if os.path.isfile(temp_dir+filename[:-3]+'.xml') == True: os.remove(temp_dir+filename[:-3]+'.xml')
             #If GPT fails report it, but continues to next file
-            logging.debug("[CMEMS_PROCESSORS] Error in pre-processing "+filename)
+            logging.debug("[EOSAI_PROCESSORS] Error in pre-processing "+filename)
             qualcheerrore=qualcheerrore+1
             continue
        
@@ -158,7 +158,7 @@ def SST_Chain(inputlist,overwrite,AOI, output_dir):
             band=data.GetRasterBand(1)
             arr=band.ReadAsArray()
         except RuntimeError, e:
-            logging.debug("[CMEMS_PROCESSORS] Error in reading file "+temp_dir+filename[:-3]+".tif")
+            logging.debug("[EOSAI_PROCESSORS] Error in reading file "+temp_dir+filename[:-3]+".tif")
             data=None
             qualcheerrore=qualcheerrore+1
             if os.path.isfile(temp_dir+filename[:-3]+'.tif') == True: os.remove(temp_dir+filename[:-3]+'.tif')
@@ -166,7 +166,7 @@ def SST_Chain(inputlist,overwrite,AOI, output_dir):
             continue
         if (np.max(arr)<0):
             data=None
-            logging.debug("[CMEMS_PROCESSORS] No valid pixel in "+filename+". No product generated")
+            logging.debug("[EOSAI_PROCESSORS] No valid pixel in "+filename+". No product generated")
             os.remove(temp_dir+filename[:-3]+".tif")
             if os.path.isfile(temp_dir+filename[:-3]+".xml") == True: os.remove(temp_dir+filename[:-3]+".xml")
             continue
@@ -198,22 +198,22 @@ def SST_Chain(inputlist,overwrite,AOI, output_dir):
             band=None
         except RuntimeError, e:
             #If not generated, still continue
-            logging.debug("[CMEMS_PROCESSORS] Error in writing geophyisical file "+prod_filename_num)
+            logging.debug("[EOSAI_PROCESSORS] Error in writing geophyisical file "+prod_filename_num)
             qualcheerrore=qualcheerrore+1
         else:
             #Apply the legend to the newly created file
             loggio=[]
             lalegenda=Read_Legend(Legends[iin],loggio)
-            for lili in loggio: logging.debug("[CMEMS_PROCESSORS] "+lili)
+            for lili in loggio: logging.debug("[EOSAI_PROCESSORS] "+lili)
             if lalegenda[0] != 0 or lalegenda[1] != 0:
                 loggio=[]
                 Re,Ge,Be=Apply_Legend(output_dir+prod_filename_num,-1,lalegenda,loggio)
-                for lili in loggio: logging.debug("[CMEMS_PROCESSORS] "+lili)
+                for lili in loggio: logging.debug("[EOSAI_PROCESSORS] "+lili)
                 lalegenda=None
                 if (len(Re[0]) > 1):
                     loggio=[]
                     res=RGB_as_input(output_dir+prod_filename_num,Re,Ge,Be,output_dir+prod_filename_the,loggio)
-                    for lili in loggio: logging.debug("[CMEMS_PROCESSORS] "+lili)
+                    for lili in loggio: logging.debug("[EOSAI_PROCESSORS] "+lili)
                     Re=None
                     Ge=None
                     Be=None
@@ -257,20 +257,20 @@ def CHL_Chain(inputlist,overwrite,AOI, output_dir):
 
     #Checks AOI
     if (AOI!=1) and (AOI!=2):
-        logging.debug("[CMEMS_PROCESSORS] Wrong AOI parameter, set to Adriatic")
+        logging.debug("[EOSAI_PROCESSORS] Wrong AOI parameter, set to Adriatic")
         AOI=1
     AOI=AOI-1
 
-    logging.info("[CMEMS_PROCESSORS] Selected parameter: Chlorophyll")
+    logging.info("[EOSAI_PROCESSORS] Selected parameter: Chlorophyll")
     #
-    #GPT Processing of each single dataset (in CMEMS it will be always a single one)
+    #GPT Processing of each single dataset (in EOSAI it will be always a single one)
     #
     qualcheerrore=0
     for n in range(0,len(inputlist)):
         filename=os.path.basename(inputlist[n])
 
         if (len(filename) == 0):
-            logging.debug("[CMEMS_PROCESSORS] Wrong filename for Chl input "+input_dir+filename)
+            logging.debug("[EOSAI_PROCESSORS] Wrong filename for Chl input "+input_dir+filename)
             qualcheerrore=qualcheerrore+1
             continue
 
@@ -286,8 +286,8 @@ def CHL_Chain(inputlist,overwrite,AOI, output_dir):
         if len(da)==1: da='0'+da
         verifdate=str(dt.year)+'-'+me+'-'+da
         if output_dir.find(verifdate)== -1:
-            logging.debug("[CMEMS_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
-            logging.debug("[CMEMS_PROCESSORS] Product not generated !!")
+            logging.debug("[EOSAI_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
+            logging.debug("[EOSAI_PROCESSORS] Product not generated !!")
             continue
         dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+me+da
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
@@ -296,7 +296,7 @@ def CHL_Chain(inputlist,overwrite,AOI, output_dir):
         #Check if the corresponding output has been already generated
         if overwrite==0:
             if os.path.exists(output_dir+prod_filename_num) and os.path.exists(output_dir+prod_filename_the):
-                logging.debug("[CMEMS_PROCESSORS] "+filename+" already processed !")
+                logging.debug("[EOSAI_PROCESSORS] "+filename+" already processed !")
                 continue
         
         ##############
@@ -319,7 +319,7 @@ def CHL_Chain(inputlist,overwrite,AOI, output_dir):
             if os.path.isfile(temp_dir+filename[:-3]+'.tif') == True: os.remove(temp_dir+filename[:-3]+'.tif')
             if os.path.isfile(temp_dir+filename[:-3]+'.xml') == True: os.remove(temp_dir+filename[:-3]+'.xml')
             #If GPT fails report it, but continues to next file
-            logging.debug("[CMEMS_PROCESSORS] Error in pre-processing "+filename)
+            logging.debug("[EOSAI_PROCESSORS] Error in pre-processing "+filename)
             qualcheerrore=qualcheerrore+1
             continue
        
@@ -329,7 +329,7 @@ def CHL_Chain(inputlist,overwrite,AOI, output_dir):
             band=data.GetRasterBand(1)
             arr=band.ReadAsArray()
         except RuntimeError:
-            logging.debug("[CMEMS_PROCESSORS] Error in reading file "+temp_dir+filename[:-3]+".tif")
+            logging.debug("[EOSAI_PROCESSORS] Error in reading file "+temp_dir+filename[:-3]+".tif")
             data=None
             qualcheerrore=qualcheerrore+1
             if os.path.isfile(temp_dir+filename[:-3]+'.tif') == True: os.remove(temp_dir+filename[:-3]+'.tif')
@@ -337,7 +337,7 @@ def CHL_Chain(inputlist,overwrite,AOI, output_dir):
             continue
         if (np.max(arr)<0):
             data=None
-            logging.debug("[CMEMS_PROCESSORS] No valid pixel in "+filename+". No product generated")
+            logging.debug("[EOSAI_PROCESSORS] No valid pixel in "+filename+". No product generated")
             os.remove(temp_dir+filename[:-3]+".tif")
             if os.path.isfile(temp_dir+filename[:-3]+".xml") == True: os.remove(temp_dir+filename[:-3]+".xml")
             continue
@@ -369,22 +369,22 @@ def CHL_Chain(inputlist,overwrite,AOI, output_dir):
             band=None
         except RuntimeError, e:
             #If not generated, still continue
-            logging.debug("[CMEMS_PROCESSORS] Error in writing geophyisical file "+prod_filename_num)
+            logging.debug("[EOSAI_PROCESSORS] Error in writing geophyisical file "+prod_filename_num)
             qualcheerrore=qualcheerrore+1
         else:
             #Apply the legend to the newly created file
             loggio=[]
             lalegenda=Read_Legend(Legends[iin],loggio)
-            for lili in loggio: logging.debug("[CMEMS_PROCESSORS] "+lili)
+            for lili in loggio: logging.debug("[EOSAI_PROCESSORS] "+lili)
             if lalegenda[0] != 0 or lalegenda[1] != 0:
                 loggio=[]
                 Re,Ge,Be=Apply_Legend(output_dir+prod_filename_num,-1,lalegenda,loggio)
-                for lili in loggio: logging.debug("[CMEMS_PROCESSORS] "+lili)
+                for lili in loggio: logging.debug("[EOSAI_PROCESSORS] "+lili)
                 lalegenda=None
                 if (len(Re[0]) > 1):
                     loggio=[]
                     res=RGB_as_input(output_dir+prod_filename_num,Re,Ge,Be,output_dir+prod_filename_the,loggio)
-                    for lili in loggio: logging.debug("[CMEMS_PROCESSORS] "+lili)
+                    for lili in loggio: logging.debug("[EOSAI_PROCESSORS] "+lili)
                     Re=None
                     Ge=None
                     Be=None
@@ -434,29 +434,29 @@ def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
     elif qual == 2:
         iin=1
     else:
-        logging.debug("[CMEMS_PROCESSORS] No WT or Turbidity produt requested")
+        logging.debug("[EOSAI_PROCESSORS] No WT or Turbidity produt requested")
         return 1
 
     #Checks AOI
     if (AOI!=1) and (AOI!=2):
-        logging.debug("[CMEMS_PROCESSORS] Wrong AOI parameter, set to Adriatic")
+        logging.debug("[EOSAI_PROCESSORS] Wrong AOI parameter, set to Adriatic")
         AOI=1
     AOI=AOI-1
 
     if qual==1:
-        logging.info("[CMEMS_PROCESSORS] Selected parameter: Turbidity")
+        logging.info("[EOSAI_PROCESSORS] Selected parameter: Turbidity")
     else:
-        logging.info("[CMEMS_PROCESSORS] Selected parameter: Water Transparency")
+        logging.info("[EOSAI_PROCESSORS] Selected parameter: Water Transparency")
         
     #
-    #GPT Processing of each single data (in CMEMS it will be always a single one)
+    #GPT Processing of each single data (in EOSAI it will be always a single one)
     #
     qualcheerrore=0
     for n in range(0,len(inputlist)):
 
         for filename in inputlist[n]:
             if (len(filename) == 0):
-                logging.debug("[CMEMS_PROCESSORS] Wrong filename for WT/Tur input "+input_dir+filename)
+                logging.debug("[EOSAI_PROCESSORS] Wrong filename for WT/Tur input "+input_dir+filename)
                 qualcheerrore=qualcheerrore+1
                 continue
 
@@ -474,8 +474,8 @@ def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
         if len(da)==1: da='0'+da
         verifdate=str(dt.year)+'-'+me+'-'+da
         if output_dir.find(verifdate)== -1:
-            logging.debug("[CMEMS_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
-            logging.debug("[CMEMS_PROCESSORS] Product not generated !!")
+            logging.debug("[EOSAI_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
+            logging.debug("[EOSAI_PROCESSORS] Product not generated !!")
             continue
         dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+me+da
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
@@ -484,7 +484,7 @@ def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
         #Check if the corresponding output has been already generated
         if overwrite==0:
             if os.path.exists(output_dir+prod_filename_num) and os.path.exists(output_dir+prod_filename_the):
-                logging.debug("[CMEMS_PROCESSORS] "+filename+" already processed !")
+                logging.debug("[EOSAI_PROCESSORS] "+filename+" already processed !")
                 continue
         
         ##############
@@ -520,7 +520,7 @@ def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
             if os.path.isfile(filepreout_tur) == True: os.remove(filepreout_tur)
             if os.path.isfile(filepreout_tur[:-4]+".xml") == True: os.remove(filepreout_tur[:-4]+".xml")
             #If GPT fails report it, but continues to next file
-            logging.debug("[CMEMS_PROCESSORS] Error in pre-processing "+filename)
+            logging.debug("[EOSAI_PROCESSORS] Error in pre-processing "+filename)
             qualcheerrore=qualcheerrore+1
             continue
 
@@ -538,7 +538,7 @@ def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
             band=data.GetRasterBand(1)
             arr=band.ReadAsArray()
         except RuntimeError:
-            logging.debug("[CMEMS_PROCESSORS] Error in reading file "+filepreout)
+            logging.debug("[EOSAI_PROCESSORS] Error in reading file "+filepreout)
             data=None
             qualcheerrore=qualcheerrore+1
             if os.path.isfile(filepreout) == True: os.remove(filepreout)
@@ -547,7 +547,7 @@ def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
 
         if (np.max(arr)<0):
             data=None
-            logging.debug("[CMEMS_PROCESSORS] No valid pixel in "+filepreout+". No product generated")
+            logging.debug("[EOSAI_PROCESSORS] No valid pixel in "+filepreout+". No product generated")
             os.remove(filepreout)
             if os.path.isfile(filepreout[:-4]+".xml") == True: os.remove(filepreout[:-4]+".xml")
             continue
@@ -579,22 +579,22 @@ def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
             band=None
         except RuntimeError, e:
             #If not generated, still continue
-            logging.debug("[CMEMS_PROCESSORS] Error in writing geophyisical file "+prod_filename_num)
+            logging.debug("[EOSAI_PROCESSORS] Error in writing geophyisical file "+prod_filename_num)
             qualcheerrore=qualcheerrore+1
         else:
             #Apply the legend to the newly created file
             loggio=[]
             lalegenda=Read_Legend(Legends[iin],loggio)
-            for lili in loggio: logging.debug("[CMEMS_PROCESSORS] "+lili)
+            for lili in loggio: logging.debug("[EOSAI_PROCESSORS] "+lili)
             if lalegenda[0] != 0 or lalegenda[1] != 0:
                 loggio=[]
                 Re,Ge,Be=Apply_Legend(output_dir+prod_filename_num,-1,lalegenda,loggio)
-                for lili in loggio: logging.debug("[CMEMS_PROCESSORS] "+lili)
+                for lili in loggio: logging.debug("[EOSAI_PROCESSORS] "+lili)
                 lalegenda=None
                 if (len(Re[0]) > 1):
                     loggio=[]
                     res=RGB_as_input(output_dir+prod_filename_num,Re,Ge,Be,output_dir+prod_filename_the,loggio)
-                    for lili in loggio: logging.debug("[CMEMS_PROCESSORS] "+lili)
+                    for lili in loggio: logging.debug("[EOSAI_PROCESSORS] "+lili)
                     Re=None
                     Ge=None
                     Be=None
@@ -621,7 +621,7 @@ def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
 
 ############ --------MAIN PROCEDURE ------------------
 ##########
-## WQ_CMEMS_Chain
+## WQ_EOSAI_Chain
 ##
 ## Input:
 ##   onflag: bit 0 -> sst
@@ -635,7 +635,7 @@ def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
 ##
 ## Output: 0 okay, 1 any error
 ##
-def WQ_CMEMS_Chain(
+def WQ_EOSAI_Chain(
         onflag,
         ovrwflag,
         date,
@@ -654,7 +654,7 @@ def WQ_CMEMS_Chain(
         os.mkdir(dest_dir)
     
     for areaofi in setAOI:
-        logging.info("[CMEMS_PROCESSORS] Processing AOI: "+AOI_Name[areaofi-1])
+        logging.info("[EOSAI_PROCESSORS] Processing AOI: "+AOI_Name[areaofi-1])
         
         eerr=0
         ###SST section
@@ -664,7 +664,7 @@ def WQ_CMEMS_Chain(
             #Search for SST input files
             ce=glob.glob(input_dir+SST_input_f+'*'+date+'.nc')
             if len(ce)==0:
-                logging.debug("[CMEMS_PROCESSORS] "+'No SST input files to process with specified date: '+date)
+                logging.debug("[EOSAI_PROCESSORS] "+'No SST input files to process with specified date: '+date)
             else:
                 result1=SST_Chain(ce,ovrw,areaofi, dest_dir)
                 if result1==1: eerr=1
@@ -676,7 +676,7 @@ def WQ_CMEMS_Chain(
             #Search for CHL input files
             ce=glob.glob(input_dir+CHL_input_f+'*'+date+'.nc')
             if len(ce)==0:
-                logging.debug("[CMEMS_PROCESSORS] "+'No CHL input files to process with specified date: '+date)
+                logging.debug("[EOSAI_PROCESSORS] "+'No CHL input files to process with specified date: '+date)
             else:
                 result2=CHL_Chain(ce,ovrw,areaofi, dest_dir)
                 if result2==1: eerr=1
@@ -691,7 +691,7 @@ def WQ_CMEMS_Chain(
                 tipi=OC_input_f[en]
                 ce=glob.glob(input_dir+tipi+'*'+date+'.nc')
                 if len(ce)==0:
-                     logging.debug("[CMEMS_PROCESSORS] No >"+tipi+"< input files to process with specified date: "+date)
+                     logging.debug("[EOSAI_PROCESSORS] No >"+tipi+"< input files to process with specified date: "+date)
                      badlist=1
                      break
                 glifile.append(ce)
@@ -700,7 +700,7 @@ def WQ_CMEMS_Chain(
                 #Chech what found for set of n files
                 for en in range(1,len(OC_input_f)):
                     if len(glifile[en]) != len(glifile[en-1]):
-                        logging.debug("[CMEMS_PROCESSORS] Missing set of input files to process for WT/Tur ("+OC_input_f[en]+")")
+                        logging.debug("[EOSAI_PROCESSORS] Missing set of input files to process for WT/Tur ("+OC_input_f[en]+")")
                         badlist=1
                         break
 
@@ -740,7 +740,7 @@ if __name__ == '__main__':
 ##Manual testing
     logging.info("Main body.")
 
-    res=WQ_CMEMS_Chain(15,0,'2017-05-30')
+    res=WQ_EOSAI_Chain(15,0,'2017-05-30')
     print res
 
-    logging.info("Ended.")						  
+    logging.info("Ended.")
