@@ -18,17 +18,17 @@ def init_stuff(log_file="processing.log"):
     """
     logging.basicConfig(filename=log_file,
                         filemode='a',
-                        format='[CMEMS] %(asctime)s %(message)s',
+                        format='[EOSAI] %(asctime)s %(message)s',
                         datefmt='%H:%M:%S',
                         level=logging.DEBUG)
     logging.getLogger().addHandler(logging.StreamHandler())
     # load server config properties
-    logging.info("[CMEMS_RPC_SERVER] Initializing server instance")
+    logging.info("[EOSAI_RPC_SERVER] Initializing server instance")
     cp = ConfigParser.ConfigParser()
     cp.read("serverConfig.ini")
     serverConf = dict(cp.items('server'))
     server = SimpleXMLRPCServer((serverConf["host"], int(serverConf["port"])), customXMLRPCHandler)
-    logging.info("[CMEMS_RPC_SERVER] Done initializing server instance")
+    logging.info("[EOSAI_RPC_SERVER] Done initializing server instance")
     return server
 
 
@@ -43,7 +43,7 @@ class customXMLRPCHandler(SimpleXMLRPCRequestHandler):
 
 def execute(data):
     logging.info("---------------------------------------------------------------------")
-    logging.info("[CMEMS_RPC_SERVER] Got new request")
+    logging.info("[EOSAI_RPC_SERVER] Got new request")
     # parse json to dictionary
     argsDict = json.loads(data)
     try:
@@ -56,7 +56,7 @@ def execute(data):
         if argsDict.get('procType', 'day') == 'day':
             download_data(gte_date, gte_date)
 
-        logging.info("[CMEMS_RPC_SERVER] Got params: %s" %data)
+        logging.info("[EOSAI_RPC_SERVER] Got params: %s" %data)
         rslt, out_path = run_processing(
             processing_type=argsDict.get('procType', 'day'),
             products=int(argsDict.get('products', 15)),
@@ -64,14 +64,14 @@ def execute(data):
             setAoi=int(argsDict.get('aoi', 3)),
             date=gte_date if not "dates" in argsDict else argsDict['dates']
         )
-        logging.info("[CMEMS_RPC_SERVER] Result dict: %s" % rslt)
-        logging.info("[CMEMS_RPC_SERVER] Out path : %s" % out_path)
+        logging.info("[EOSAI_RPC_SERVER] Result dict: %s" % rslt)
+        logging.info("[EOSAI_RPC_SERVER] Out path : %s" % out_path)
     except Exception as e:
-        logging.error("[CMEMS_RPC_SERVER] Error in processing data")
+        logging.error("[EOSAI_RPC_SERVER] Error in processing data")
         logging.exception(e)
         return json.dumps({"returnCode": 1, "message": str(e)})
 
-    logging.info("[CMEMS_RPC_SERVER] Request served")
+    logging.info("[EOSAI_RPC_SERVER] Request served")
     logging.info("---------------------------------------------------------------------")
     return json.dumps({"returnCode": rslt, "outPath": "/".join(out_path.split("/")[-3:])})
 
