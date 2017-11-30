@@ -28,7 +28,7 @@ from pke114_Apply_Legend import RGB_as_input ##Need to be in the same folder
 ## Pre-fixed information
 ##
 #General
-main_dir="D:/pkz029_EOSAI/"
+main_dir="D:/pkh111_EOSAI/"
 snap="C:/Programmis/snap5/bin/gpt"
 
 ##Relative folder tree
