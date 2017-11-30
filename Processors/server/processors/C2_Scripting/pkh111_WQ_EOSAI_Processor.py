@@ -36,7 +36,7 @@ snap="/opt/snap/bin/gpt"
 if _platform == "win32":
     sagagis=['C:/Programmis/saga_3.0.0_x64/saga_cmd','-f=s']
     snap="C:/Programmis/snap5/bin/gpt.exe"
-    main_dir="D:/pkz029_EOSAI/"
+    main_dir="D:/pkh111_EOSAI/"
 ##Relative folder tree
 ancil_dir=main_dir+"C1_Ancillari/"
 script_dir=main_dir+"C2_Scripting/"
