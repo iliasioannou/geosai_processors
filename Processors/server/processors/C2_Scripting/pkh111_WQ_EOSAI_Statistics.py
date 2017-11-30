@@ -29,7 +29,7 @@ snap = "/opt/snap/bin/gpt"
 
 #FOR DEBUGGING ON WINDOWS
 if _platform == "win32":
-    main_dir="D:/pkz029_EOSAI/"
+    main_dir="D:/pkh111_EOSAI/"
     snap="C:/Programmis/snap5/bin/gpt"
 
 ##Relative folder tree
