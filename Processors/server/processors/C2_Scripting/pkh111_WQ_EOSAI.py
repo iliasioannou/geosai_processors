@@ -47,9 +47,9 @@ SLegends = [ancil_dir + 'Legenda_CHL.txt',
             ancil_dir + 'Legenda_TR.txt',
             ancil_dir + 'Legenda_Turb.txt',
             ancil_dir + 'Legenda_SST.txt']
-Mask_LandSea = [ancil_dir + "Mask_Sea-Land_SRTM_Adriatic.tif", ancil_dir + "Mask_Sea-Land_SRTM_Aegeus.tif"]
-Mask_GPT_Cut = [script_dir + 'SeaMask_Cut_EOSAI.xml', script_dir + 'SeaMask_Cut_EOSAI_GRE.xml']
-AOI_Name = ['ITA', 'GRE']
+Mask_LandSea = [ancil_dir + "Mask_Sea-Land_SRTM_EOSAI.tif"]
+Mask_GPT_Cut = [script_dir + 'SeaMask_Cut_EOSAI.xml']
+AOI_Name = ['EOSAI']
 
 ###Others
 IntNoData = 10000
@@ -376,7 +376,7 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
 ##                  bit 1 -> chl
 ##                  bit 2 -> wt
 ##                  bit 3 -> tur 
-##        AOI: 1=ITA, 2=GRE, Any other==ITALY
+##        AOI: 1=EOSAI
 ##        randomchars: chars to be appended to the name of the output folder
 ## Output:
 ##        0 = all okay, 1 = something went wrong
@@ -391,9 +391,9 @@ def WQ_ODStats_EOSAI(
     WorkingDate2 = map(int, WorkingDates[1].split("-"))
     dest_dir = ''
 
-    # Check AOI
-    if (AOI != 1) and (AOI != 2):
-        logging.debug("[EOSAI_PROCESSORS] Wrong AOI parameter, set to Adriatic")
+    # Checks AOI
+    if (AOI != 1):
+        logging.info("[EOSAI_PROCESSORS] Wrong AOI parameter, set to EOSAI by default.")
         AOI = 1
     AOI = AOI - 1
 
@@ -578,7 +578,7 @@ def WQ_ODStats_EOSAI(
 ##                bit 3 -> tur 
 ##        ovrwflag: not used
 ##        dates: a list with two strings: start date, end date ["yyyy-mm-dd"]. 
-##        setAOI: 1=ITA, 2=GRE, Any other=BOTH
+##        setAOI: 1=EOSAI
 ##
 ## Output: 0 okay, 1 any error
 ##
@@ -586,12 +586,13 @@ def WQ_OnDemandStats_EOSAI_Chain(
         onflag,
         ovrwflag,
         dates,
-        setAOI=[1, 2]):
+        setAOI=[1]):
 
-    if setAOI != 1 and setAOI != 2:
-        setAOI = [1, 2]
-    else:
-        setAOI = [setAOI]
+    # Checks AOI
+    if (AOI != 1):
+        logging.info("[EOSAI_PROCESSORS] Wrong AOI parameter, set to EOSAI by default.")
+        AOI = 1
+    AOI = AOI - 1
 
     res = 0
     rnd_chars = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
