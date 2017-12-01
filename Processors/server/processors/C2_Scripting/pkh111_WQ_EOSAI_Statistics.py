@@ -371,7 +371,7 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
 ## Input:
 ##        WorkingDate: a string yyyy-mm-dd. Day must be: 2, 12 or 22
 ##        stat_type: 0=10-days, 1=monthly
-##        AOI: 1=EOSAI, Any other==ITALY
+##        AOI: 1=EOSAI
 ## Output: [0|1], created destination dir of the products ('' in case of error)
 ##        0 = all okay, 1 = something went wrong
 #
@@ -644,7 +644,7 @@ def WQ_Stats_EOSAI(WorkingDate, stat_type, AOI):
 ## Input:
 ##        WorkingDate: a integer list [year,month,day]. Day must be: 2, 12 or 22
 ##        TodoStats: 0=10-days, 1=monthly
-##        setAOI: 1=EOSAI, Any other=BOTH
+##        setAOI: 1=EOSAI
 ##
 ## Output: 0 okay, 1 any error
 ##
