@@ -45,9 +45,9 @@ SLegends = [ancil_dir + 'Legenda_CHL.txt',
             ancil_dir + 'Legenda_TR.txt',
             ancil_dir + 'Legenda_Turb.txt',
             ancil_dir + 'Legenda_SST.txt']
-Mask_LandSea = [ancil_dir + "Mask_Sea-Land_SRTM_Adriatic.tif", ancil_dir + "Mask_Sea-Land_SRTM_Aegeus.tif"]
-Mask_GPT_Cut = [script_dir + 'SeaMask_Cut_EOSAI.xml', script_dir + 'SeaMask_Cut_EOSAI_GRE.xml']
-AOI_Name = ['ITA', 'GRE']
+Mask_LandSea = [ancil_dir + "Mask_Sea-Land_SRTM_EOSAI.tif"]
+Mask_GPT_Cut = [script_dir + 'SeaMask_Cut_EOSAI.xml']
+AOI_Name = ['EOSAI']
 
 ###Others
 IntNoData = 10000
@@ -371,7 +371,7 @@ def P90_Mean_multiplefiles(filelista, tilesize, P90_outname, Mean_outname, seama
 ## Input:
 ##        WorkingDate: a string yyyy-mm-dd. Day must be: 2, 12 or 22
 ##        stat_type: 0=10-days, 1=monthly
-##        AOI: 1=ITA, 2=GRE, Any other==ITALY
+##        AOI: 1=EOSAI, Any other==ITALY
 ## Output: [0|1], created destination dir of the products ('' in case of error)
 ##        0 = all okay, 1 = something went wrong
 #
@@ -385,8 +385,8 @@ def WQ_Stats_EOSAI(WorkingDate, stat_type, AOI):
         return 1, dest_dir
 
     # Checks AOI
-    if (AOI != 1) and (AOI != 2):
-        logging.info("[EOSAI_PROCESSORS] Wrong AOI parameter, set to Adriatic")
+    if (AOI != 1):
+        logging.info("[EOSAI_PROCESSORS] Wrong AOI parameter, set to EOSAI by default.")
         AOI = 1
     AOI = AOI - 1
 
@@ -644,7 +644,7 @@ def WQ_Stats_EOSAI(WorkingDate, stat_type, AOI):
 ## Input:
 ##        WorkingDate: a integer list [year,month,day]. Day must be: 2, 12 or 22
 ##        TodoStats: 0=10-days, 1=monthly
-##        setAOI: 1=ITA, 2=GRE, Any other=BOTH
+##        setAOI: 1=EOSAI, Any other=BOTH
 ##
 ## Output: 0 okay, 1 any error
 ##
@@ -652,9 +652,9 @@ def WQ_Stats_EOSAI_Chain(
         onflag,
         ovrwflag,
         date,
-        setAOI=[1, 2]):
-    if setAOI != 1 and setAOI != 2:
-        setAOI = [1, 2]
+        setAOI=[1]):
+    if setAOI != 1:
+        setAOI = [1]
     else:
         setAOI = [setAOI]
 
