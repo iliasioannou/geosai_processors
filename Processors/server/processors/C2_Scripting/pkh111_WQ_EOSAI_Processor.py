@@ -51,9 +51,9 @@ OC_input_f=['dataset-oc-med-opt-multi-l3-rrs490_1km_daily-rt',
             'dataset-oc-med-opt-multi-l3-rrs555_1km_daily-rt',
             'dataset-oc-med-opt-multi-l3-rrs670_1km_daily-rt',
             'dataset-oc-med-opt-multi-l3-kd490_1km_daily-rt']
-GPT_Chl_Graph=[script_dir+"Chl_Graph_EOSAI.xml",script_dir+"Chl_Graph_EOSAI_GRE.xml"]
-GPT_SST_Graph=[script_dir+"SST_Graph_EOSAI.xml",script_dir+"SST_Graph_EOSAI_GRE.xml"]
-GPT_TWT_Graph=[script_dir+"TWT_Graph_EOSAI.xml",script_dir+"TWT_Graph_EOSAI_GRE.xml"]
+GPT_Chl_Graph=[script_dir+"Chl_Graph_EOSAI.xml"]
+GPT_SST_Graph=[script_dir+"SST_Graph_EOSAI.xml"]
+GPT_TWT_Graph=[script_dir+"TWT_Graph_EOSAI.xml"]
 
 pFilenames=['Chl','WT','Tur','SST']
 Legends=[ancil_dir+'Legenda_CHL.txt',
