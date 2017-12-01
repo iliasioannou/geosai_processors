@@ -1,6 +1,6 @@
-from processors.C2_Scripting.pkz029_WQ_EOSAI_OnDemandStatistics import WQ_OnDemandStats_EOSAI_Chain
-from processors.C2_Scripting.pkz029_WQ_EOSAI_Processor import WQ_EOSAI_Chain
-from processors.C2_Scripting.pkz029_WQ_EOSAI_Statistics import WQ_Stats_EOSAI_Chain
+from processors.C2_Scripting.pkh111_WQ_EOSAI_OnDemandStatistics import WQ_OnDemandStats_EOSAI_Chain
+from processors.C2_Scripting.pkh111_WQ_EOSAI_Processor import WQ_EOSAI_Chain
+from processors.C2_Scripting.pkh111_WQ_EOSAI_Statistics import WQ_Stats_EOSAI_Chain
 import logging
 from datetime import datetime
 
