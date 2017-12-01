@@ -54,8 +54,8 @@ Legends=[ancil_dir+'Legenda_CHL.txt',
          ancil_dir+'Legenda_TR.txt',
          ancil_dir+'Legenda_Turb.txt',
          ancil_dir+'Legenda_SST.txt']
-Mask_LandSea=[ancil_dir+"Mask_Sea-Land_SRTM_Adriatic.tif",ancil_dir+"Mask_Sea-Land_SRTM_Aegeus.tif"]
-AOI_Name=['ITA','GRE']
+Mask_LandSea = [ancil_dir + "Mask_Sea-Land_SRTM_EOSAI.tif"]
+AOI_Name = ['EOSAI']
 
 ###Others
 GDAL_TIFF_Options_list=['COMPRESS=LZW','TILED=YES']
@@ -77,7 +77,7 @@ else:
 ##
 ## inputlist: list of files to (singularly) process
 ## overwrite: 1 = overwrite products if already existing
-## AOI: 1=Italy/Adriatic 2=Greece (any other == Italy)
+## AOI: 1=EOSAI
 ## output_dir: it must contain a date and it will be compared with the one inside the input product
 ## 
 def SST_Chain(inputlist,overwrite,AOI, output_dir):
@@ -85,11 +85,11 @@ def SST_Chain(inputlist,overwrite,AOI, output_dir):
     #SST product internal index
     iin=3
 
-    #Checks AOI
-    if (AOI!=1) and (AOI!=2):
-        logging.debug("[EOSAI_PROCESSORS] Wrong AOI parameter, set to Adriatic")
-        AOI=1
-    AOI=AOI-1
+    # Checks AOI
+    if (AOI != 1):
+        logging.info("[EOSAI_PROCESSORS] Wrong AOI parameter, set to EOSAI by default.")
+        AOI = 1
+    AOI = AOI - 1
 
     logging.info("[EOSAI_PROCESSORS] Selected parameter: SST")
     #
@@ -117,7 +117,6 @@ def SST_Chain(inputlist,overwrite,AOI, output_dir):
             logging.debug("[EOSAI_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
             logging.debug("[EOSAI_PROCESSORS] Product not generated !!")
             continue
-        #dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+'_'+me+'_'+da
         dated_filename='RC_'+AOI_Name[AOI]+'_'+str(dt.year)+me+da
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
         prod_filename_the=dated_filename+"_"+pFilenames[iin]+"_Thematic.tif"
@@ -247,7 +246,7 @@ def SST_Chain(inputlist,overwrite,AOI, output_dir):
 ##
 ## inputlist: list of files to (singularly) process
 ## overwrite: 1 = overwrite products if already existing
-## AOI: 1=Italy/Adriatic 2=Greece (any other == Italy)
+## AOI: 1=EOSAI
 ## output_dir: it must contain a date and it will be compared with the one inside the input product
 ## 
 def CHL_Chain(inputlist,overwrite,AOI, output_dir):
@@ -255,11 +254,11 @@ def CHL_Chain(inputlist,overwrite,AOI, output_dir):
     #CHL product internal index
     iin=0
 
-    #Checks AOI
-    if (AOI!=1) and (AOI!=2):
-        logging.debug("[EOSAI_PROCESSORS] Wrong AOI parameter, set to Adriatic")
-        AOI=1
-    AOI=AOI-1
+    # Checks AOI
+    if (AOI != 1):
+        logging.info("[EOSAI_PROCESSORS] Wrong AOI parameter, set to EOSAI by default.")
+        AOI = 1
+    AOI = AOI - 1
 
     logging.info("[EOSAI_PROCESSORS] Selected parameter: Chlorophyll")
     #
@@ -421,7 +420,7 @@ def CHL_Chain(inputlist,overwrite,AOI, output_dir):
 ## overwrite: 1 = overwrite products if already existing
 ## qual: 1==Turbidity
 ##       2==Water Transparency
-## AOI: 1=Italy/Adriatic 2=Greece (any other == Italy)
+## AOI: 1=EOSAI
 ## output_dir: it must contain a date and it will be compared with the one inside the input product
 ##
 ## 
@@ -437,11 +436,11 @@ def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
         logging.debug("[EOSAI_PROCESSORS] No WT or Turbidity produt requested")
         return 1
 
-    #Checks AOI
-    if (AOI!=1) and (AOI!=2):
-        logging.debug("[EOSAI_PROCESSORS] Wrong AOI parameter, set to Adriatic")
-        AOI=1
-    AOI=AOI-1
+    # Checks AOI
+    if (AOI != 1):
+        logging.info("[EOSAI_PROCESSORS] Wrong AOI parameter, set to EOSAI by default.")
+        AOI = 1
+    AOI = AOI - 1
 
     if qual==1:
         logging.info("[EOSAI_PROCESSORS] Selected parameter: Turbidity")
@@ -630,7 +629,7 @@ def TWT_Chain(inputlist,overwrite,qual,AOI, output_dir):
 ##           bit 3 -> tur
 ##   ovewflag: same bit order of onflag. When set to 1, it activates overwriting of already existing products
 ##   date: date to be processed, which will be the output folder subdir
-##   setAOI: 1=ITA, 2=GRE, Any other=BOTH
+##   setAOI: 1=EOSAI
 ##   
 ##
 ## Output: 0 okay, 1 any error
@@ -639,7 +638,7 @@ def WQ_EOSAI_Chain(
         onflag,
         ovrwflag,
         date,
-        setAOI=[1,2]):
+        setAOI=[1]):
 
     # Not useful when setAOI is set and not passed as argument
 	#if setAOI!=1 and setAOI!=2:
