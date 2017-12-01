@@ -27,13 +27,13 @@
       <resampling>Nearest</resampling>
       <referencePixelX>0.5</referencePixelX>
       <referencePixelY>0.5</referencePixelY>
-      <easting>12.00</easting>
-      <northing>45.83</northing>
+      <easting>19.38</easting>
+      <northing>39.87</northing>
       <orientation>0.0</orientation>
       <pixelSizeX>0.01</pixelSizeX>
       <pixelSizeY>0.01</pixelSizeY>
-      <width>745</width>
-      <height>643</height>
+      <width>250</width>
+      <height>202</height>
       <tileSizeX/>
       <tileSizeY/>
       <orthorectify>false</orthorectify>
