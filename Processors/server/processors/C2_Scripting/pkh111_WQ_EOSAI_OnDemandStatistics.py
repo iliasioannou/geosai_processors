@@ -589,10 +589,10 @@ def WQ_OnDemandStats_EOSAI_Chain(
         setAOI=[1]):
 
     # Checks AOI
-    if (AOI != 1):
+    if (setAOI != 1):
         logging.info("[EOSAI_PROCESSORS] Wrong AOI parameter, set to EOSAI by default.")
-        AOI = 1
-    AOI = AOI - 1
+        setAOI = 1
+    setAOI = setAOI - 1
 
     res = 0
     rnd_chars = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
