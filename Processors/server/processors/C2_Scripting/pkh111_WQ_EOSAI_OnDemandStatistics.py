@@ -599,7 +599,7 @@ def WQ_OnDemandStats_EOSAI_Chain(
     
     logging.info("[EOSAI_PROCESSORS] Processing AOI: " + AOI_Name[setAOI])
 
-    resproc, dest_dir = WQ_ODStats_EOSAI(dates, onflag, areaofi, rnd_chars)
+    resproc, dest_dir = WQ_ODStats_EOSAI(dates, onflag, setAOI, rnd_chars)
     res = res + resproc
 
     return (0, dest_dir) if not res else (1, dest_dir)
