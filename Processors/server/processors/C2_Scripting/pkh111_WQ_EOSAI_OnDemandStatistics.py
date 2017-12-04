@@ -586,7 +586,7 @@ def WQ_OnDemandStats_EOSAI_Chain(
         onflag,
         ovrwflag,
         dates,
-        setAOI=[1]):
+        setAOI=1):
 
     # Checks AOI
     if (setAOI != 1):
@@ -596,11 +596,11 @@ def WQ_OnDemandStats_EOSAI_Chain(
 
     res = 0
     rnd_chars = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
-    for areaofi in setAOI:
-        logging.info("[EOSAI_PROCESSORS] Processing AOI: " + AOI_Name[areaofi - 1])
+    
+    logging.info("[EOSAI_PROCESSORS] Processing AOI: " + AOI_Name[setAOI])
 
-        resproc, dest_dir = WQ_ODStats_EOSAI(dates, onflag, areaofi, rnd_chars)
-        res = res + resproc
+    resproc, dest_dir = WQ_ODStats_EOSAI(dates, onflag, areaofi, rnd_chars)
+    res = res + resproc
 
     return (0, dest_dir) if not res else (1, dest_dir)
 
