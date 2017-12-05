@@ -1,4 +1,5 @@
 #
+# 28/11/2017 Further fix for reading timestamp of SST
 #
 # TO DO:
 #
@@ -110,29 +111,21 @@ def SST_Chain(inputlist,overwrite,AOI, output_dir):
             qualcheerrore=qualcheerrore+1
             continue
 
-        # Definition of final filename taking acquisition date from .nc metadata
-        try:
-            time = nc.netcdf_file(input_dir+filename, 'r').time_min
-            t0 = datetime.datetime(1981, 1, 1)
-            dt = t0 + datetime.timedelta(seconds=time)
-            me=str(dt.month)
-            da=str(dt.day)
-            if len(me)==1: me='0'+me
-            if len(da)==1: da='0'+da
-            verifdate=str(dt.year)+'-'+me+'-'+da
-            year=dt.year
-        except AttributeError:
-            #Correction for new format
-            time = nc.netcdf_file(input_dir+filename, 'r').start_time
-            verifdate=time[0:4]+'-'+time[4:6]+'-'+time[6:8]
-            year=long(time[0:4])
-            me=time[4:6]
-            da=time[6:8]
+        # Definition of final filename taking acquisition date from .nc variable time.data
+        time = nc.netcdf_file(input_dir+filename, 'r').variables['time'].data
+        time = long(time[0])
+        t0 = datetime.datetime(1981, 1, 1)
+        dt = t0 + datetime.timedelta(seconds=time)
+        me=str(dt.month)
+        da=str(dt.day)
+        if len(me)==1: me='0'+me
+        if len(da)==1: da='0'+da
+        verifdate=str(dt.year)+'-'+me+'-'+da
+        year=dt.year
         if output_dir.find(verifdate)== -1:
             logging.debug("[EOSAI_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
             logging.debug("[EOSAI_PROCESSORS] Product not generated !!")
             continue
-
         dated_filename='RC_'+AOI_Name[AOI]+'_'+str(year)+me+da
         prod_filename_num=dated_filename+"_"+pFilenames[iin]+"_Num.tif"
         prod_filename_the=dated_filename+"_"+pFilenames[iin]+"_Thematic.tif"
@@ -750,7 +743,7 @@ def WQ_EOSAI_Chain(
 
     return 0,dest_dir
 
-##if __name__ == '__main__':
+if __name__ == '__main__':
 ##
 ####Manual testing
 ##    logging.info("Main body.")
@@ -759,3 +752,7 @@ def WQ_EOSAI_Chain(
 ##    print res
 ##
 ##    logging.info("Ended.")
+    res=WQ_EOSAI_Chain(1,0,'2017-11-26')
+    print res
+
+    logging.info("Ended.")
