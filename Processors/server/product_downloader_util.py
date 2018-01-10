@@ -5,81 +5,58 @@ from product_downloader.downloader.downloader import run_script
 from product_downloader.script.script import StringScriptBuilder
 
 data_map = [
-    {
-        "product": "OCEANCOLOUR_MED_OPTICS_L3_NRT_OBSERVATIONS_009_038-TDS",
-        "base_url": "http://cmems-oc.isac.cnr.it/motu-web/Motu",
-        "dataset": [
-            {
-                "name": "dataset-oc-med-opt-multi-l3-kd490_1km_daily-rt-v02",
-                "values": [
-                    "SENSORMASK",
-                    "KD490",
-                    "QI"
-                ]
-            },
-            {
-                "name": "dataset-oc-med-opt-multi-l3-rrs490_1km_daily-rt-v02",
-                "values": [
-                    "SENSORMASK",
-                    "RRS490",
-                    "QI"
-                ]
-            },
-            {
-                "name": "dataset-oc-med-opt-multi-l3-rrs555_1km_daily-rt-v02",
-                "values": [
-                    "SENSORMASK",
-                    "RRS555",
-                    "QI"
-                ]
-            },
-            {
-                "name": "dataset-oc-med-opt-multi-l3-rrs670_1km_daily-rt-v02",
-                "values": [
-                    "SENSORMASK",
-                    "RRS670",
-                    "QI"
-                ]
-            }
-        ]
-    },
-    {
-        "product": "OCEANCOLOUR_MED_CHL_L3_NRT_OBSERVATIONS_009_040-TDS",
-        "base_url": "http://cmems-oc.isac.cnr.it/motu-web/Motu",
-        "dataset": [{
-            "name": "dataset-oc-med-chl-multi-l3-chl_1km_daily-rt-v02",
-            "values": [
-                "WTM",
-                "CHL",
-                "SENSORMASK",
-                "QI"
-            ]
-        }
-        ]
-    },
-    {
-        "product": "SST_MED_SST_L3S_NRT_OBSERVATIONS_010_012-TDS",
-        "base_url": "http://cmems.isac.cnr.it/mis-gateway-servlet/Motu",
-        "dataset": [
-            {   
-                "name": "SST_MED_SST_L3S_NRT_OBSERVATIONS_010_012_b",
-                "values": [
-                    "sea_surface_temperature",
-                    "source_of_sst",
-                    "quality_level",
-                    "adjusted_sea_surface_temperature"
-                ]
-            }
-        ]
-    },
     # {
-    #     "product": "OCEANCOLOUR_MED_OPTICS_L3_REP_OBSERVATIONS_009_095-TDS",
-    #     "base_url": "http://cmems-oc.isac.cnr.it/motu-web/Motu",
+    #     "product": "MEDSEA_ANALYSIS_FORECAST_BIO_006_014",
+    #     "base_url": "http://cmems-med-mfc.eu/motu-web/Motu",
     #     "dataset": [
     #         {
-    #             "name": "dataset-oc-med-opt-multi_cci-l3-rrs490_1km_daily-rep-v02",
+    #             # Dissolved Oxygen
+    #             "name": "",
     #             "values": [
-    #                 "RRS490"
+    #                 ""
+    #             ]
+    #         }
+    #     ]
+    # },
+    {
+        "product": "MEDSEA_ANALYSIS_FORECAST_PHY_006_013",
+        "base_url": "http://cmems-med-mfc.eu/motu-web/Motu",
+        "dataset": [
+            {
+                # Sea Surface Temperature
+                "name": "sv03-med-ingv-tem-an-fc-d",
+                "values": [
+                    "Tethao",
+                    "bottomT"
+                ]
+            },
+            {
+                # Salinity
+                "name": "sv03-med-ingv-sal-an-fc-d",
+                "values": [
+                    "so"
+                ]
+            },
+            {
+                # Currents
+                "name": "sv03-med-ingv-cur-an-fc-d",
+                "values": [
+                    "uo",
+                    "vo"
+                ]
+            }
+        ]
+    }
+    # ,
+    # {
+    #     # Sea Surface Waves
+    #     "product": "MEDSEA_ANALYSIS_FORECAST_WAV_006_011",
+    #     "base_url": "http://cmems-med-mfc.eu/motu-web/Motu",
+    #     "dataset": [
+    #         {   
+    #             "name": "",
+    #             "values": [
+    #                 ""
     #             ]
     #         }
     #     ]
