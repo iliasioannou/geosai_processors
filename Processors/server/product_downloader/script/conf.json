@@ -2,7 +2,7 @@
   "motu_client_path": "motu-client-python/motu-client.py",
   "username": "gceriola",
   "password":"19YdJaCD",
-  "base_url":"http://cmems-oc.isac.cnr.it/motu-web/Motu",
+  "base_url":"http://cmems-med-mfc.eu/motu-web/Motu",
   "x": 12,
   "X": 28,
   "y": 35,
