@@ -7,5 +7,7 @@
   "X": 28,
   "y": 35,
   "Y": 46,
+  "z": 1.01,
+  "Z": 3.17,
   "output_path": "/src/Processors/server/processors/C3_Input"
 }
