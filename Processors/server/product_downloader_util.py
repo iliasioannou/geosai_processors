@@ -40,7 +40,8 @@ data_map = [
                 # Currents [m/s]
                 "name": "sv03-med-ingv-cur-an-fc-d",
                 "values": [
-                    "uo"
+                    "uo",
+                    "vo"
                 ]
             }
         ]
