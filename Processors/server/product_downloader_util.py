@@ -5,62 +5,59 @@ from product_downloader.downloader.downloader import run_script
 from product_downloader.script.script import StringScriptBuilder
 
 data_map = [
-    # {
-    #     "product": "MEDSEA_ANALYSIS_FORECAST_BIO_006_014",
-    #     "base_url": "http://cmems-med-mfc.eu/motu-web/Motu",
-    #     "dataset": [
-    #         {
-    #             # Dissolved Oxygen
-    #             "name": "",
-    #             "values": [
-    #                 ""
-    #             ]
-    #         }
-    #     ]
-    # },
+    {
+        "product": "MEDSEA_ANALYSIS_FORECAST_BIO_006_014",
+        "base_url": "http://cmems-med-mfc.eu/motu-web/Motu",
+        "dataset": [
+            {
+                # Dissolved Oxygen  [mmol O2/m3]
+                "name": "sv03-med-ogs-bio-an-fc-d",
+                "values": [
+                    "dox"
+                ]
+            }
+        ]
+    },
     {
         "product": "MEDSEA_ANALYSIS_FORECAST_PHY_006_013",
         "base_url": "http://cmems-med-mfc.eu/motu-web/Motu",
         "dataset": [
             {
-                # Sea Surface Temperature
+                # Sea Surface Temperature [degC]
                 "name": "sv03-med-ingv-tem-an-fc-d",
                 "values": [
-                    "Tethao",
-                    "bottomT"
+                    "Tethao"
                 ]
             },
             {
-                # Salinity
+                # Salinity [1e-3]
                 "name": "sv03-med-ingv-sal-an-fc-d",
                 "values": [
                     "so"
                 ]
             },
             {
-                # Currents
+                # Currents [m/s]
                 "name": "sv03-med-ingv-cur-an-fc-d",
                 "values": [
-                    "uo",
-                    "vo"
+                    "uo"
+                ]
+            }
+        ]
+    },
+    {
+        "product": "MEDSEA_ANALYSIS_FORECAST_WAV_006_011",
+        "base_url": "http://cmems-med-mfc.eu/motu-web/Motu",
+        "dataset": [
+            {   
+                # Sea Surface Waves [m]
+                "name": "sv03-med-hcmr-wav-an-fc-h",
+                "values": [
+                    "VHM0"
                 ]
             }
         ]
     }
-    # ,
-    # {
-    #     # Sea Surface Waves
-    #     "product": "MEDSEA_ANALYSIS_FORECAST_WAV_006_011",
-    #     "base_url": "http://cmems-med-mfc.eu/motu-web/Motu",
-    #     "dataset": [
-    #         {   
-    #             "name": "",
-    #             "values": [
-    #                 ""
-    #             ]
-    #         }
-    #     ]
-    # }
 ]
 
 
