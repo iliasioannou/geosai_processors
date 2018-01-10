@@ -1,0 +1,134 @@
+<!-- Version of 02-09-2016 -->
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="Read">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$filein</file>
+    </parameters>
+  </node>
+  <node id="SeaMask">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$maskin</file>
+	  <formatName>GeoTIFF</formatName>
+    </parameters>
+  </node>
+  <node id="Reproject">
+    <operator>Reproject</operator>
+    <sources>
+      <sourceProduct refid="Read"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <wktFile/>
+      <crs>EPSG:4326</crs>
+      <resampling>Nearest</resampling>
+      <referencePixelX>0.5</referencePixelX>
+      <referencePixelY>0.5</referencePixelY>
+      <easting>19.38</easting>
+      <northing>39.87</northing>
+      <orientation>0.0</orientation>
+      <pixelSizeX>0.04</pixelSizeX>
+      <pixelSizeY>0.04</pixelSizeY>
+      <width>63</width>
+      <height>51</height>
+      <tileSizeX/>
+      <tileSizeY/>
+      <orthorectify>false</orthorectify>
+      <elevationModelName/>
+      <noDataValue>-11.0</noDataValue>
+      <includeTiePointGrids>true</includeTiePointGrids>
+      <addDeltaBands>false</addDeltaBands>
+    </parameters>
+  </node>
+  <node id="Reproject_SM">
+    <operator>Reproject</operator>
+    <sources>
+      <sourceProduct refid="SeaMask"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <wktFile/>
+      <crs>EPSG:4326</crs>
+      <resampling>Nearest</resampling>
+      <referencePixelX>0.5</referencePixelX>
+      <referencePixelY>0.5</referencePixelY>
+      <easting>19.38</easting>
+      <northing>39.87</northing>
+      <orientation>0.0</orientation>
+      <pixelSizeX>0.04</pixelSizeX>
+      <pixelSizeY>0.04</pixelSizeY>
+      <width>63</width>
+      <height>51</height>
+      <tileSizeX/>
+      <tileSizeY/>
+      <orthorectify>false</orthorectify>
+      <elevationModelName/>
+      <noDataValue>-11.0</noDataValue>
+      <includeTiePointGrids>true</includeTiePointGrids>
+      <addDeltaBands>false</addDeltaBands>
+    </parameters>
+  </node>
+  <node id="BandMaths_b">
+    <operator>BandMaths</operator>
+    <sources>
+	  <sourceProduct refid="Reproject"/>
+	  <sourceProduct2 refid="Reproject_SM"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands>
+        <targetBand>
+          <name>thetao_time1</name>
+          <type>float32</type>
+          <expression>if ($sourceProduct2.band_1) == 0 then -10.0 else thetao_time1</expression>
+          <description/>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+        <targetBand>
+          <name>thetao_time2</name>
+          <type>float32</type>
+          <expression>if ($sourceProduct2.band_1) == 0 then -10.0 else thetao_time2</expression>
+          <description/>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+        <targetBand>
+          <name>thetao_time3</name>
+          <type>float32</type>
+          <expression>if ($sourceProduct2.band_1) == 0 then -10.0 else thetao_time3</expression>
+          <description/>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+        <targetBand>
+          <name>thetao_time4</name>
+          <type>float32</type>
+          <expression>if ($sourceProduct2.band_1) == 0 then -10.0 else thetao_time4</expression>
+          <description/>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+        <targetBand>
+          <name>thetao_time5</name>
+          <type>float32</type>
+          <expression>if ($sourceProduct2.band_1) == 0 then -10.0 else thetao_time5</expression>
+          <description/>
+          <unit/>
+          <noDataValue>NaN</noDataValue>
+        </targetBand>
+      </targetBands>
+    </parameters>
+  </node>
+  <node id="Write">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="BandMaths_b"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$fileout</file>
+      <formatName>$format</formatName>
+    </parameters>
+  </node>
+</graph>

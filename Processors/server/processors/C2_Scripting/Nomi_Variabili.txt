@@ -1,11 +1,19 @@
-SST
-'sea_surface_temperature'
+Sea Water Temperature -> TEM
 
-CHL
-'CHL'
+Dissolved Oxygen -> DO2
 
-Geophysical
-'KD490'
-'RRS490'
-'RRS555'
-'RRS670'
+Salinity -> SAL
+
+Sea Surface Waves -> SSW
+
+Currents -> CUR
+
+
+-MEDSEA_ANALYSIS_FORECAST_PHY_006_013
+	sv03-med-ingv-tem-an-fc-d (TEM)
+	sv03-med-ingv-sal-an-fc-d (SAL)
+	sv03-med-ingv-cur-an-fc-d (CUR)
+-MEDSEA_ANALYSIS_FORECAST_BIO_006_014
+	sv03-med-ogs-bio-an-fc-d (DO2)
+-MEDSEA_ANALYSIS_FORECAST_WAV_006_011
+        sv03-med-hcmr-wav-an-fc-h (SSW)
