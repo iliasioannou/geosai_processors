@@ -29,6 +29,8 @@ class StringScriptBuilder():
             getattr(self, 'X', conf['X']),
             getattr(self, 'y', conf['y']),
             getattr(self, 'Y', conf['Y']),
+            getattr(self, 'z', conf['z']),
+            getattr(self, 'Z', conf['Z']),
             getattr(self, 'output_path', conf['output_path']),
             self.product,
             self.dataset,
@@ -55,8 +57,8 @@ class StringScriptBuilder():
         self.output_path = output_path
         return self
 
-    def set_motu_client(self, motu_cluient_path):
-        self.motu_client_path = motu_cluient_path
+    def set_motu_client(self, motu_client_path):
+        self.motu_client_path = motu_client_path
         return self
 
     def set_dataset(self, dataset):
