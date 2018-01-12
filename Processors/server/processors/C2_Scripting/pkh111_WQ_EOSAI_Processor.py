@@ -43,7 +43,7 @@ CUR_input_f='sv03-med-ingv-cur-an-fc-d'
 
 GPT_006_013_Graph=script_dir+"006_013_Graph_EOSAI.xml"
 
-pFilenames=['TEM','SAL','CUR','DO2','SSW']
+pFilenames=['TEM','SAL','CUR','DOX','SWH']
 Mask_LandSea = [ancil_dir + "Mask_Sea-Land_SRTM_EOSAI.tif"]
 AOI_Name = [''] ##['EOSAI_']
 ForecastDays=4
@@ -311,15 +311,15 @@ def Chain_006_013(inputlist,overwrite,AOI,output_dir,productT):
 ## WQ_EOSAI_Chain
 ##
 ## Input:
-##   onflag: bit 0 -> tem
-##           bit 1 -> sal
-##           bit 2 -> cur
-##           bit 3 -> ssw
-##           bit 4 -> do2
+##   onflag: bit 0 -> TEM
+##           bit 1 -> SAL
+##           bit 2 -> CUR
+##           bit 3 -> SWH
+##           bit 4 -> DOX
 ##   ovrwflag: Same bit order of onflag. When set to 1, it activates overwriting of already existing products.
 ##   date: date to be processed (YYYY-MM-DD), which will be the output folder subdir
 ##   final_folder: optional folder location (ending with '/') where to put the final products when correctly generated,
-##                 subfolders TEM,SAL,CUR,SSW and DO2 must exist there
+##                 subfolders TEM,SAL,CUR,SWH and DOX must exist there
 ##   yesno_folder: optional folder location (ending with '/') where to put a .txt file for the successful generation of
 ##                 a given product, named ok_XXX_YYYYMMDD.txt
 ##   setAOI: 1=EOSAI
@@ -369,7 +369,7 @@ def WQ_EOSAI_Chain(
                             for cefil in ce:
                                 try:
                                     if os.path.exists(final_folder+'/TEM/'+os.path.basename(cefil))==True:
-                                        os.remove(final_folder+'/TEM/'+os.path.basename(cefil))
+                                       os.remove(final_folder+'/TEM/'+os.path.basename(cefil))
                                 except:
                                     mverror=mverror+1
                                 else:
@@ -488,10 +488,7 @@ if __name__ == '__main__':
     logging.info("Main body.")
 
     res=WQ_EOSAI_Chain(15,15,'2018-01-10',global_output_dir,global_output_dir)
-    res=WQ_EOSAI_Chain(15,15,'2018-01-11',global_output_dir,global_output_dir)
-			   
-  
-							
+    res=WQ_EOSAI_Chain(15,15,'2018-01-11',global_output_dir,global_output_dir)  
 										
     print res
 
