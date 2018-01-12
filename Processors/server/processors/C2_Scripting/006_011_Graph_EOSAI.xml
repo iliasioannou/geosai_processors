@@ -78,7 +78,7 @@
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
       <targetBands>
-$bandsfill$
+        $bandsfill$
       </targetBands>
     </parameters>
   </node>

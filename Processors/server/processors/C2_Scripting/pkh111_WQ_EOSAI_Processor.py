@@ -80,7 +80,7 @@ else:
 def Chain_006_013(inputlist,overwrite,AOI,output_dir,productT):
 
     if productT<1 or productT>3:
-        logging.info("[EOSAI_PROCESSORS] 006_013 product number wrong: use TEM")
+        logging.info("[EOSAI_PROCESSORS] Wrong 006_013 product variable name: use TEM or SAL or CUR")
         productT=1
         
     #Set specific product internal index
@@ -330,7 +330,7 @@ def Chain_006_013(inputlist,overwrite,AOI,output_dir,productT):
 def Chain_006_014(inputlist,overwrite,AOI,output_dir,productT):
 
     if productT!=1:
-        logging.info("[EOSAI_PROCESSORS] 006_014 product number wrong: use DOX")
+        logging.info("[EOSAI_PROCESSORS] Wrong 006_014 product variable name: use DOX")
         productT=1
         
     #Set specific product internal index
@@ -497,7 +497,7 @@ def Chain_006_014(inputlist,overwrite,AOI,output_dir,productT):
                 band2=None
             except RuntimeError, e:
                 #If not generated, still continue
-                logging.debug("[EOSAI_PROCESSORS] Error in writing geophyisical file "+dated_filenames[ilday]+'.tif')
+                logging.debug("[EOSAI_PROCESSORS] Error in writing geophysical file "+dated_filenames[ilday]+'.tif')
                 errore=errore+1
             ##else:
                 #No legend to be applied
@@ -534,7 +534,7 @@ def Chain_006_014(inputlist,overwrite,AOI,output_dir,productT):
 def Chain_006_011(inputlist,overwrite,AOI,output_dir,productT):
 
     if productT!=1:
-        logging.info("[EOSAI_PROCESSORS] 006_011 product number wrong: use SWH")
+        logging.info("[EOSAI_PROCESSORS] Wrong 006_011 product variable name: use SWH")
         productT=1
         
     #Set specific product internal index
@@ -731,9 +731,9 @@ def Chain_006_011(inputlist,overwrite,AOI,output_dir,productT):
 ## WQ_EOSAI_Chain
 ##
 ## Input:
-##   onflag: bit 0 -> tem
-##           bit 1 -> sal
-##           bit 2 -> cur
+##   onflag: bit 0 -> TEM
+##           bit 1 -> SAL
+##           bit 2 -> CUR
 ##           bit 3 -> DOX
 ##           bit 4 -> SWH
 ##   ovrwflag: Same bit order of onflag. When set to 1, it activates overwriting of already existing products.
