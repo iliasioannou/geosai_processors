@@ -1,13 +1,10 @@
 Sea Water Temperature -> TEM
+Dissolved Oxygen      -> DO2
+Salinity              -> SAL
+Sea Surface Waves     -> SSW
+Currents              -> CUR
 
-Dissolved Oxygen -> DO2
-
-Salinity -> SAL
-
-Sea Surface Waves -> SSW
-
-Currents -> CUR
-
+CMEMS Products and respective Datasets:
 
 -MEDSEA_ANALYSIS_FORECAST_PHY_006_013
 	sv03-med-ingv-tem-an-fc-d (TEM)
@@ -16,4 +13,4 @@ Currents -> CUR
 -MEDSEA_ANALYSIS_FORECAST_BIO_006_014
 	sv03-med-ogs-bio-an-fc-d (DO2)
 -MEDSEA_ANALYSIS_FORECAST_WAV_006_011
-        sv03-med-hcmr-wav-an-fc-h (SSW)
+    sv03-med-hcmr-wav-an-fc-h (SSW)

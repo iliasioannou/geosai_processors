@@ -40,7 +40,7 @@ class StringScriptBuilder():
             self.out_name
         )
 
-    def set_credentials(self, username='gceriola', password=''):
+    def set_credentials(self, username='dsykas1', password=''):
         self.username = username
         self.password = password
         return self

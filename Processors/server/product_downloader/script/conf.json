@@ -1,7 +1,7 @@
 {
   "motu_client_path": "motu-client-python/motu-client.py",
-  "username": "gceriola",
-  "password":"19YdJaCD",
+  "username":"dsykas1",
+  "password":"DimitrisCMEMS2018",
   "base_url":"http://cmems-med-mfc.eu/motu-web/Motu",
   "x": 12,
   "X": 28,
@@ -9,5 +9,5 @@
   "Y": 46,
   "z": 1.01,
   "Z": 3.17,
-  "output_path": "/src/Processors/server/processors/C3_Input"
+  "output_path":"/src/Processors/server/processors/C3_Input"
 }
