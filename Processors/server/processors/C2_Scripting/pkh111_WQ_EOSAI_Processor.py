@@ -1,6 +1,6 @@
 #
 # 12/01/2018 - v1.0 with TEM,SAL,CUR,DOX products, with some further fixes
-#              TO DO: SWH and special forecast coverage 
+#              SWH needs to be changed if 4 days forecast is requested, otherwise will not be done
 #
 # 11/01/2018 - First release with TEM,SAL,CUR products
 #
@@ -53,7 +53,7 @@ GPT_006_011_Graph=script_dir+"006_011_Graph_EOSAI.xml"
 pFilenames=['TEM','SAL','CUR','DOX','SWH']
 Mask_LandSea = [ancil_dir + "Mask_Sea-Land_SRTM_EOSAI.tif"]
 AOI_Name = [''] ##['EOSAI_']
-ForecastDays=4
+ForecastDays=3
 
 ###Others
 GDAL_TIFF_Options_list=['COMPRESS=LZW','TILED=YES']
@@ -80,7 +80,7 @@ else:
 def Chain_006_013(inputlist,overwrite,AOI,output_dir,productT):
 
     if productT<1 or productT>3:
-        logging.info("[EOSAI_PROCESSORS] Wrong 006_013 product variable name: use TEM or SAL or CUR")
+        logging.info("[EOSAI_PROCESSORS] 006_013 product number wrong: use TEM")
         productT=1
         
     #Set specific product internal index
@@ -330,7 +330,7 @@ def Chain_006_013(inputlist,overwrite,AOI,output_dir,productT):
 def Chain_006_014(inputlist,overwrite,AOI,output_dir,productT):
 
     if productT!=1:
-        logging.info("[EOSAI_PROCESSORS] Wrong 006_014 product variable name: use DOX")
+        logging.info("[EOSAI_PROCESSORS] 006_014 product number wrong: use DOX")
         productT=1
         
     #Set specific product internal index
@@ -497,7 +497,7 @@ def Chain_006_014(inputlist,overwrite,AOI,output_dir,productT):
                 band2=None
             except RuntimeError, e:
                 #If not generated, still continue
-                logging.debug("[EOSAI_PROCESSORS] Error in writing geophysical file "+dated_filenames[ilday]+'.tif')
+                logging.debug("[EOSAI_PROCESSORS] Error in writing geophyisical file "+dated_filenames[ilday]+'.tif')
                 errore=errore+1
             ##else:
                 #No legend to be applied
@@ -534,7 +534,7 @@ def Chain_006_014(inputlist,overwrite,AOI,output_dir,productT):
 def Chain_006_011(inputlist,overwrite,AOI,output_dir,productT):
 
     if productT!=1:
-        logging.info("[EOSAI_PROCESSORS] Wrong 006_011 product variable name: use SWH")
+        logging.info("[EOSAI_PROCESSORS] 006_011 product number wrong: use SWH")
         productT=1
         
     #Set specific product internal index
@@ -731,9 +731,9 @@ def Chain_006_011(inputlist,overwrite,AOI,output_dir,productT):
 ## WQ_EOSAI_Chain
 ##
 ## Input:
-##   onflag: bit 0 -> TEM
-##           bit 1 -> SAL
-##           bit 2 -> CUR
+##   onflag: bit 0 -> tem
+##           bit 1 -> sal
+##           bit 2 -> cur
 ##           bit 3 -> DOX
 ##           bit 4 -> SWH
 ##   ovrwflag: Same bit order of onflag. When set to 1, it activates overwriting of already existing products.
@@ -1005,8 +1005,8 @@ if __name__ == '__main__':
 ##Manual testing
     logging.info("Main body.")
 
-    res=WQ_EOSAI_Chain(15,15,'2018-01-10',global_output_dir,global_output_dir)
-    res=WQ_EOSAI_Chain(15,15,'2018-01-11',global_output_dir,global_output_dir)
+    res=WQ_EOSAI_Chain(31,31,'2018-01-10',global_output_dir,global_output_dir)
+    res=WQ_EOSAI_Chain(31,31,'2018-01-11',global_output_dir,global_output_dir)
 			   
   
 							
