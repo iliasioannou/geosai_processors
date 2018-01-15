@@ -1,6 +1,6 @@
 #
 # 12/01/2018 - v1.0 with TEM,SAL,CUR,DOX products, with some further fixes
-#              SWH needs to be changed if 4 days forecast is requested, otherwise will not be done
+#              TO DO: SWH and special forecast coverage 
 #
 # 11/01/2018 - First release with TEM,SAL,CUR products
 #
@@ -29,8 +29,8 @@ snap="/opt/snap/bin/gpt"
 #FOR DEBUGGING ON WINDOWS
 if _platform == "win32":
     sagagis=['C:/Programmis/saga_3.0.0_x64/saga_cmd','-f=s']
-    snap="C:/Programmis/snap5/bin/gpt.exe"
-    main_dir="D:/pkh111_EOSAI/"
+    snap="C:/Program Files/snap/bin/gpt.exe"
+    main_dir="C:/pkh111_EOSAI/"
 ##Relative folder tree
 ancil_dir=main_dir+"C1_Ancillari/"
 script_dir=main_dir+"C2_Scripting/"
@@ -80,7 +80,7 @@ else:
 def Chain_006_013(inputlist,overwrite,AOI,output_dir,productT):
 
     if productT<1 or productT>3:
-        logging.info("[EOSAI_PROCESSORS] 006_013 product number wrong: use TEM")
+        logging.info("[EOSAI_PROCESSORS] Wrong 006_013 product variable name: use TEM or SAL or CUR")
         productT=1
         
     #Set specific product internal index
@@ -185,7 +185,7 @@ def Chain_006_013(inputlist,overwrite,AOI,output_dir,productT):
         # Verification of date and definition of final filename taking acquisition date from .nc metadata
         time_min = nc.netcdf_file(input_dir+filename, 'r').time_min
         time_max = nc.netcdf_file(input_dir+filename, 'r').time_max
-							
+                            
         t0 = datetime.datetime(1970, 1, 1)
         dt = t0 + datetime.timedelta(days=time_min)
         dt_max = t0 + datetime.timedelta(days=time_max)
@@ -194,7 +194,7 @@ def Chain_006_013(inputlist,overwrite,AOI,output_dir,productT):
         if len(me)==1: me='0'+me
         if len(da)==1: da='0'+da
         verifdate=str(dt.year)+'-'+me+'-'+da
-					
+                    
         if output_dir.find(verifdate)== -1:
             logging.debug("[EOSAI_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
             logging.debug("[EOSAI_PROCESSORS] Product not generated !!")
@@ -330,7 +330,7 @@ def Chain_006_013(inputlist,overwrite,AOI,output_dir,productT):
 def Chain_006_014(inputlist,overwrite,AOI,output_dir,productT):
 
     if productT!=1:
-        logging.info("[EOSAI_PROCESSORS] 006_014 product number wrong: use DOX")
+        logging.info("[EOSAI_PROCESSORS] Wrong 006_014 product variable name: use DOX")
         productT=1
         
     #Set specific product internal index
@@ -396,7 +396,7 @@ def Chain_006_014(inputlist,overwrite,AOI,output_dir,productT):
         # Verification of date and definition of final filename taking acquisition date from .nc metadata
         time_min = nc.netcdf_file(input_dir+filename, 'r').time_min
         time_max = nc.netcdf_file(input_dir+filename, 'r').time_max
-							
+                            
         t0 = datetime.datetime(1970, 1, 1)
         dt = t0 + datetime.timedelta(days=time_min)
         dt_max = t0 + datetime.timedelta(days=time_max)
@@ -405,7 +405,7 @@ def Chain_006_014(inputlist,overwrite,AOI,output_dir,productT):
         if len(me)==1: me='0'+me
         if len(da)==1: da='0'+da
         verifdate=str(dt.year)+'-'+me+'-'+da
-					
+                    
         if output_dir.find(verifdate)== -1:
             logging.debug("[EOSAI_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
             logging.debug("[EOSAI_PROCESSORS] Product not generated !!")
@@ -497,7 +497,7 @@ def Chain_006_014(inputlist,overwrite,AOI,output_dir,productT):
                 band2=None
             except RuntimeError, e:
                 #If not generated, still continue
-                logging.debug("[EOSAI_PROCESSORS] Error in writing geophyisical file "+dated_filenames[ilday]+'.tif')
+                logging.debug("[EOSAI_PROCESSORS] Error in writing geophysical file "+dated_filenames[ilday]+'.tif')
                 errore=errore+1
             ##else:
                 #No legend to be applied
@@ -534,7 +534,7 @@ def Chain_006_014(inputlist,overwrite,AOI,output_dir,productT):
 def Chain_006_011(inputlist,overwrite,AOI,output_dir,productT):
 
     if productT!=1:
-        logging.info("[EOSAI_PROCESSORS] 006_011 product number wrong: use SWH")
+        logging.info("[EOSAI_PROCESSORS] Wrong 006_011 product variable name: use SWH")
         productT=1
         
     #Set specific product internal index
@@ -604,7 +604,7 @@ def Chain_006_011(inputlist,overwrite,AOI,output_dir,productT):
         # Verification of date and definition of final filename taking acquisition date from .nc metadata
         time_min = nc.netcdf_file(input_dir+filename, 'r').time_min
         time_max = nc.netcdf_file(input_dir+filename, 'r').time_max
-							
+                            
         t0 = datetime.datetime(1970, 1, 1, 12, 0, 0)
         dt = t0 + datetime.timedelta(hours=time_min)
         dt_max = t0 + datetime.timedelta(hours=time_max)
@@ -613,7 +613,7 @@ def Chain_006_011(inputlist,overwrite,AOI,output_dir,productT):
         if len(me)==1: me='0'+me
         if len(da)==1: da='0'+da
         verifdate=str(dt.year)+'-'+me+'-'+da
-					
+                    
         if output_dir.find(verifdate)== -1:
             logging.debug("[EOSAI_PROCESSORS] The date into the product ("+verifdate+") differs from the one of the outputdir("+output_dir+")")
             logging.debug("[EOSAI_PROCESSORS] Product not generated !!")
@@ -731,9 +731,9 @@ def Chain_006_011(inputlist,overwrite,AOI,output_dir,productT):
 ## WQ_EOSAI_Chain
 ##
 ## Input:
-##   onflag: bit 0 -> tem
-##           bit 1 -> sal
-##           bit 2 -> cur
+##   onflag: bit 0 -> TEM
+##           bit 1 -> SAL
+##           bit 2 -> CUR
 ##           bit 3 -> DOX
 ##           bit 4 -> SWH
 ##   ovrwflag: Same bit order of onflag. When set to 1, it activates overwriting of already existing products.
@@ -914,7 +914,7 @@ def WQ_EOSAI_Chain(
             else:
                 result1=Chain_006_014(ce,ovrw,areaofi,dest_dir,1)
                 if result1==1:
-                    logging.debug("[EOSAI_PROCESSORS] "+'Failed generation of DOX proucts for date: '+date)
+                    logging.debug("[EOSAI_PROCESSORS] "+'Failed generation of DOX products for date: '+date)
                     eerr=1
                 else:
                     #Copy products
@@ -1005,12 +1005,9 @@ if __name__ == '__main__':
 ##Manual testing
     logging.info("Main body.")
 
-    res=WQ_EOSAI_Chain(31,31,'2018-01-10',global_output_dir,global_output_dir)
-    res=WQ_EOSAI_Chain(31,31,'2018-01-11',global_output_dir,global_output_dir)
-			   
-  
-							
-										
+    res=WQ_EOSAI_Chain(15,15,'2018-01-10',global_output_dir,global_output_dir)
+    res=WQ_EOSAI_Chain(15,15,'2018-01-11',global_output_dir,global_output_dir)  
+                                        
     print res
 
     logging.info("Ended.")
