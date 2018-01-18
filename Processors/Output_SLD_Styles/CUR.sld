@@ -5,7 +5,7 @@
             <sld:FeatureTypeConstraint/>
         </sld:LayerFeatureConstraints>
         <sld:UserStyle>
-            <sld:Name>DOX</sld:Name>
+            <sld:Name>CUR</sld:Name>
             <sld:Title/>
             <sld:FeatureTypeStyle>
                 <sld:Name/>
