@@ -4,7 +4,7 @@ from processors.C2_Scripting.pkh111_WQ_EOSAI_Statistics import WQ_Stats_EOSAI_Ch
 import logging
 from datetime import datetime
 
-def run_processing(products, overwrites, processing_type, setAoi, date=datetime.now().strftime("%Y-%m-%d")):
+def run_processing(products, overwrites, processing_type, setAoi, date=datetime.now().strftime("%Y-%m-%d"), final_folder, yes_no_folder):
     """
     Run processing calling processors
 
@@ -20,6 +20,6 @@ def run_processing(products, overwrites, processing_type, setAoi, date=datetime.
         'custom': WQ_OnDemandStats_EOSAI_Chain
     }
     logging.info("[EOSAI_PROCESSORS] Starting processing data")
-    res=processor_entrypoint[processing_type](products, overwrites, date)
+    res=processor_entrypoint[processing_type](products, overwrites, date, final_folder, yes_no_folder)
     logging.info("[EOSAI_PROCESSORS] End processing data")
     return res

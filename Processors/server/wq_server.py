@@ -59,10 +59,12 @@ def execute(data):
         logging.info("[EOSAI_RPC_SERVER] Got params: %s" %data)
         rslt, out_path = run_processing(
             processing_type=argsDict.get('procType', 'day'),
-            products=int(argsDict.get('products', 15)),
-            overwrites=int(argsDict.get('overwrite', 15)),
+            products=int(argsDict.get('products', 31)),
+            overwrites=int(argsDict.get('overwrite', 31)),
             setAoi=int(argsDict.get('aoi', 3)),
-            date=gte_date if not "dates" in argsDict else argsDict['dates']
+            date=gte_date if not "dates" in argsDict else argsDict['dates'],
+            final_folder="/src/Processors/server/processors/C5_OutputDir",
+            yes_no_folder="/src/Processors/server/processors/C4_TempDir"
         )
         logging.info("[EOSAI_RPC_SERVER] Result dict: %s" % rslt)
         logging.info("[EOSAI_RPC_SERVER] Out path : %s" % out_path)
@@ -73,7 +75,7 @@ def execute(data):
 
     logging.info("[EOSAI_RPC_SERVER] Request served")
     logging.info("---------------------------------------------------------------------")
-    return json.dumps({"returnCode": rslt, "outPath": "/".join(out_path.split("/")[-3:])})
+    return json.dumps({"returnCode": rslt})
 
 
 server = init_stuff()
