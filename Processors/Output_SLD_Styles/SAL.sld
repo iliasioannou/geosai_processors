@@ -15,7 +15,7 @@
                             <ogc:PropertyName>grid</ogc:PropertyName>
                         </sld:Geometry>
                         <sld:Opacity>1</sld:Opacity>
-                        <sld:ColorMap>
+                        <sld:ColorMap type="intervals">
                             <sld:ColorMapEntry color="#440154" label="35" opacity="1.0" quantity="35"/>
                             <sld:ColorMapEntry color="#471366" label="35.25" opacity="1.0" quantity="35.25"/>
                             <sld:ColorMapEntry color="#482475" label="35.5" opacity="1.0" quantity="35.5"/>

@@ -293,7 +293,7 @@ def Chain_006_013(inputlist,overwrite,AOI,output_dir,productT):
                 band2=None
             except RuntimeError, e:
                 #If not generated, still continue
-                logging.debug("[EOSAI_PROCESSORS] Error in writing geophyisical file "+dated_filenames[ilday]+'.tif')
+                logging.debug("[EOSAI_PROCESSORS] Error in writing geophysical file "+dated_filenames[ilday]+'.tif')
                 errore=errore+1
             ##else:
                 #No legend to be applied
