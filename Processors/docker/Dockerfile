@@ -1,4 +1,4 @@
-FROM planetek/eosai_processors:base
+FROM dockerhub.planetek.it/pkh111_eosai_processors:base
 
 ARG branch
 
