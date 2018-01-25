@@ -62,9 +62,9 @@ def execute(data):
             products=int(argsDict.get('products', 31)),
             overwrites=int(argsDict.get('overwrite', 31)),
             setAoi=int(argsDict.get('aoi', 3)),
-            date=gte_date if not "dates" in argsDict else argsDict['dates'],
             final_folder="/src/Processors/server/processors/C5_OutputDir",
-            yes_no_folder="/src/Processors/server/processors/C4_TempDir"
+            yes_no_folder="/src/Processors/server/processors/C4_TempDir",
+            date=gte_date if not "dates" in argsDict else argsDict['dates']
         )
         logging.info("[EOSAI_RPC_SERVER] Result dict: %s" % rslt)
         logging.info("[EOSAI_RPC_SERVER] Out path : %s" % out_path)
