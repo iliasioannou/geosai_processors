@@ -76,11 +76,12 @@ def download_data(start_date, end_date):
         logging.info("[EOSAI_DOWNLOADER] Processing %s" %element['product'])
         for ds in element['dataset']:
             logging.info("[EOSAI_DOWNLOADER] Downloading %s" % ds['name'])
+            forecast_date = (datetime.strptime(end_date, '%Y-%m-%d') + timedelta(days=3)).strftime("%Y-%m-%d")
             script = StringScriptBuilder()\
                 .set_product(element['product'])\
                 .set_dataset(ds['name'])\
                 .set_values(ds['values'])\
-                .set_dates([start_date, end_date])\
+                .set_dates([start_date, forecast_date])\
                 .set_base_url(element['base_url'])\
                 .set_out_name("%s_%s.nc" %(ds['name'], start_date))\
                 .build()

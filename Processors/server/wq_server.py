@@ -47,7 +47,7 @@ def execute(data):
     # parse json to dictionary
     argsDict = json.loads(data)
     try:
-        def_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+        def_date = (datetime.now()).strftime("%Y-%m-%d")
         if 'runDate' in argsDict:
             gte_date = argsDict['runDate']
         else:
