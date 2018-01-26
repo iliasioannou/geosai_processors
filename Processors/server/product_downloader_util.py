@@ -6,7 +6,7 @@ from product_downloader.script.script import StringScriptBuilder
 
 data_map = [
     {
-        "product": "MEDSEA_ANALYSIS_FORECAST_BIO_006_014",
+        "product": "MEDSEA_ANALYSIS_FORECAST_BIO_006_014-TDS",
         "base_url": "http://cmems-med-mfc.eu/motu-web/Motu",
         "dataset": [
             {
@@ -19,14 +19,14 @@ data_map = [
         ]
     },
     {
-        "product": "MEDSEA_ANALYSIS_FORECAST_PHY_006_013",
+        "product": "MEDSEA_ANALYSIS_FORECAST_PHY_006_013-TDS",
         "base_url": "http://cmems-med-mfc.eu/motu-web/Motu",
         "dataset": [
             {
                 # Sea Surface Temperature [degC]
                 "name": "sv03-med-ingv-tem-an-fc-d",
                 "values": [
-                    "Tethao"
+                    "thetao"
                 ]
             },
             {
@@ -47,7 +47,7 @@ data_map = [
         ]
     },
     {
-        "product": "MEDSEA_ANALYSIS_FORECAST_WAV_006_011",
+        "product": "MEDSEA_ANALYSIS_FORECAST_WAV_006_011-TDS",
         "base_url": "http://cmems-med-mfc.eu/motu-web/Motu",
         "dataset": [
             {   
