@@ -89,4 +89,4 @@ def download_data(start_date, end_date):
                 logging.info("[EOSAI_DOWNLOADER] %s (%s) Not completed" %(ds['name'], start_date))
             else:
                 logging.info("[EOSAI_DOWNLOADER] %s (%s) Completed" %(ds['name'], start_date))
-        logging.info("[EOSAI_DOWNLOADER] Finished downloading product")
+        logging.info("[EOSAI_DOWNLOADER] Finished downloading product(s)")
