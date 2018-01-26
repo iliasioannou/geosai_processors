@@ -85,6 +85,7 @@ def download_data(start_date, end_date):
                 .set_out_name("%s_%s.nc" %(ds['name'], start_date))\
                 .build()
             result = run_script(script, assert_result_function=lambda item: True if "Done" in item[0] and item[1].returncode == 0 else False)
+            logging.info("[EOSAI_DOWNLOADER] REQUEST SCRIPT: %s " %(script))
             if not result:
                 logging.info("[EOSAI_DOWNLOADER] %s (%s) Not completed" %(ds['name'], start_date))
             else:
