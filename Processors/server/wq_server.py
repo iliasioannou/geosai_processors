@@ -57,7 +57,7 @@ def execute(data):
             download_data(gte_date, gte_date)
 
         logging.info("[EOSAI_RPC_SERVER] Got params: %s" %data)
-        rslt, out_path = run_processing(
+        rslt = run_processing(
             processing_type=argsDict.get('procType', 'day'),
             products=int(argsDict.get('products', 31)),
             overwrites=int(argsDict.get('overwrite', 31)),
@@ -67,7 +67,7 @@ def execute(data):
             date=gte_date if not "dates" in argsDict else argsDict['dates']
         )
         logging.info("[EOSAI_RPC_SERVER] Result dict: %s" % rslt)
-        logging.info("[EOSAI_RPC_SERVER] Out path : %s" % out_path)
+        #logging.info("[EOSAI_RPC_SERVER] Out path : %s" % out_path)
     except Exception as e:
         logging.error("[EOSAI_RPC_SERVER] Error in processing data")
         logging.exception(e)
