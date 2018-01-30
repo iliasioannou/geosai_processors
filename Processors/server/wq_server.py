@@ -62,7 +62,7 @@ def execute(data):
             products=int(argsDict.get('products', 31)),
             overwrites=int(argsDict.get('overwrite', 31)),
             setAoi=int(argsDict.get('aoi', 3)),
-            final_folder="/src/Processors/server/processors/C5_OutputDir",
+            final_folder="/src/Processors/server/processors/C6_FinalOutput",
             yes_no_folder="/src/Processors/server/processors/C4_TempDir",
             date=gte_date if not "dates" in argsDict else argsDict['dates']
         )
