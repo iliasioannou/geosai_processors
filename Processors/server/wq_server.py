@@ -75,7 +75,7 @@ def execute(data):
 
     logging.info("[EOSAI_RPC_SERVER] Request served")
     logging.info("---------------------------------------------------------------------")
-    return json.dumps({"returnCode": rslt, "outPath": "geoserver/data/eosai/raster/"})
+    return json.dumps({"returnCode": rslt, "outPath": "geoserver/data/raster/"})
 
 
 server = init_stuff()
