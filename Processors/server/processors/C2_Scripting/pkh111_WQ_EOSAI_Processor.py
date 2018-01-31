@@ -790,13 +790,15 @@ def WQ_EOSAI_Chain(
                                 try:
                                     if os.path.exists(final_folder+'/TEM/'+os.path.basename(cefil))==True:
                                         os.remove(final_folder+'/TEM/'+os.path.basename(cefil))
-                                except:
+                                except Exception, e:
                                     mverror=mverror+1
+                                    logging.error('error during TEM erasing: '+ str(e))
                                 else:
                                     try:
                                         copy(cefil,final_folder+'/TEM/'+os.path.basename(cefil))
-                                    except:
+                                    except Exception, e:
                                         mverror=mverror+1
+                                        logging.error('error during TEM erasing: '+ str(e))
                             if mverror!=0:
                                 logging.debug("[EOSAI_PROCESSORS] "+'Failed in copying '+str(mverror)+' TEM products for date: '+date)
                                 if mverror==(ForecastDays+1):
