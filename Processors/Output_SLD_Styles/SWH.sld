@@ -38,8 +38,9 @@
                             <sld:ColorMapEntry color="#912d17" label="7.12" opacity="1.0" quantity="7.12"/>
                             <sld:ColorMapEntry color="#760d0f" label="7.5" opacity="1.0" quantity="7.5"/>
                             <sld:ColorMapEntry color="#3c0d10" label="10" opacity="1.0" quantity="10"/>
-                            <sld:ColorMapEntry color="#602b00" label="Land" opacity="1.0" quantity="998"/>
-                            <sld:ColorMapEntry color="#000000" label="Nodata" opacity="1.0" quantity="999"/>
+                            <sld:ColorMapEntry color="#602b00" label="Land" opacity="0.0" quantity="998.1"/>
+                            <sld:ColorMapEntry color="#000000" label="Nodata" opacity="1.0" quantity="998.9"/>
+                            <sld:ColorMapEntry color="#000000" label="" opacity="1.0" quantity="999.1"/>
                         </sld:ColorMap>
                     </sld:RasterSymbolizer>
                 </sld:Rule>
