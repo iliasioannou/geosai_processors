@@ -1,7 +1,7 @@
 Sea Water Temperature -> TEM
 Dissolved Oxygen -> DOX
 Salinity -> SAL
-Sea Surface Waves -> SWH
+Significant Wave Height -> SWH
 Currents -> CUR
 
 -MEDSEA_ANALYSIS_FORECAST_PHY_006_013

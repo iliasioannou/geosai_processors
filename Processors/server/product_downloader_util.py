@@ -51,7 +51,7 @@ data_map = [
         "base_url": "http://cmems-med-mfc.eu/motu-web/Motu",
         "dataset": [
             {   
-                # Sea Surface Waves [m]
+                # Significant Wave Height [m]
                 "name": "sv03-med-hcmr-wav-an-fc-h",
                 "values": [
                     "VHM0"
@@ -76,7 +76,7 @@ def download_data(start_date, end_date):
         logging.info("[EOSAI_DOWNLOADER] Processing %s" %element['product'])
         for ds in element['dataset']:
             logging.info("[EOSAI_DOWNLOADER] Downloading %s" % ds['name'])
-            forecast_date = (datetime.strptime(end_date, '%Y-%m-%d') + timedelta(days=3)).strftime("%Y-%m-%d")
+            forecast_date = (datetime.strptime(end_date, '%Y-%m-%d') + timedelta(days=4)).strftime("%Y-%m-%d")
             script = StringScriptBuilder()\
                 .set_product(element['product'])\
                 .set_dataset(ds['name'])\
