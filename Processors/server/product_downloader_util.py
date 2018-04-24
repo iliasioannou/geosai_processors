@@ -52,7 +52,7 @@ data_map = [
         "dataset": [
             {   
                 # Significant Wave Height [m]
-                "name": "sv03-med-hcmr-wav-an-fc-h",
+                "name": "sv04-med-hcmr-wav-an-fc-h",
                 "values": [
                     "VHM0"
                 ]

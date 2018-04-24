@@ -44,11 +44,11 @@ TEM_input_f='sv03-med-ingv-tem-an-fc-d'
 SAL_input_f='sv03-med-ingv-sal-an-fc-d'
 CUR_input_f='sv03-med-ingv-cur-an-fc-d'
 DOX_input_f='sv03-med-ogs-bio-an-fc-d'
-SWH_input_f='sv03-med-hcmr-wav-an-fc-h'
+SWH_input_f='sv04-med-hcmr-wav-an-fc-h'
 
 GPT_006_013_Graph=script_dir+"006_013_Graph_EOSAI.xml"
 GPT_006_014_Graph=script_dir+"006_014_Graph_EOSAI.xml"
-GPT_006_011_Graph=script_dir+"006_011_Graph_EOSAI.xml"
+GPT_006_017_Graph=script_dir+"006_017_Graph_EOSAI.xml"
 
 pFilenames=['TEM','SAL','CUR','DOX','SWH']
 Mask_LandSea = [ancil_dir + "Mask_Sea-Land_SRTM_EOSAI.tif"]
@@ -521,7 +521,7 @@ def Chain_006_014(inputlist,overwrite,AOI,output_dir,productT):
     return 0
 
 ########
-## Chain_006_011
+## Chain_006_017
 ##
 ## Processing of products from MEDSEA_ANALYSIS_FORECAST_WAV_006_017
 ## 
@@ -531,10 +531,10 @@ def Chain_006_014(inputlist,overwrite,AOI,output_dir,productT):
 ## output_dir: it must contain a date at the end of the name and it will be compared with the one inside the input product
 ## productT: 1==SWH
 ## 
-def Chain_006_011(inputlist,overwrite,AOI,output_dir,productT):
+def Chain_006_017(inputlist,overwrite,AOI,output_dir,productT):
 
     if productT!=1:
-        logging.info("[EOSAI_PROCESSORS] Wrong 006_011 product variable name: use SWH")
+        logging.info("[EOSAI_PROCESSORS] Wrong 006_017product variable name: use SWH")
         productT=1
         
     #Set specific product internal index
@@ -573,18 +573,18 @@ def Chain_006_011(inputlist,overwrite,AOI,output_dir,productT):
                         "        </targetBand>\n"]
             totlines=totlines+toaddlines
     
-    if os.path.exists(GPT_006_011_Graph)==False:
+    if os.path.exists(GPT_006_017_Graph)==False:
         logging.debug("[EOSAI_PROCESSORS] GPT template file missing !")
         return 1
         
-    fi = open(GPT_006_011_Graph,'r')
+    fi = open(GPT_006_017_Graph,'r')
     lines=fi.readlines()
     fi.close()
     newlines=lines[0:lines.index('$bandsfill$\n')]
     newlines=newlines+totlines
     newlines=newlines+lines[lines.index('$bandsfill$\n')+1:]
     try:
-        GPT_tmp=temp_dir+'006-011_GPT_tmp.xml'
+        GPT_tmp=temp_dir+'006-017_GPT_tmp.xml'
         fo = open(GPT_tmp,'w')
         fo.writelines(newlines)
         fo.close()
@@ -961,7 +961,7 @@ def WQ_EOSAI_Chain(
             if len(ce)==0:
                 logging.debug("[EOSAI_PROCESSORS] "+'No SWH input files to process with specified date: '+date)
             else:
-                result1=Chain_006_011(ce,ovrw,areaofi,dest_dir,1)
+                result1=Chain_006_017(ce,ovrw,areaofi,dest_dir,1)
                 if result1==1:
                     logging.debug("[EOSAI_PROCESSORS] "+'Failed generation of SWH proucts for date: '+date)
                     eerr=1
