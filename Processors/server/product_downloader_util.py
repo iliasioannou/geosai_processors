@@ -47,7 +47,7 @@ data_map = [
         ]
     },
     {
-        "product": "MEDSEA_ANALYSIS_FORECAST_WAV_006_011-TDS",
+        "product": "MEDSEA_ANALYSIS_FORECAST_WAV_006_017-TDS",
         "base_url": "http://cmems-med-mfc.eu/motu-web/Motu",
         "dataset": [
             {   

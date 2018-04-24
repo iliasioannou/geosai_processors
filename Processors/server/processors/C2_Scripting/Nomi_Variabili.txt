@@ -10,5 +10,5 @@ Currents -> CUR
 	sv03-med-ingv-cur-an-fc-d (CUR)
 -MEDSEA_ANALYSIS_FORECAST_BIO_006_014
 	sv03-med-ogs-bio-an-fc-d (DOX)
--MEDSEA_ANALYSIS_FORECAST_WAV_006_011
+-MEDSEA_ANALYSIS_FORECAST_WAV_006_017
     sv03-med-hcmr-wav-an-fc-h (SWH)

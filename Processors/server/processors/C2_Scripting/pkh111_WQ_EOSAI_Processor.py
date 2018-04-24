@@ -523,7 +523,7 @@ def Chain_006_014(inputlist,overwrite,AOI,output_dir,productT):
 ########
 ## Chain_006_011
 ##
-## Processing of products from MEDSEA_ANALYSIS_FORECAST_WAV_006_011
+## Processing of products from MEDSEA_ANALYSIS_FORECAST_WAV_006_017
 ## 
 ## inputlist: list of files to (singularly) process
 ## overwrite: 1 = overwrite products if already existing: NO MORE APPLICABLE
