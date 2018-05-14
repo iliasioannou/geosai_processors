@@ -1,4 +1,4 @@
-# Qui vanno inseriti i sorgenti dei processori e del wrapper XML-RPC per lanciarli da remoto
+# Sorgenti dei processori e del wrapper XML-RPC per lanciarli da remoto
 
 ### EOSAI Docker image build&configure
 
@@ -69,10 +69,9 @@ Output file naming:
 
 RC_aoi_yyyy_mm_dd_prod_type.tif
 
-- aoi = IGRE
+- aoi = EOSAI
 - yyyy = year
 - mm = month (01-12)
 - dd = day (01-31)
-- prod = Chl or SST or WT or Tur
-- type = Thematic
+- prod = CUR | DOX | SAL | SWH | TEM
 
