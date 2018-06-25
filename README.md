@@ -1,4 +1,4 @@
-# Qui vanno inseriti i sorgenti dei processori e del wrapper XML-RPC per lanciarli da remoto
+# Sorgenti dei processori e del wrapper XML-RPC per lanciarli da remoto
 
 ### EOSAI Docker image build&configure
 
@@ -61,5 +61,3 @@ EXAMPLE:
     - CUR [sv03-med-ingv-cur-an-fc-d]
 * MEDSEA_ANALYSIS_FORECAST_WAV_006_017-TDS
     - SWH [sv04-med-hcmr-wav-an-fc-h]
-
-
