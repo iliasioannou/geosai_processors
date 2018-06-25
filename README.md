@@ -62,17 +62,4 @@ EXAMPLE:
 * MEDSEA_ANALYSIS_FORECAST_WAV_006_017-TDS
     - SWH [sv04-med-hcmr-wav-an-fc-h]
 
-**Output files**
-
-The output files should be kept in a defined location in order to allow the procedure which calculates the statistics, to find them.
-Output file naming:
-
-RC_aoi_yyyy_mm_dd_prod_type.tif
-
-- aoi = IGRE
-- yyyy = year
-- mm = month (01-12)
-- dd = day (01-31)
-- prod = Chl or SST or WT or Tur
-- type = Thematic
 
