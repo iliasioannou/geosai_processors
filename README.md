@@ -28,11 +28,11 @@ This is the completed expected folder tree with the input, intermediate and fina
 ### EOSAI Docker image use: daily processor
 
 List of available Products:
-    Sea Water Temperature -> TEM
-    Dissolved Oxygen -> DOX
-    Salinity -> SAL
-    Significant Wave Height -> SWH
-    Currents -> CUR
+    - Sea Water Temperature -> TEM
+    - Dissolved Oxygen -> DOX
+    - Salinity -> SAL
+    - Significant Wave Height -> SWH
+    - Currents -> CUR
 
 **How to launch the EOSAI processor with docker:**
 
